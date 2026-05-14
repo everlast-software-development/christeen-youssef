@@ -1,0 +1,262 @@
+.section {
+  padding: var(--space-4xl) 0;
+  position: relative;
+  overflow: hidden;
+  color: var(--color-dark);
+  background-image: url('/src/assets/main-banner (1).webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Soft dark overlay for readability */
+.section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 10, 15, 0.72);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Elegant radial gold glow */
+.section::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -20%;
+  width: 70%;
+  height: 150%;
+  background: radial-gradient(circle at center, rgba(201, 153, 40, 0.12) 0%, transparent 60%);
+  transform: translateY(-50%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--space-2xl);
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: var(--space-4xl);
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* Left side typography styling built for dark background */
+.info {
+  display: flex;
+  flex-direction: column;
+}
+
+.headerContent {
+  max-width: 500px;
+}
+
+.badge {
+  display: inline-block;
+  padding: var(--space-xs) var(--space-md);
+  background: rgba(201, 153, 40, 0.15);
+  color: var(--color-primary-light);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-lg);
+  border: 1px solid rgba(201, 153, 40, 0.3);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 3.2rem;
+  color: var(--color-dark);
+  line-height: 1.1;
+  margin-bottom: var(--space-lg);
+  font-weight: 600;
+}
+
+.accentLine {
+  width: 60px;
+  height: 2px;
+  background: var(--gradient-gold);
+  margin-bottom: var(--space-xl);
+}
+
+.infoText {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 0;
+}
+
+/* Right side glass card */
+.scheduleWrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.glassCard {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-xl);
+  padding: var(--space-3xl);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+}
+
+.cardHeader {
+  margin-bottom: var(--space-2xl);
+  padding-bottom: var(--space-lg);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.clinic {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: var(--color-dark);
+  margin-bottom: var(--space-xs);
+  font-weight: 600;
+}
+
+.role {
+  color: var(--color-primary-light);
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0;
+  font-weight: 600;
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xl);
+  margin-bottom: var(--space-2xl);
+}
+
+.detailRow {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-lg);
+}
+
+.iconBox {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  background: rgba(201, 153, 40, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary-light);
+  border: 1px solid rgba(201, 153, 40, 0.2);
+}
+
+.detail {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail strong {
+  color: var(--color-dark);
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.detail p {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.phoneLink {
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.phoneLink:hover {
+  color: var(--color-primary-light);
+}
+
+.days {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.dayBadge {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.cardFooter {
+  margin-top: auto;
+  padding-top: var(--space-xl);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ctaButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 16px 24px;
+  background: var(--gradient-gold);
+  color: #FFFFFF;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.05rem;
+  border-radius: var(--radius-md);
+  transition: box-shadow 0.3s ease;
+  box-shadow: 0 4px 15px rgba(201, 153, 40, 0.3);
+}
+
+.ctaButton:hover {
+  /* Removed transform and color-shifting filter per user request */
+  box-shadow: 0 6px 20px rgba(201, 153, 40, 0.4);
+  color: #FFFFFF;
+}
+
+@media (max-width: 1024px) {
+  .container {
+    grid-template-columns: 1fr;
+    gap: var(--space-3xl);
+  }
+
+  .title {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: var(--space-4xl) 0;
+  }
+
+  .glassCard {
+    padding: var(--space-2xl);
+  }
+
+  .iconBox {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+  }
+}

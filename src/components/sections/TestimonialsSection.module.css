@@ -1,0 +1,392 @@
+.section {
+  padding: var(--space-4xl) 0 var(--space-2xl);
+  position: relative;
+  background: var(--color-light-surface);
+  overflow: hidden;
+}
+
+.section::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  left: -10%;
+  width: 60%;
+  height: 120%;
+  background: radial-gradient(ellipse at center, rgba(201, 153, 40, 0.04) 0%, transparent 70%);
+  transform: rotate(-15deg);
+  z-index: 0;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 var(--space-xl);
+  position: relative;
+  z-index: 1;
+}
+
+.sliderWrapper {
+  margin-top: var(--space-2xl);
+  width: 100%;
+}
+
+.swiper {
+  padding: var(--space-md) 0 var(--space-xl);
+}
+
+.swiperSlide {
+  width: 100%;
+  max-width: 700px;
+  height: auto;
+  opacity: 0.4;
+  transition: opacity var(--transition-base), transform var(--transition-base);
+  transform: scale(0.92);
+}
+
+:global(.swiper-slide-active) {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  border-radius: var(--radius-lg);
+  padding: var(--space-2xl) var(--space-xl);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  height: auto;
+  min-height: 320px;
+  max-height: 420px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  margin: 0 60px;
+}
+
+/* Luxurious hover effect on active card */
+:global(.swiper-slide-active) .card:hover {
+  box-shadow: 0 12px 40px rgba(201, 153, 40, 0.12);
+  border-color: rgba(201, 153, 40, 0.25);
+}
+
+/* Quote Watermark - reduced opacity */
+.quoteWatermark {
+  position: absolute;
+  top: 10px;
+  left: 24px;
+  font-family: var(--font-display);
+  font-size: 140px;
+  line-height: 1;
+  color: rgba(201, 153, 40, 0.035);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.contentWrapper {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  justify-content: center;
+}
+
+.rating {
+  display: flex;
+  gap: 4px;
+  color: #D4AF37;
+  margin-bottom: var(--space-lg);
+}
+
+.content {
+  font-family: var(--font-primary);
+  font-size: 1.05rem;
+  color: var(--color-heading-light);
+  line-height: 1.7;
+  font-style: italic;
+  font-weight: 400;
+  margin-bottom: var(--space-lg);
+  max-width: 95%;
+}
+
+.authorWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  margin-top: var(--space-md);
+}
+
+.authorLine {
+  width: 32px;
+  height: 2px;
+  background: var(--color-primary);
+  margin-bottom: var(--space-md);
+  opacity: 0.6;
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: var(--color-heading-light);
+  margin-bottom: 4px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.role {
+  font-size: 0.75rem;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  margin: 0;
+  opacity: 0.9;
+}
+
+/* Swiper Navigation Buttons */
+:global(.swiper-button-next),
+:global(.swiper-button-prev) {
+  color: var(--color-primary) !important;
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+  background: rgba(255, 255, 255, 0.97) !important;
+  background-image: none !important;
+  border: 1px solid rgba(201, 153, 40, 0.22) !important;
+  border-radius: 50% !important;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.09) !important;
+  transition: all 0.25s ease !important;
+  top: 50% !important;
+  margin-top: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  font-size: 0 !important;
+  transform: translateY(-50%) !important;
+  position: absolute !important;
+}
+
+:global(.swiper-button-next) {
+  right: -58px !important;
+}
+
+:global(.swiper-button-prev) {
+  left: -58px !important;
+}
+
+/* CSS chevron arrows — perfectly centered */
+:global(.swiper-button-prev::after),
+:global(.swiper-button-next::after) {
+  all: unset !important;
+  content: '' !important;
+  display: block !important;
+  width: 7px !important;
+  height: 7px !important;
+  border-color: currentColor !important;
+  border-style: solid !important;
+  border-width: 0 !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  flex-shrink: 0 !important;
+}
+
+:global(.swiper-button-prev::after) {
+  border-left-width: 1.5px !important;
+  border-bottom-width: 1.5px !important;
+  transform: translate(-25%, -50%) rotate(45deg) !important;
+}
+
+:global(.swiper-button-next::after) {
+  border-right-width: 1.5px !important;
+  border-top-width: 1.5px !important;
+  transform: translate(-75%, -50%) rotate(45deg) !important;
+}
+
+:global(.swiper-button-next:hover),
+:global(.swiper-button-prev:hover) {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light)) !important;
+  color: white !important;
+  border-color: transparent !important;
+  box-shadow: 0 4px 16px rgba(201, 153, 40, 0.25) !important;
+  transform: translateY(-50%) scale(1.08) !important;
+}
+
+:global(.swiper-button-next:active),
+:global(.swiper-button-prev:active) {
+  transform: translateY(-50%) scale(0.96) !important;
+}
+
+/* Pagination Dots */
+:global(.swiper-pagination) {
+  bottom: 0 !important;
+}
+
+:global(.swiper-pagination-bullet) {
+  background: var(--color-primary) !important;
+  opacity: 0.15 !important;
+  width: 6px !important;
+  height: 6px !important;
+  border-radius: 50% !important;
+  transition: all 0.3s ease !important;
+  margin: 0 4px !important;
+}
+
+:global(.swiper-pagination-bullet-active) {
+  opacity: 1 !important;
+  width: 20px !important;
+  border-radius: 3px !important;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light)) !important;
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .card {
+    margin: 0;
+    padding: var(--space-xl) var(--space-lg);
+    min-height: 300px;
+    max-height: 380px;
+  }
+
+  .quoteWatermark {
+    font-size: 120px;
+    left: 16px;
+  }
+
+  .content {
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+
+  :global(.swiper-button-next) {
+    right: -52px !important;
+  }
+
+  :global(.swiper-button-prev) {
+    left: -52px !important;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .section {
+    padding: var(--space-4xl) 0 var(--space-xl);
+  }
+
+  .container {
+    padding: 0 var(--space-md);
+  }
+
+  .sliderWrapper {
+    margin-top: var(--space-xl);
+  }
+
+  .swiperSlide {
+    width: 100%;
+    transform: scale(0.95);
+  }
+
+  :global(.swiper-slide-active) {
+    transform: scale(1);
+  }
+
+  .card {
+    padding: var(--space-xl) var(--space-md);
+    min-height: 280px;
+    max-height: 360px;
+    margin: 0;
+  }
+
+  .quoteWatermark {
+    font-size: 100px;
+    top: 8px;
+    left: 12px;
+  }
+
+  .rating {
+    margin-bottom: var(--space-md);
+    gap: 3px;
+  }
+
+  .content {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    max-width: 100%;
+    margin-bottom: var(--space-md);
+  }
+
+  .authorLine {
+    margin-bottom: var(--space-sm);
+    width: 28px;
+  }
+
+  .name {
+    font-size: 1.05rem;
+  }
+
+  .role {
+    font-size: 0.7rem;
+  }
+
+  :global(.swiper-button-next),
+  :global(.swiper-button-prev) {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+  }
+
+  :global(.swiper-button-next) {
+    right: -42px !important;
+  }
+
+  :global(.swiper-button-prev) {
+    left: -42px !important;
+  }
+
+
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .card {
+    margin: 0;
+    padding: var(--space-lg) var(--space-sm);
+    min-height: 260px;
+    max-height: 340px;
+  }
+
+  .quoteWatermark {
+    font-size: 80px;
+  }
+
+  .content {
+    font-size: 0.9rem;
+  }
+
+  :global(.swiper-button-next),
+  :global(.swiper-button-prev) {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    min-height: 28px !important;
+  }
+
+  :global(.swiper-button-next) {
+    right: -36px !important;
+  }
+
+  :global(.swiper-button-prev) {
+    left: -36px !important;
+  }
+}

@@ -1,0 +1,270 @@
+.section {
+  position: relative;
+  padding: var(--space-4xl) 0;
+  background: linear-gradient(135deg, #F5F2EC 0%, #F8F6F1 50%, #EFEFEB 100%);
+  overflow: hidden;
+}
+
+/* Animated background gradients */
+.section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(circle 700px at 15% 35%, rgba(201, 153, 40, 0.1) 0%, transparent 55%),
+    radial-gradient(circle 600px at 85% 65%, rgba(201, 153, 40, 0.07) 0%, transparent 60%),
+    radial-gradient(circle 500px at 45% 95%, rgba(232, 200, 106, 0.05) 0%, transparent 65%);
+  pointer-events: none;
+  animation: flowGradient 20s ease-in-out infinite;
+}
+
+.section::after {
+  content: '';
+  position: absolute;
+  top: -30%;
+  right: -150px;
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle, rgba(201, 153, 40, 0.06) 0%, transparent 65%);
+  border-radius: 50%;
+  animation: driftOrb 28s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes flowGradient {
+  0%, 100% {
+    opacity: 0.75;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes driftOrb {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-100px, 120px);
+  }
+}
+
+.container {
+  position: relative;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--space-2xl);
+  z-index: 2;
+}
+
+/* Decorative circular elements */
+.container::before {
+  content: '';
+  position: absolute;
+  top: -100px;
+  left: -120px;
+  width: 200px;
+  height: 200px;
+  border: 1.5px solid rgba(201, 153, 40, 0.11);
+  border-radius: 50%;
+  animation: rotateCW 32s linear infinite;
+}
+
+.container::after {
+  content: '';
+  position: absolute;
+  bottom: -140px;
+  right: -100px;
+  width: 240px;
+  height: 240px;
+  border: 1.5px solid rgba(201, 153, 40, 0.09);
+  border-radius: 50%;
+  animation: rotateCCW 38s linear infinite;
+}
+
+@keyframes rotateCW {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rotateCCW {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2xl);
+  margin-top: var(--space-4xl);
+  z-index: 2;
+}
+
+.grid > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.grid > div > :global(div) {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-2xl);
+  height: 380px;
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(201, 153, 40, 0.08);
+  color: var(--color-primary);
+  margin-bottom: var(--space-md);
+  transition: all var(--transition-base);
+  border: 1px solid rgba(201, 153, 40, 0.18);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.grid > div:hover .iconWrapper {
+  background: var(--color-primary);
+  color: #FFFFFF;
+  border-color: var(--color-primary);
+  box-shadow: 0 8px 20px rgba(201, 153, 40, 0.25);
+  transform: translateY(-3px) scale(1.05);
+}
+
+.title {
+  font-size: 1.35rem;
+  color: var(--color-heading-dark);
+  margin-bottom: var(--space-md);
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  font-family: var(--font-display);
+  line-height: 1.3;
+}
+
+.description {
+  color: var(--color-body-text);
+  line-height: 1.6;
+  font-size: 0.9rem;
+  opacity: 0.88;
+  flex-grow: 1;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+
+
+@media (max-width: 1400px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 1024px) {
+  .container::before {
+    display: none;
+  }
+
+  .container::after {
+    display: none;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-xl);
+  }
+
+  .grid > div > :global(div) {
+    height: 360px;
+  }
+
+  .title {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: var(--space-4xl) 0;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-lg);
+    margin-top: var(--space-3xl);
+  }
+
+  .container {
+    padding: 0 var(--space-lg);
+  }
+
+  .section::after {
+    display: none;
+  }
+
+  .iconWrapper {
+    width: 48px;
+    height: 48px;
+  }
+
+  .title {
+    font-size: 1.1rem;
+  }
+
+  .description {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .section {
+    padding: var(--space-3xl) 0;
+  }
+
+  .container {
+    padding: 0 var(--space-md);
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+
+  .grid > div > :global(div) {
+    height: 340px;
+  }
+
+  .iconWrapper {
+    width: 44px;
+    height: 44px;
+  }
+
+  .title {
+    font-size: 1rem;
+  }
+
+  .description {
+    font-size: 0.85rem;
+  }
+
+  .section::before {
+    display: none;
+  }
+}

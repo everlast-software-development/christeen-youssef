@@ -1,0 +1,679 @@
+.hero {
+  position: relative;
+  height: 800px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: linear-gradient(135deg, #EFEFEB 0%, #F8F6F1 50%, #E8E5E0 100%);
+  padding-top: var(--header-height);
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 50%, rgba(201, 153, 40, 0.08) 0%, transparent 50%),
+              radial-gradient(circle at 80% 50%, rgba(201, 153, 40, 0.06) 0%, transparent 50%);
+  pointer-events: none;
+  animation: gradientShift 8s ease-in-out infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Main Container - Split Screen */
+.container {
+  max-width: 1800px;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 var(--space-4xl);
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: var(--space-4xl);
+  align-items: center;
+  position: relative;
+  z-index: 10;
+  animation: containerSlideIn 0.8s ease-out;
+}
+
+@keyframes containerSlideIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Left Content Section */
+.contentSection {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  max-width: 600px;
+}
+
+/* Accent Dot */
+.accentDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  box-shadow: 0 0 24px rgba(201, 153, 40, 0.6);
+  margin-bottom: 8px;
+  animation: dotPulse 3s ease-in-out infinite;
+}
+
+@keyframes dotPulse {
+  0%, 100% {
+    box-shadow: 0 0 24px rgba(201, 153, 40, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(201, 153, 40, 0.9);
+  }
+}
+
+/* ============================================
+   ANIMATED MEDICAL DOCTOR SYMBOLS
+   Evenly distributed on LEFT and RIGHT sides
+   ============================================ */
+
+/* LEFT SIDE MEDICAL ELEMENTS */
+
+/* Heart - Top Left */
+.geometricElement1 {
+  position: absolute;
+  top: 15%;
+  left: 3%;
+  width: 70px;
+  height: 70px;
+  z-index: 2;
+  animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+.geometricElement1::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="rgba(201,153,40,0.35)" stroke="rgba(201,153,40,0.4)" stroke-width="0.5"/></svg>') no-repeat center;
+  background-size: 100%;
+}
+
+/* Stethoscope - Middle Left */
+.geometricElement2 {
+  position: absolute;
+  top: 50%;
+  left: 2%;
+  width: 85px;
+  height: 85px;
+  z-index: 2;
+  animation: rotateMedical 6s linear infinite;
+  transform: translateY(-50%);
+}
+
+.geometricElement2::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 1c-4.35 0-8 2.69-8 6 0 2.71 2.04 5.05 4.89 5.85.37.25.59.62.59 1.04 0 .79-.79 1.42-1.59 1.42-.45 0-.85-.2-1.1-.51-3.12-.98-5.34-3.84-5.34-7.18 0-4.31 3.65-7.81 8.15-7.81s8.15 3.5 8.15 7.81c0 3.34-2.22 6.2-5.34 7.18-.25.31-.65.51-1.1.51-.8 0-1.59-.63-1.59-1.42 0-.42.22-.79.59-1.04 2.85-.8 4.89-3.14 4.89-5.85 0-3.31-3.65-6-8-6z" fill="none" stroke="rgba(201,153,40,0.4)" stroke-width="1.5" stroke-linecap="round"/></svg>') no-repeat center;
+  background-size: 80%;
+}
+
+/* Medical Cross - Bottom Left */
+.geometricElement3 {
+  position: absolute;
+  bottom: 15%;
+  left: 4%;
+  width: 80px;
+  height: 80px;
+  z-index: 2;
+  animation: crossRotate 8s linear infinite;
+}
+
+.geometricElement3::before,
+.geometricElement3::after {
+  content: '';
+  position: absolute;
+  background: rgba(201, 153, 40, 0.35);
+}
+
+.geometricElement3::before {
+  width: 100%;
+  height: 3px;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+
+.geometricElement3::after {
+  width: 3px;
+  height: 100%;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+}
+
+/* RIGHT SIDE MEDICAL ELEMENTS */
+
+/* Syringe - Top Right */
+.geometricElement4 {
+  position: absolute;
+  top: 15%;
+  right: 3%;
+  width: 90px;
+  height: 55px;
+  z-index: 2;
+  animation: syringeFloat 5s ease-in-out infinite;
+}
+
+.geometricElement4::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g fill="rgba(201,153,40,0.35)" stroke="rgba(201,153,40,0.4)" stroke-width="0.5"><circle cx="3" cy="12" r="2"/><path d="M7 8h12v8H7z"/><path d="M20 12l2-2v4l-2-2z"/></g></svg>') no-repeat center;
+  background-size: 90%;
+}
+
+/* Blood Drop - Middle Right */
+.geometricElement5 {
+  position: absolute;
+  top: 50%;
+  right: 2%;
+  width: 75px;
+  height: 90px;
+  z-index: 2;
+  animation: dropFloat 4s ease-in-out infinite;
+  transform: translateY(-50%);
+}
+
+.geometricElement5::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.32 0z" fill="rgba(201,153,40,0.35)" stroke="rgba(201,153,40,0.4)" stroke-width="0.5"/></svg>') no-repeat center;
+  background-size: 85%;
+}
+
+/* Medical Chart - Bottom Right */
+.geometricElement6 {
+  position: absolute;
+  bottom: 15%;
+  right: 3%;
+  width: 100px;
+  height: 100px;
+  z-index: 2;
+  animation: chartPulse 4s ease-in-out infinite;
+}
+
+.geometricElement6::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 13h2v8H3zm4-8h2v16H7zm4-2h2v18h-2zm4-1h2v19h-2zm4 4h2v15h-2z" fill="rgba(201,153,40,0.35)" stroke="rgba(201,153,40,0.35)" stroke-width="0.5"/></svg>') no-repeat center;
+  background-size: 75%;
+}
+
+@keyframes heartbeat {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.35;
+  }
+  25% {
+    transform: scale(1.1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 0.35;
+  }
+}
+
+@keyframes rotateMedical {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes syringeFloat {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px);
+  }
+  25% {
+    transform: translateY(-15px) translateX(10px);
+  }
+  50% {
+    transform: translateY(-8px) translateX(-8px);
+  }
+  75% {
+    transform: translateY(15px) translateX(10px);
+  }
+}
+
+@keyframes chartPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.35;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.5;
+  }
+}
+
+@keyframes crossRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Tagline */
+.tagline {
+  font-family: var(--font-accent);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--color-primary);
+  margin: 0;
+  padding: 0;
+}
+
+/* Main Headline */
+.headline {
+  font-family: var(--font-display);
+  font-size: 3.8rem;
+  font-weight: 900;
+  line-height: 1.12;
+  color: #0F1117;
+  letter-spacing: -1px;
+  margin: 0;
+  padding: 0;
+}
+
+/* Description Text */
+.description {
+  font-family: var(--font-body);
+  font-size: 1.08rem;
+  line-height: 1.75;
+  color: #5A5F6B;
+  margin: 0;
+  padding: 0;
+  max-width: 550px;
+  font-weight: 400;
+}
+
+/* CTA Button Container */
+.buttonContainer {
+  margin-top: var(--space-md);
+}
+
+/* CTA Button */
+.ctaButton {
+  display: inline-block;
+  padding: 14px 36px;
+  background: var(--gradient-gold);
+  color: #0F1117;
+  text-decoration: none;
+  font-family: var(--font-accent);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 12px 32px rgba(201, 153, 40, 0.25);
+  transition: all var(--transition-base);
+  cursor: pointer;
+  border: none;
+}
+
+.ctaButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px rgba(201, 153, 40, 0.35);
+  color: #FFFFFF;
+}
+
+.ctaButton:active {
+  transform: translateY(-1px);
+}
+
+/* Stat Pills */
+.statPills {
+  display: flex;
+  gap: var(--space-2xl);
+  margin-top: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.pill {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pillValue {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.pillLabel {
+  font-family: var(--font-accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #7A8094;
+}
+
+/* Right Image Section */
+.imageSection {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  animation: imageFloat 6s ease-in-out infinite;
+}
+
+.heroImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  box-shadow: none;
+}
+
+@keyframes imageFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 1400px) {
+  .container {
+    gap: var(--space-3xl);
+    padding: 0 var(--space-3xl);
+  }
+
+  .headline {
+    font-size: 3.3rem;
+  }
+
+  .description {
+    font-size: 1.03rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .hero {
+    height: 750px;
+  }
+
+  .container {
+    gap: var(--space-2xl);
+  }
+
+  .headline {
+    font-size: 2.9rem;
+  }
+
+  .description {
+    font-size: 0.98rem;
+  }
+
+  .ctaButton {
+    padding: 12px 32px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .hero {
+    height: auto;
+    min-height: auto;
+    padding: var(--header-height) var(--space-lg) var(--space-3xl);
+  }
+
+  .container {
+    grid-template-columns: 1fr;
+    gap: var(--space-2xl);
+    padding: 0 var(--space-lg);
+  }
+
+  .content {
+    gap: var(--space-lg);
+    max-width: 100%;
+  }
+
+  .headline {
+    font-size: 2.5rem;
+  }
+
+  .description {
+    font-size: 1rem;
+    max-width: 100%;
+  }
+
+  .imageSection {
+    height: 380px;
+    margin-top: var(--space-lg);
+  }
+
+  .statPills {
+    gap: var(--space-xl);
+  }
+
+  .pillValue {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding: var(--header-height) var(--space-lg) var(--space-2xl);
+  }
+
+  .container {
+    padding: 0 var(--space-lg);
+  }
+
+  .accentDot {
+    width: 10px;
+    height: 10px;
+  }
+
+  .tagline {
+    font-size: 0.75rem;
+    letter-spacing: 1.5px;
+  }
+
+  .headline {
+    font-size: 2.1rem;
+    line-height: 1.2;
+  }
+
+  .description {
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  .ctaButton {
+    padding: 10px 28px;
+    font-size: 0.75rem;
+  }
+
+  .imageSection {
+    height: 320px;
+  }
+
+  .statPills {
+    gap: var(--space-lg);
+    margin-top: var(--space-md);
+  }
+
+  .pillValue {
+    font-size: 1.4rem;
+  }
+
+  .pillLabel {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding: var(--header-height) var(--space-md) var(--space-2xl);
+  }
+
+  .container {
+    padding: 0 var(--space-md);
+    gap: var(--space-lg);
+  }
+
+  .content {
+    gap: var(--space-md);
+  }
+
+  .accentDot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .tagline {
+    font-size: 0.7rem;
+    letter-spacing: 1.2px;
+  }
+
+  .headline {
+    font-size: 1.85rem;
+    line-height: 1.15;
+  }
+
+  .description {
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+
+  .ctaButton {
+    padding: 9px 24px;
+    font-size: 0.7rem;
+  }
+
+  .imageSection {
+    height: 280px;
+  }
+
+  .statPills {
+    gap: var(--space-md);
+    margin-top: var(--space-sm);
+  }
+
+  .pillValue {
+    font-size: 1.25rem;
+  }
+
+  .pillLabel {
+    font-size: 0.65rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding: var(--header-height) var(--space-sm) var(--space-2xl);
+  }
+
+  .container {
+    padding: 0 var(--space-sm);
+  }
+
+  .content {
+    gap: var(--space-sm);
+  }
+
+  .accentDot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .tagline {
+    font-size: 0.65rem;
+    letter-spacing: 1px;
+  }
+
+  .headline {
+    font-size: 1.6rem;
+    line-height: 1.1;
+  }
+
+  .description {
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+
+  .ctaButton {
+    padding: 8px 20px;
+    font-size: 0.65rem;
+  }
+
+  .buttonContainer {
+    margin-top: var(--space-xs);
+  }
+
+  .imageSection {
+    height: 240px;
+  }
+
+  .statPills {
+    flex-direction: column;
+    gap: var(--space-sm);
+    margin-top: var(--space-sm);
+  }
+
+  .pill {
+    gap: 4px;
+  }
+
+  .pillValue {
+    font-size: 1.1rem;
+  }
+
+  .pillLabel {
+    font-size: 0.6rem;
+  }
+}

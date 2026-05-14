@@ -1,0 +1,9 @@
+.progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: var(--gradient-gold);
+  z-index: 110;
+  transition: width 0.1s ease-out;
+}

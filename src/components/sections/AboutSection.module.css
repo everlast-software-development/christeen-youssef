@@ -1,0 +1,329 @@
+.section {
+  position: relative;
+  padding: var(--space-4xl) 0;
+  background: linear-gradient(180deg, var(--color-light-surface) 0%, #FFFFFF 100%);
+  overflow: hidden;
+}
+
+/* Subtle decorative background */
+.section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(ellipse at 20% 30%, rgba(201, 153, 40, 0.03) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(201, 153, 40, 0.02) 0%, transparent 40%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 0.9fr 1fr;
+  gap: var(--space-3xl);
+  align-items: center;
+  z-index: 2;
+  padding: 0 var(--space-xl);
+}
+
+.imageWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+}
+
+.imageOffsetBg {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: calc(100% - 40px);
+  height: calc(100% - 40px);
+  background: linear-gradient(135deg, rgba(201, 153, 40, 0.08) 0%, rgba(201, 153, 40, 0.02) 100%);
+  border: 1px solid rgba(201, 153, 40, 0.12);
+  border-radius: var(--radius-xl);
+  z-index: 0;
+  transform: translate(16px, 16px);
+}
+
+.imageFrame {
+  position: relative;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  aspect-ratio: 3/4;
+  z-index: 1;
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.12),
+    0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+  max-width: 380px;
+}
+
+.imageFrame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  transition: transform 0.6s ease;
+}
+
+.imageFrame:hover img {
+  transform: scale(1.03);
+}
+
+.floatingBadge {
+  position: absolute;
+  bottom: var(--space-xl);
+  right: -12px;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(201, 153, 40, 0.12);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  animation: float 5s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+.badgeNumber {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.badgeText {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-heading-light);
+  line-height: 1.3;
+}
+
+.content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  z-index: 2;
+  gap: var(--space-md);
+}
+
+.elegantBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 0.75rem;
+  color: var(--color-primary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: var(--space-xs);
+}
+
+.elegantBadge::before {
+  content: '';
+  width: 24px;
+  height: 1px;
+  background: var(--color-primary);
+  opacity: 0.5;
+}
+
+.mainTitle {
+  font-family: var(--font-display);
+  font-size: 2.75rem;
+  color: var(--color-heading-light);
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: var(--space-xs);
+  letter-spacing: -0.3px;
+}
+
+.subTitle {
+  font-size: 1.1rem;
+  color: rgba(26, 29, 35, 0.55);
+  font-weight: 500;
+  margin-bottom: var(--space-sm);
+  letter-spacing: 0.01em;
+}
+
+.divider {
+  display: block;
+  width: 40px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+  border-radius: 2px;
+  margin: var(--space-sm) 0 var(--space-md);
+  opacity: 0.8;
+}
+
+.text {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--color-body-text);
+  margin-bottom: var(--space-xs);
+  font-weight: 400;
+}
+
+.textSecondary {
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: rgba(26, 29, 35, 0.65);
+  margin-bottom: var(--space-xs);
+}
+
+.signatureWrapper {
+  margin: var(--space-sm) 0;
+  padding: var(--space-sm) var(--space-md);
+  background: linear-gradient(135deg, rgba(201, 153, 40, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
+  border-left: 3px solid var(--color-primary);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.signature {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: var(--color-heading-light);
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.buttonWrapper {
+  margin-top: var(--space-xs);
+}
+
+@media (max-width: 1024px) {
+  .container {
+    grid-template-columns: 1fr;
+    gap: var(--space-3xl);
+    padding: 0 var(--space-lg);
+  }
+
+  .imageWrapper {
+    max-width: 320px;
+    margin: 0 auto;
+    padding: var(--space-md);
+  }
+
+  .imageOffsetBg {
+    transform: translate(12px, 12px);
+  }
+
+  .content {
+    align-items: center;
+    text-align: center;
+    gap: var(--space-sm);
+  }
+
+  .elegantBadge {
+    justify-content: center;
+    margin-bottom: var(--space-xs);
+  }
+
+  .mainTitle {
+    font-size: 2.25rem;
+  }
+
+  .divider {
+    margin: var(--space-xs) auto var(--space-md);
+  }
+
+  .floatingBadge {
+    bottom: var(--space-lg);
+    right: -8px;
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .badgeNumber {
+    font-size: 1.75rem;
+  }
+
+  .signatureWrapper {
+    padding: var(--space-sm);
+    margin: var(--space-sm) auto;
+    border-left: none;
+    border-top: 3px solid var(--color-primary);
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  }
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: var(--space-3xl) 0;
+  }
+
+  .container {
+    gap: var(--space-2xl);
+    padding: 0 var(--space-md);
+  }
+
+  .imageWrapper {
+    max-width: 280px;
+  }
+
+  .mainTitle {
+    font-size: 1.875rem;
+    line-height: 1.2;
+  }
+
+  .subTitle {
+    font-size: 1rem;
+  }
+
+  .text,
+  .textSecondary {
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  .floatingBadge {
+    bottom: -8px;
+    right: 8px;
+    padding: var(--space-xs) var(--space-sm);
+    gap: var(--space-xs);
+  }
+
+  .badgeNumber {
+    font-size: 1.5rem;
+  }
+
+  .badgeText {
+    font-size: 0.7rem;
+  }
+
+  .signature {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .mainTitle {
+    font-size: 1.625rem;
+  }
+
+  .imageWrapper {
+    max-width: 240px;
+  }
+
+  .floatingBadge {
+    right: 4px;
+    bottom: -4px;
+  }
+}

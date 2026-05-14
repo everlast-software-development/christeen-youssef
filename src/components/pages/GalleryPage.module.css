@@ -1,0 +1,564 @@
+/* ============================================
+   GALLERY PAGE - BEFORE & AFTER
+   ============================================ */
+
+/* Hero Banner - Same as About page */
+.heroBanner {
+  background: linear-gradient(135deg, #EFEFEB 0%, #F8F6F1 50%, #E8E5E0 100%);
+  padding: calc(var(--header-height) + var(--space-3xl)) var(--space-2xl) var(--space-4xl);
+  text-align: center;
+  color: #0F1117;
+}
+
+.bannerContent h1 {
+  font-size: 3.5rem;
+  margin-bottom: var(--space-md);
+  color: var(--color-heading-dark);
+}
+
+.bannerContent p {
+  font-size: 1.5rem;
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+/* Gallery Section */
+.gallerySection {
+  padding: var(--space-4xl) 0;
+  background: linear-gradient(135deg, #FFFFFF 0%, #F8F6F1 100%);
+  min-height: calc(100vh - 400px);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-2xl);
+}
+
+/* Intro Text */
+.introText {
+  text-align: center;
+  margin-bottom: var(--space-4xl);
+}
+
+.introText h2 {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  color: var(--color-heading-dark);
+  margin-bottom: var(--space-md);
+}
+
+.introText p {
+  font-size: 1.1rem;
+  color: var(--color-body-text);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+/* Gallery Grid - Consistent Layout */
+.galleryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  margin-bottom: var(--space-4xl);
+  align-items: start;
+}
+
+/* Gallery Card */
+.galleryCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Image Frame with Golden Decorative Corners */
+.imageFrame {
+  position: relative;
+  width: 100%;
+  padding: 20px;
+  background: #FFFFFF;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.galleryCard:hover .imageFrame {
+  transform: translateY(-8px);
+  box-shadow: 0 30px 80px rgba(201, 153, 40, 0.15);
+}
+
+/* Golden Decorative Corners */
+.cornerTopLeft,
+.cornerTopRight,
+.cornerBottomLeft,
+.cornerBottomRight {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border: 3px solid var(--color-primary);
+  transition: all var(--transition-base);
+}
+
+.cornerTopLeft {
+  top: 10px;
+  left: 10px;
+  border-right: none;
+  border-bottom: none;
+  border-radius: 8px 0 0 0;
+}
+
+.cornerTopRight {
+  top: 10px;
+  right: 10px;
+  border-left: none;
+  border-bottom: none;
+  border-radius: 0 8px 0 0;
+}
+
+.cornerBottomLeft {
+  bottom: 10px;
+  left: 10px;
+  border-right: none;
+  border-top: none;
+  border-radius: 0 0 0 8px;
+}
+
+.cornerBottomRight {
+  bottom: 10px;
+  right: 10px;
+  border-left: none;
+  border-top: none;
+  border-radius: 0 0 8px 0;
+}
+
+.galleryCard:hover .cornerTopLeft,
+.galleryCard:hover .cornerTopRight,
+.galleryCard:hover .cornerBottomLeft,
+.galleryCard:hover .cornerBottomRight {
+  width: 40px;
+  height: 40px;
+  border-color: var(--color-primary-light);
+}
+
+/* Image Wrapper */
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4/3;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.galleryImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.galleryCard:hover .galleryImage {
+  transform: scale(1.05);
+}
+
+/* Hover Overlay */
+.imageOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(201, 153, 40, 0.9) 0%, rgba(232, 200, 106, 0.9) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.galleryCard:hover .imageOverlay {
+  opacity: 1;
+}
+
+.overlayContent {
+  text-align: center;
+  padding: var(--space-lg);
+  transform: translateY(20px);
+  transition: transform var(--transition-base);
+}
+
+.galleryCard:hover .overlayContent {
+  transform: translateY(0);
+}
+
+.overlayContent h3 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: #FFFFFF;
+  margin-bottom: var(--space-sm);
+}
+
+.overlayContent p {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Card Info Below Image */
+.cardInfo {
+  text-align: center;
+  margin-top: var(--space-xl);
+  padding: 0 var(--space-md);
+}
+
+.imageNumber {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  opacity: 0.3;
+  line-height: 1;
+  margin-bottom: var(--space-sm);
+}
+
+.cardInfo h4 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  color: var(--color-heading-dark);
+  margin-bottom: var(--space-xs);
+}
+
+.cardInfo p {
+  font-size: 0.95rem;
+  color: var(--color-body-text);
+  line-height: 1.5;
+}
+
+/* Trust Indicators */
+.trustIndicators {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3xl);
+  padding: var(--space-3xl);
+  background: #FFFFFF;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+  margin-top: var(--space-3xl);
+}
+
+.indicator {
+  text-align: center;
+}
+
+.indicatorNumber {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 1;
+  margin-bottom: var(--space-xs);
+}
+
+.indicatorLabel {
+  font-size: 0.9rem;
+  color: var(--color-body-text);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.indicatorDivider {
+  width: 1px;
+  height: 50px;
+  background: linear-gradient(180deg, transparent, var(--color-primary-light), transparent);
+}
+
+/* ============================================
+   RESPONSIVE STYLES
+   ============================================ */
+@media (max-width: 1024px) {
+  .galleryGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+  }
+  
+  .trustIndicators {
+    gap: var(--space-xl);
+  }
+  
+  .indicatorNumber {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .bannerContent h1 {
+    font-size: 2.5rem;
+  }
+  
+  .bannerContent p {
+    font-size: 1.25rem;
+  }
+  
+  .introText h2 {
+    font-size: 2rem;
+  }
+  
+  .galleryGrid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  
+  .imageFrame {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  .trustIndicators {
+    flex-direction: column;
+    gap: var(--space-xl);
+  }
+  
+  .indicatorDivider {
+    width: 100px;
+    height: 1px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bannerContent h1 {
+    font-size: 1.75rem;
+  }
+  
+  .imageNumber {
+    font-size: 2.5rem;
+  }
+  
+  .cornerTopLeft,
+  .cornerTopRight,
+  .cornerBottomLeft,
+  .cornerBottomRight {
+    width: 20px;
+    height: 20px;
+    border-width: 2px;
+  }
+}
+
+/* ============================================
+   LIGHTBOX STYLES
+   ============================================ */
+
+.lightboxOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.lightboxContent {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.lightboxImageWrapper {
+  position: relative;
+  max-width: 100%;
+  max-height: 75vh;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+}
+
+.lightboxImage {
+  width: 100%;
+  height: 100%;
+  max-height: 75vh;
+  object-fit: contain;
+  display: block;
+}
+
+.lightboxInfo {
+  text-align: center;
+  margin-top: var(--space-xl);
+  color: #FFFFFF;
+}
+
+.lightboxInfo h3 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  margin-bottom: var(--space-xs);
+  color: var(--color-primary-light);
+}
+
+.lightboxInfo p {
+  font-size: 1rem;
+  opacity: 0.8;
+  margin-bottom: var(--space-md);
+}
+
+.imageCounter {
+  display: inline-block;
+  padding: var(--space-xs) var(--space-md);
+  background: rgba(201, 153, 40, 0.2);
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-primary-light);
+}
+
+/* Close Button */
+.closeButton {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  z-index: 1001;
+}
+
+.closeButton:hover {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  transform: rotate(90deg);
+}
+
+/* Navigation Buttons */
+.navButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  z-index: 1001;
+}
+
+.navButton:hover {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.prevButton {
+  left: 20px;
+}
+
+.nextButton {
+  right: 20px;
+}
+
+/* Zoom Icon */
+.zoomIcon {
+  margin-bottom: var(--space-md);
+  opacity: 0.9;
+}
+
+/* Responsive Styles for Unified Cards */
+@media (max-width: 1024px) {
+  .simpleImageFrame {
+    padding: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .simpleImageFrame {
+    padding: 12px;
+    aspect-ratio: 4 / 3;
+  }
+}
+
+@media (max-width: 480px) {
+  .simpleImageFrame {
+    padding: 10px;
+  }
+}
+
+/* Lightbox Responsive */
+@media (max-width: 768px) {
+  .lightboxOverlay {
+    padding: 20px;
+  }
+  
+  .navButton {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .prevButton {
+    left: 10px;
+  }
+  
+  .nextButton {
+    right: 10px;
+  }
+  
+  .closeButton {
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+  }
+  
+  .lightboxInfo h3 {
+    font-size: 1.25rem;
+  }
+}
+
+/* Unified Image Card Styles - All images use same styling */
+.simpleCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.simpleImageFrame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  padding: 16px;
+  background: #FFFFFF;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.simpleCard:hover .simpleImageFrame {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 60px rgba(201, 153, 40, 0.15);
+}
+
+.simpleImageFrame img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  display: block;
+}

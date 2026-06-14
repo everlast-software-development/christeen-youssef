@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { PageTransition } from '../layout/PageTransition';
-import { fadeDown, fadeUp, fadeLeft, fadeRight, staggerContainer } from '../../utils/motion';
+import { fadeDown, fadeLeft, fadeRight, staggerContainer } from '../../utils/motion';
 import styles from './PublicationsPage.module.css';
 import drPhoto from '../../assets/DR._CHRISTEEN_YOUSSEF-removebg-preview.png';
 

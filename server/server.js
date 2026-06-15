@@ -2,6 +2,7 @@
 
 require('dotenv').config();
 
+const path       = require('path');
 const express    = require('express');
 const cors       = require('cors');
 const nodemailer = require('nodemailer');
@@ -213,8 +214,13 @@ app.get('/api/country', async (req, res) => {
 // ─── Health check ─────────────────────────────────────────────────────────────
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 
+// ─── Serve React frontend (must come after all API routes) ────────────────────
+const distPath = path.join(__dirname, '../dist');
+app.use(express.static(distPath));
+app.get('*', (_req, res) => res.sendFile(path.join(distPath, 'index.html')));
+
 // ─── Start ────────────────────────────────────────────────────────────────────
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`\n  ✦  Dr. Christeen Youssef server running at http://localhost:${PORT}\n`);
 });
 

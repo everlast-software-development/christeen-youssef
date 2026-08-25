@@ -1,28 +1,23 @@
-import type { Stat } from '../types';
+import { Award, Clock, Users } from 'lucide-react';
+import type { Stat } from '@/types';
 
 export const stats: Stat[] = [
   {
-    label: 'Patients Treated',
-    value: 22000,
-    suffix: '+',
-    icon: 'FiUsers'
+    label: 'Patients Transformed',
+    value: 22,
+    suffix: 'K+',
+    icon: Users,
   },
   {
-    label: 'Conferences',
-    value: 30,
-    suffix: '+',
-    icon: 'FiMic'
-  },
-  {
-    label: 'Awards Won',
+    label: 'Industry Awards',
     value: 20,
     suffix: '+',
-    icon: 'FiAward'
+    icon: Award,
   },
   {
-    label: 'Social Followers',
-    value: 3000,
+    label: 'Years Experience',
+    value: 12,
     suffix: '+',
-    icon: 'FiHeart'
-  }
+    icon: Clock,
+  },
 ];

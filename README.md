@@ -1,73 +1,77 @@
-# React + TypeScript + Vite
+# Dr. Christeen Youssef
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aesthetic dermatology & wellness practice site — Abu Dhabi, UAE.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+| Layer      | Choice                                     |
+| ---------- | ------------------------------------------ |
+| Framework  | Next.js 16 (App Router, Turbopack)         |
+| Styling    | Tailwind CSS v4 (CSS-first config)         |
+| Components | shadcn/ui (`base-nova` style, on Base UI)  |
+| UI motion  | Motion                                     |
+| Scroll FX  | GSAP + ScrollTrigger                       |
+| Smooth scroll | Lenis (driven by GSAP's ticker)         |
+| Icons      | Lucide                                     |
+| Forms      | react-hook-form + Zod                      |
+| Mail       | Nodemailer (via `/api/contact`)            |
 
-## React Compiler
+## Getting started
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+cp .env.example .env.local   # then fill in SMTP credentials
+npm run dev                  # http://localhost:3000
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Scripts
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Script              | Purpose                          |
+| ------------------- | -------------------------------- |
+| `npm run dev`       | Dev server                       |
+| `npm run build`     | Production build                 |
+| `npm start`         | Serve the production build       |
+| `npm run lint`      | ESLint (`eslint-config-next`)    |
+| `npm run typecheck` | `tsc --noEmit`                   |
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Layout
+
 ```
+src/
+├── app/              # App Router: routes, layout, API handlers
+│   ├── api/          # /api/contact (Nodemailer), /api/country (geo)
+│   └── blog/[slug]/  # prerendered from src/data/blog.ts
+├── components/
+│   ├── ui/           # shadcn primitives — edit these freely
+│   ├── providers/    # SmoothScroll (Lenis + GSAP bridge)
+│   └── dev/          # scaffolding, removed as the rebuild lands
+├── data/             # content: blog, services, testimonials, schedule…
+├── lib/              # gsap registry, email template, cn()
+└── types/
+_legacy/              # pre-migration Vite components, reference only
+```
+
+### Design tokens
+
+Brand values live in `src/app/globals.css` as CSS variables, exposed to
+Tailwind through `@theme inline`. That means `text-gold`, `bg-cream`,
+`text-ink`, `font-display` and `container-brand` are real utilities.
+
+| Token   | Value     |
+| ------- | --------- |
+| Gold    | `#C99928` |
+| Gold lt | `#E8C86A` |
+| Cream   | `#F8F6F1` |
+| Ink     | `#0F1117` |
+| Slate   | `#7A8094` |
+
+Gold buttons use ink text, not white — white on gold is only ~2.3:1.
+
+## Notes
+
+- `_legacy/` is excluded from `tsconfig.json` and ESLint. It is kept only as a
+  markup and copy reference during the rebuild, and does not compile.
+- `server/` is the retired Express API, now superseded by the route handlers in
+  `src/app/api/`. Safe to delete once its credentials are confirmed migrated.
+- Deployment (Railway) runs `npm ci && npm run build`, then `npm start`.
+  `EMAIL_*` variable names are unchanged from the Express setup.

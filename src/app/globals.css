@@ -1,0 +1,318 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================================================
+   BRAND TOKENS — Dr. Christeen Youssef
+   Gold #C99928 / Cream #F8F6F1 / Ink #0F1117, carried over from the original
+   brand and the transactional email template.
+   ========================================================================== */
+
+@theme inline {
+    /* Typography */
+    --font-sans: var(--font-geist), var(--font-cairo);
+    --font-body: var(--font-geist), var(--font-cairo);
+    --font-display: var(--font-playfair);
+    --font-redound: var(--font-redound);
+    --font-heading: var(--font-playfair);
+
+    /* Brand scale — usable as text-gold, bg-cream, border-gold/20, etc. */
+    --color-gold: var(--gold);
+    --color-gold-light: var(--gold-light);
+    --color-gold-dark: var(--gold-dark);
+    --color-cream: var(--cream);
+    --color-cream-dark: var(--cream-dark);
+    --color-ink: var(--ink);
+    --color-ink-soft: var(--ink-soft);
+    --color-slate: var(--slate);
+
+    /* Editorial type scale for display headings */
+    --text-display-sm: clamp(1.75rem, 1.4rem + 1.6vw, 2.5rem);
+    --text-display-md: clamp(2.25rem, 1.6rem + 3vw, 3.75rem);
+    --text-display-lg: clamp(2.75rem, 1.7rem + 4.6vw, 5.5rem);
+
+    /* Motion — shared easing so Motion/GSAP/CSS agree */
+    --ease-brand: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-brand-in: cubic-bezier(0.7, 0, 0.84, 0);
+
+    /* shadcn token surface */
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar: var(--sidebar);
+    --color-chart-5: var(--chart-5);
+    --color-chart-4: var(--chart-4);
+    --color-chart-3: var(--chart-3);
+    --color-chart-2: var(--chart-2);
+    --color-chart-1: var(--chart-1);
+    --color-ring: var(--ring);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-destructive: var(--destructive);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-muted: var(--muted);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary: var(--secondary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: var(--primary);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-popover: var(--popover);
+    --color-card-foreground: var(--card-foreground);
+    --color-card: var(--card);
+    --color-foreground: var(--foreground);
+    --color-background: var(--background);
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+    --radius-3xl: calc(var(--radius) * 2.2);
+    --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+    /* Raw brand values */
+    --gold: #c99928;
+    --gold-light: #e8c86a;
+    --gold-dark: #a67d1c;
+    --cream: #f8f6f1;
+    --cream-dark: #efefeb;
+    --ink: #0f1117;
+    --ink-soft: #1a1d23;
+    --slate: #7a8094;
+
+    --gradient-gold: linear-gradient(135deg, #c99928 0%, #e8c86a 50%, #c99928 100%);
+    /* Hero: cream lifting into warm gold toward the lower right, so the
+       portrait on that side sits against the richest part of the field. */
+    --gradient-hero: linear-gradient(
+        to top,
+        #eee0bd 0%,
+        #f5efe0 38%,
+        #faf8f3 72%,
+        #fdfcfa 100%
+    );
+    --shadow-gold-glow: 0 0 32px rgba(201, 153, 40, 0.22);
+
+    /* Hero name: same warm family as --gradient-hero, a couple of steps down.
+       Multiplied against the background it deepens automatically wherever the
+       backdrop deepens, so the type reads as tone rather than a pasted colour. */
+    --gradient-name: linear-gradient(
+        176deg,
+        #f2e6c8 0%,
+        #dfc691 42%,
+        #ebdcb4 78%,
+        #dcc490 100%
+    );
+
+    /* Just the travelling highlight — mostly transparent, so the tonal base
+       layer underneath always fills the glyphs. Fades to zero alpha of its own
+       colour rather than `transparent`, which would interpolate through grey. */
+    --gradient-shimmer: linear-gradient(
+        100deg,
+        rgba(250, 242, 222, 0) 38%,
+        rgba(252, 246, 231, 0.9) 50%,
+        rgba(250, 242, 222, 0) 62%
+    );
+
+    /* Semantic mapping (light) */
+    --background: #ffffff;
+    --foreground: #1a1d23;
+    --card: #ffffff;
+    --card-foreground: #1a1d23;
+    --popover: #ffffff;
+    --popover-foreground: #1a1d23;
+    /* Ink on gold is ~8:1; white on gold is ~2.3:1, so gold buttons take ink text. */
+    --primary: #c99928;
+    --primary-foreground: #0f1117;
+    --secondary: #f8f6f1;
+    --secondary-foreground: #0f1117;
+    --muted: #f8f6f1;
+    --muted-foreground: #7a8094;
+    --accent: #efefeb;
+    --accent-foreground: #0f1117;
+    --destructive: oklch(0.577 0.245 27.325);
+    --border: #e7e3da;
+    --input: #e7e3da;
+    --ring: #c99928;
+    --chart-1: #c99928;
+    --chart-2: #e8c86a;
+    --chart-3: #7a8094;
+    --chart-4: #a67d1c;
+    --chart-5: #0f1117;
+    --radius: 0.75rem;
+    --sidebar: #f8f6f1;
+    --sidebar-foreground: #1a1d23;
+    --sidebar-primary: #c99928;
+    --sidebar-primary-foreground: #0f1117;
+    --sidebar-accent: #efefeb;
+    --sidebar-accent-foreground: #0f1117;
+    --sidebar-border: #e7e3da;
+    --sidebar-ring: #c99928;
+}
+
+.dark {
+    /* Lighter gold carries better on ink backgrounds */
+    --gold: #e8c86a;
+    --gold-light: #f3dfa4;
+    --gold-dark: #c99928;
+
+    --background: #0f1117;
+    --foreground: #f8f6f1;
+    --card: #1a1d23;
+    --card-foreground: #f8f6f1;
+    --popover: #1a1d23;
+    --popover-foreground: #f8f6f1;
+    --primary: #e8c86a;
+    --primary-foreground: #0f1117;
+    --secondary: #1a1d23;
+    --secondary-foreground: #f8f6f1;
+    --muted: #1a1d23;
+    --muted-foreground: #a8aebf;
+    --accent: #22262e;
+    --accent-foreground: #f8f6f1;
+    --destructive: oklch(0.704 0.191 22.216);
+    --border: rgba(248, 246, 241, 0.12);
+    --input: rgba(248, 246, 241, 0.16);
+    --ring: #e8c86a;
+    --sidebar: #0f1117;
+    --sidebar-foreground: #f8f6f1;
+    --sidebar-primary: #e8c86a;
+    --sidebar-primary-foreground: #0f1117;
+    --sidebar-accent: #22262e;
+    --sidebar-accent-foreground: #f8f6f1;
+    --sidebar-border: rgba(248, 246, 241, 0.12);
+    --sidebar-ring: #e8c86a;
+}
+
+@layer base {
+    * {
+        @apply border-border outline-ring/50;
+    }
+
+    html {
+        @apply font-body;
+        /* Lenis drives scrolling; CSS smooth-scroll would fight it. */
+        scroll-behavior: auto;
+        -webkit-text-size-adjust: 100%;
+
+        /* The gold bar at the top is the scroll indicator, so the native
+           scrollbar is hidden. Scrolling itself is unaffected. Hiding it also
+           removes the gutter, which makes 100vw match the real client width —
+           worth knowing, since the page transition is sized in vw. */
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar {
+        display: none;
+    }
+
+    body {
+        @apply bg-background text-foreground antialiased;
+        /* clip, not hidden: overflow-x: hidden turns body into a scroll
+           container, which fights Lenis for control of the scroll. */
+        overflow-x: clip;
+    }
+
+    h1, h2, h3, h4 {
+        @apply font-display;
+        text-wrap: balance;
+    }
+
+    p {
+        text-wrap: pretty;
+    }
+
+    ::selection {
+        background: var(--gold);
+        color: var(--ink);
+    }
+}
+
+/* ============================================================================
+   BRAND UTILITIES
+   ========================================================================== */
+
+@utility text-gradient-gold {
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+@utility bg-gradient-gold {
+    background: var(--gradient-gold);
+}
+
+@utility glow-gold {
+    box-shadow: var(--shadow-gold-glow);
+}
+
+/* Page gutter + max width, matching the old --container-max: 1280px */
+@utility container-brand {
+    width: 100%;
+    max-width: 80rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+
+    @variant md {
+        padding-inline: 2rem;
+    }
+
+    @variant lg {
+        padding-inline: 2.5rem;
+    }
+}
+
+/* Characters produced by SplitText for the hero name. */
+.hero-char {
+    /* Two layers: the highlight travels across the word on top, the tonal
+       gold sits underneath and never moves. Without that base layer the
+       glyphs go invisible the moment the highlight sweeps past them.
+       --word-w and --char-x are set per line/character after the split. */
+    background-image: var(--gradient-shimmer), var(--gradient-name);
+    background-size: var(--word-w, 240%) 100%, 100% 100%;
+    background-position:
+        calc(var(--shimmer, 0px) - var(--char-x, 0px)) 0,
+        0 0;
+    background-repeat: no-repeat, no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    mix-blend-mode: multiply;
+}
+
+/* Lenis: required for the smooth-scroll wrapper to behave */
+html.lenis,
+html.lenis body {
+    height: auto;
+}
+
+.lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+    overflow: clip;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

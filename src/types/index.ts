@@ -1,3 +1,7 @@
+import type { StaticImageData } from 'next/image';
+import type { LucideIcon } from 'lucide-react';
+import type { SocialPlatform } from '@/components/icons/social-icon';
+
 export interface NavItem {
   label: string;
   href: string;
@@ -24,7 +28,7 @@ export interface Stat {
   label: string;
   value: number;
   suffix?: string;
-  icon?: string;
+  icon?: LucideIcon;
 }
 
 export interface CareerEntry {
@@ -43,7 +47,7 @@ export interface BlogPost {
   date: string;
   category: string;
   readTime: string;
-  image: string;
+  image: StaticImageData;
   content?: string;
 }
 
@@ -57,7 +61,6 @@ export interface ScheduleInfo {
 }
 
 export interface SocialLink {
-  platform: string;
+  platform: SocialPlatform;
   url: string;
-  icon: string;
 }

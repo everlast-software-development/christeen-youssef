@@ -133,9 +133,15 @@ function MenuLink({
 export function LiquidMenu({
   open,
   onOpenChange,
+  onDark = false,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /**
+   * Over a dark surface. Applies to the closed pill only — once open, the ink
+   * wash is behind the label regardless of what the page underneath is doing.
+   */
+  onDark?: boolean;
 }) {
   const pathname = usePathname();
   const reduced = useReducedMotion();
@@ -254,7 +260,8 @@ export function LiquidMenu({
           // browser clamps to half the box — so while the box grew it stayed
           // clamped as a giant stadium and then snapped. 1.5rem is exactly half
           // the closed height, so it still reads as a true pill when closed.
-          'h-12 w-[8.75rem] rounded-[1.5rem] border border-ink/15 bg-white/40 backdrop-blur-md',
+          'h-12 w-[8.75rem] rounded-[1.5rem] border backdrop-blur-md',
+          onDark ? 'border-cream/25 bg-cream/10' : 'border-ink/15 bg-white/40',
           'will-change-[width,height]',
           'data-[state=open]:h-[calc(100svh-1.5rem)]',
           'data-[state=open]:w-[min(calc(100vw-2.5rem),clamp(21rem,30vw,30rem))]',
@@ -294,7 +301,7 @@ export function LiquidMenu({
             text={open ? 'Close' : 'Menu'}
             className={cn(
               'font-body text-sm tracking-[0.14em] uppercase transition-colors duration-300',
-              open ? 'text-cream' : 'text-ink',
+              open || onDark ? 'text-cream' : 'text-ink',
             )}
           />
 
@@ -302,7 +309,7 @@ export function LiquidMenu({
             <motion.span
               className={cn(
                 'absolute block h-[1.5px] w-[18px] rounded-full transition-colors duration-300',
-                open ? 'bg-cream' : 'bg-ink',
+                open || onDark ? 'bg-cream' : 'bg-ink',
               )}
               initial={false}
               animate={{ rotate: open ? 45 : 0, y: open ? 0 : -3.5 }}
@@ -311,7 +318,7 @@ export function LiquidMenu({
             <motion.span
               className={cn(
                 'absolute block h-[1.5px] w-[18px] rounded-full transition-colors duration-300',
-                open ? 'bg-cream' : 'bg-ink',
+                open || onDark ? 'bg-cream' : 'bg-ink',
               )}
               initial={false}
               animate={{ rotate: open ? -45 : 0, y: open ? 0 : 3.5 }}

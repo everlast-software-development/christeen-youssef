@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { RoutePlaceholder } from '@/components/dev/route-placeholder';
+import { ContactSection } from '@/components/ui/contact';
 
 export const metadata: Metadata = {
   title: 'Reach Me',
@@ -7,5 +7,9 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <RoutePlaceholder title="Reach Me" route="/reach-me" />;
+  return (
+    <main>
+      <ContactSection />
+    </main>
+  );
 }

@@ -405,13 +405,10 @@ Keywords: Middle East; aesthetic use; botulinum neurotoxin type A; consensus.
     category: 'WORKSHOP',
     readTime: '4 min',
     image: ebdTeachingImage,
+    gallery: [ebdTeachingImage2, ebdTeachingImage3],
     content: `## Introduction
 
 Hands-on laser and EBD (Evidence-Based Design) teaching courses offer participants a unique opportunity to delve into the world of laser technology and evidence-based design principles. In this blog post, we will explore some of the exciting sessions that are typically included in these courses. From laser tissue interaction energy-based devices, these sessions provide valuable insights and practical skills that enable educators to enhance their teaching methodologies and create optimal learning environments.
-
-![Laser Training Session](${ebdTeachingImage2})
-
-![Laser Safety Training](${ebdTeachingImage3})
 
 ## Laser Tissue Interaction
 

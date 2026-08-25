@@ -5,15 +5,28 @@ import Image from 'next/image';
 import { TransitionLink } from '@/components/ui/transition-link';
 import { motion } from 'motion/react';
 import { LiquidMenu } from '@/components/layout/liquid-menu';
-import { TextReveal } from '@/components/ui/cascade-text';
+import { CtaPill } from '@/components/ui/cta-pill';
 import { ScrollProgress } from '@/components/layout/scroll-progress';
 import { cn } from '@/lib/utils';
-import logo from '@/assets/Dr.-CY-Logo-FINAL-023-scaled (1).webp';
+import { usePageTransition } from '@/components/providers/page-transition';
+import { useHeaderSurface } from '@/components/layout/use-header-surface';
+import logoInk from '@/assets/Dr.-CY-Logo-FINAL-023-scaled (1).webp';
+import logoCream from '@/assets/logo-light.webp';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // Held while the menu is open: the panel covers the probe point, so the
+  // header would otherwise flip as the panel expands over it.
+  //
+  // The transition phase is passed in so the surface is re-read at each stage of
+  // a route change — covering, loading, revealing, idle. Without it the reading
+  // only refreshed on scroll, so arriving on a dark page from a link left the
+  // ink logo sitting on ink until you moved.
+  const { phase } = usePageTransition();
+  const onDark = useHeaderSurface(menuOpen, phase);
 
   return (
     <>
@@ -30,13 +43,31 @@ export function SiteHeader() {
           <TransitionLink
             href="/"
             aria-label="Dr. Christeen Youssef — home"
-            className="shrink-0 transition-opacity duration-300 hover:opacity-80"
+            className="relative shrink-0 transition-opacity duration-300 hover:opacity-80"
           >
+            {/* Two files, crossfaded, rather than one recoloured with a filter.
+                The wordmark has to change colour but the gold CY monogram must
+                not, and no filter does one without the other. Both are stacked
+                so the swap has nothing to lay out — the ink cut holds the box
+                and the cream one sits over it. */}
             <Image
-              src={logo}
+              src={logoInk}
               alt=""
               priority
-              className="h-8 w-auto object-contain md:h-10"
+              className={cn(
+                'h-8 w-auto object-contain transition-opacity duration-500 md:h-10',
+                onDark ? 'opacity-0' : 'opacity-100',
+              )}
+            />
+            <Image
+              src={logoCream}
+              alt=""
+              priority
+              aria-hidden
+              className={cn(
+                'absolute inset-0 h-8 w-auto object-contain transition-opacity duration-500 md:h-10',
+                onDark ? 'opacity-100' : 'opacity-0',
+              )}
             />
           </TransitionLink>
 
@@ -52,24 +83,14 @@ export function SiteHeader() {
               transition={{ duration: 0.45, ease: EASE }}
               className={cn('hidden sm:block', menuOpen && 'pointer-events-none')}
             >
-              <TransitionLink
+              {/* Moved into CtaPill so the page-level CTAs are the same
+                  component, not a second copy of the same hover choreography. */}
+              <CtaPill
                 href="/reach-me"
+                label="Let's talk"
                 tabIndex={menuOpen ? -1 : 0}
-                className={cn(
-                  'group relative flex h-12 items-center overflow-hidden rounded-full px-6',
-                  'group-hover:[--cascade:1] hover:[--cascade:1]',
-                  'border border-ink/15 bg-white/40 backdrop-blur-md',
-                  'font-body text-sm tracking-[0.14em] whitespace-nowrap text-ink uppercase',
-                  'transition-colors duration-500',
-                )}
-              >
-                {/* Gold fill sweeps up from the base on hover */}
-                <span
-                  aria-hidden
-                  className="absolute inset-0 origin-bottom scale-y-0 bg-gradient-gold transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-y-100"
-                />
-                <TextReveal text="Let's talk" className="relative" />
-              </TransitionLink>
+                onDark={onDark}
+              />
             </motion.div>
 
             {/* Reserves the footprint of the closed menu pill, which is
@@ -79,7 +100,7 @@ export function SiteHeader() {
         </div>
       </motion.header>
 
-      <LiquidMenu open={menuOpen} onOpenChange={setMenuOpen} />
+      <LiquidMenu open={menuOpen} onOpenChange={setMenuOpen} onDark={onDark} />
     </>
   );
 }

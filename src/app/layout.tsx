@@ -4,6 +4,7 @@ import localFont from 'next/font/local';
 import './globals.css';
 import { SmoothScroll } from '@/components/providers/smooth-scroll';
 import { SiteHeader } from '@/components/layout/site-header';
+import { Footer } from '@/components/ui/footer-section';
 import { PageTransition } from '@/components/providers/page-transition';
 
 // Editorial serif for display type — the "premium" half of the pairing.
@@ -27,8 +28,11 @@ const geist = Geist({
   display: 'swap',
 });
 
-// Display face for the hero name. Single weight (Regular) — there is no
-// bold or light cut, so weight contrast has to come from size or colour.
+// Display face for the hero name and the manifesto line between Principles and
+// Expertise. Single weight (Regular) — there is no bold or light cut, so any
+// `font-bold` against it is a synthetic embolden by the browser (which the
+// manifesto line asks for deliberately); elsewhere, weight contrast has to come
+// from size or colour.
 const redound = localFont({
   src: '../assets/fonts/redound-regular.ttf',
   variable: '--font-redound',
@@ -89,12 +93,39 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${playfair.variable} ${cairo.variable} ${geist.variable} ${redound.variable}`}>
+    // Lenis stamps `lenis lenis-smooth` onto <html> as soon as it mounts, so the
+    // class list legitimately differs from the server render on the first pass.
+    <html
+      lang="en"
+      className={`${playfair.variable} ${cairo.variable} ${geist.variable} ${redound.variable}`}
+      suppressHydrationWarning
+    >
       <body>
+        {/* A refresh must land at the top. The hero plays its entry animation
+            on mount with fixed delays, and the about section builds its
+            ScrollTriggers from wherever the page starts — restoring a mid-page
+            offset means the intro plays unseen and the triggers measure against
+            a position Lenis has not taken over yet. Scoped to `reload` so
+            back/forward keeps its native restoration. Must run before the
+            browser restores, hence beforeInteractive rather than an effect. */}
+        {/* A raw inline script, not <Script beforeInteractive> — that strategy
+            only queues onto self.__next_s and runs once the Next runtime picks
+            it up, which is after restoration. This executes during parse. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var n=performance.getEntriesByType('navigation')[0];if(n&&n.type==='reload'&&'scrollRestoration' in history){history.scrollRestoration='manual'}}catch(e){}`,
+          }}
+        />
+
         <SmoothScroll>
           <PageTransition>
             <SiteHeader />
             {children}
+            {/* Outside {children}, so it is a sibling of each page's <main>
+                rather than a child of it. That matters on the home page: the
+                hero is sticky for the whole of <main>, and a footer inside that
+                box would be scrolled over by it. */}
+            <Footer />
           </PageTransition>
         </SmoothScroll>
       </body>

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
-import { RoutePlaceholder } from '@/components/dev/route-placeholder';
+import { AboutHero } from '@/components/about/about-hero';
+import { AboutBody } from '@/components/about/about-body';
 
 export const metadata: Metadata = {
   title: 'About Me',
@@ -8,5 +9,10 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <RoutePlaceholder title="About Me" route="/about-me" />;
+  return (
+    <main>
+      <AboutHero />
+      <AboutBody />
+    </main>
+  );
 }

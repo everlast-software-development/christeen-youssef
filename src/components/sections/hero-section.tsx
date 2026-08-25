@@ -19,6 +19,7 @@ const rise = {
 
 export function HeroSection() {
   const nameRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
 
   // Per-character upward reveal. `mask: 'chars'` wraps each glyph in its own
   // clipping box, so a letter slides up out of nothing rather than fading.
@@ -38,6 +39,12 @@ export function HeroSection() {
           onSplit: (self) => {
             const chars = self.chars as HTMLElement[];
             const lineBox = line.getBoundingClientRect();
+
+            // The line ships at opacity 0 so the un-split text — which paints in
+            // the flat `text-gold-dark` fallback until .hero-char takes over —
+            // never flashes. By the time we reveal it, every glyph is already
+            // wearing the gradient and parked out of sight below its mask.
+            gsap.set(line, { opacity: 1 });
 
             // Each character clips its own gradient, so left alone every letter
             // would shimmer identically. Sizing the gradient to the line and
@@ -87,13 +94,44 @@ export function HeroSection() {
     { scope: nameRef },
   );
 
+  // Dissolve the hero as About rises over it, scrubbed against the exact window
+  // in which it is being covered.
+  useGSAP(
+    () => {
+      // Triggered off About rather than the hero itself. The hero is sticky, so
+      // any ScrollTrigger.refresh() at a non-zero scroll — a resize, an image
+      // settling — would measure its stuck rect (top: 0) and place the range at
+      // the wrong scroll offset. About is in normal flow and always measures true.
+      const cover = document.querySelector<HTMLElement>("#about");
+      if (!cover) return;
+
+      gsap.to("[data-hero-fade]", {
+        opacity: 0,
+        // Linear: the scroll position is the timeline here, and Lenis has
+        // already smoothed it. An ease on top would double up.
+        ease: "none",
+        scrollTrigger: {
+          trigger: cover,
+          start: "top bottom",
+          // Finished a little before full cover, so the hero is gone rather
+          // than still visibly fading underneath the ink edge.
+          end: "top 20%",
+          scrub: true,
+        },
+      });
+    },
+    { scope: sectionRef },
+  );
+
   return (
     <section
+      ref={sectionRef}
       className="sticky top-0 isolate h-svh overflow-hidden"
       style={{ background: "var(--gradient-hero)" }}
     >
       {/* Soft warm bloom for depth — much lighter than the original */}
       <div
+        data-hero-fade
         aria-hidden
         className="pointer-events-none absolute bottom-0 left-1/2 -z-10 size-[46rem] -translate-x-1/2 rounded-full opacity-40 blur-3xl"
         style={{
@@ -105,6 +143,7 @@ export function HeroSection() {
       {/* ---------------- Name: line 1 left, line 2 right ---------------- */}
       <div
         ref={nameRef}
+        data-hero-fade
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-[12%] -z-10 px-5 md:px-8 lg:top-[5%] lg:pr-[12%]"
       >
@@ -112,17 +151,28 @@ export function HeroSection() {
           className="font-redound leading-[0.88] tracking-normal text-gold-dark select-none"
           style={{ fontSize: "clamp(3.5rem, 15vw, 280px)" }}
         >
-          <span data-line className="block origin-top text-center">
+          <span
+            data-line
+            className="block origin-top text-center"
+            style={{ opacity: 0 }}
+          >
             Christeen
           </span>
-          <span data-line className="block text-right text-[0.46em]">
+          <span
+            data-line
+            className="block text-right text-[0.46em]"
+            style={{ opacity: 0 }}
+          >
             YOUSSEF
           </span>
         </p>
       </div>
 
       {/* ---------------- Portrait: centred, to the very bottom ---------------- */}
-      <div className="pointer-events-none absolute bottom-0 left-1/2 z-10 -translate-x-1/2">
+      <div
+        data-hero-fade
+        className="pointer-events-none absolute bottom-0 left-1/2 z-10 -translate-x-1/2"
+      >
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -149,6 +199,7 @@ export function HeroSection() {
             transition: { staggerChildren: 0.12, delayChildren: 0.65 },
           },
         }}
+        data-hero-fade
         className="absolute ms-5 top-[48%] left-0 z-20 px-5 md:px-8 lg:top-[47%]"
       >
         <motion.h1
@@ -162,13 +213,14 @@ export function HeroSection() {
 
         <motion.p
           variants={rise}
-          className="mt-5 max-w-[16rem] font-body text-sm/relaxed text-slate sm:max-w-[21rem] sm:text-[0.95rem]/relaxed lg:max-w-[24rem]"
+          className="mt-5 max-w-[16rem] font-body text-sm/relaxed text-slate sm:max-w-[21rem] sm:text-[0.95rem]/relaxed lg:max-w-[30rem]"
         >
-          With 12+ years of clinical excellence &amp; innovative aesthetic
-          treatments designed uniquely for you.
+          With over a decade of clinical expertise, Dr. Christeen Youssef
+          combines evidence-based aesthetic medicine with regenerative therapies
+          and innovative approaches to skin and tissue healing.
         </motion.p>
 
-        <motion.div variants={rise} className="mt-8 lg:mt-10">
+        <motion.div variants={rise} className="mt-2 lg:mt-4">
           <TransitionLink
             href="/before-and-after"
             className="group relative inline-flex items-center gap-4 overflow-hidden rounded-full border border-ink/20 py-2 pr-2 pl-6 font-body text-[0.8rem] font-medium tracking-[0.06em] text-ink transition-colors duration-500 hover:text-cream sm:pl-7 sm:text-[0.85rem]"
@@ -190,12 +242,16 @@ export function HeroSection() {
       </motion.div>
 
       {/* ---------------- Stats: glass panel ----------------
-          Deliberately NOT wrapped in a transformed/faded element: a transform
-          or opacity<1 on an ancestor creates a new backdrop root, so the
-          backdrop-filter samples nothing until the animation ends and then
-          snaps to blurred. The panel stays static and its contents animate. */}
+          The fade goes on the panel itself, never on a wrapper. Only an
+          *ancestor* with opacity<1 or a transform creates a new backdrop root
+          — which would leave backdrop-filter sampling nothing and then snap to
+          blurred. Fading the same element that owns the backdrop-filter keeps
+          the blur sampling the real page, so it comes up with the panel. */}
       <div className="absolute inset-x-0 bottom-5 z-30 px-5 md:px-8 lg:bottom-7">
-        <div
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.1, ease: EASE, delay: 0.85 }}
           className="mx-auto w-full rounded-[1.75rem] px-4 py-6 shadow-[0_10px_44px_rgba(15,17,23,0.10)] lg:w-[60%] lg:px-6 lg:py-7"
           style={{
             background: "rgba(255,255,255,.18)",
@@ -247,13 +303,14 @@ export function HeroSection() {
               );
             })}
           </motion.div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Film grain: ties the type, gradient and photo into one surface
           instead of three stacked layers. */}
       <div
         aria-hidden
+        data-hero-fade
         className="pointer-events-none absolute inset-0 z-40 opacity-[0.16] mix-blend-multiply"
         style={{
           backgroundImage:

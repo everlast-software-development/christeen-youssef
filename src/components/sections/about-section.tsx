@@ -2,11 +2,8 @@
 
 import Image from 'next/image';
 import { useRef } from 'react';
-import { motion } from 'motion/react';
 import { gsap, ScrollTrigger, useGSAP } from '@/lib/gsap';
 import portrait from '@/assets/about-me.jpeg';
-
-const EASE = [0.22, 1, 0.36, 1] as const;
 
 const INTRO = [
   'With over 12 years of dedicated practice in aesthetic medicine, Dr. Christeen Youssef has established herself as a leading authority in non-surgical facial rejuvenation. Her approach combines artistic precision with evidence-based clinical expertise to deliver natural, harmonious results.',
@@ -38,6 +35,7 @@ const STEP_CLASS =
 export function AboutSection() {
   const rootRef = useRef<HTMLElement>(null);
   const runwayRef = useRef<HTMLDivElement>(null);
+  const swapRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {
@@ -157,8 +155,44 @@ export function AboutSection() {
         });
         if (zoom) zoom.style.willChange = 'transform';
 
+        // Continuous parallax, deliberately not part of the discrete swap — it
+        // reads off raw scroll, which Lenis has already smoothed, so it never
+        // waits on a panel.
+        //
+        // A scrubbed tween rather than a write inside onUpdate below. onUpdate
+        // only fires *within* the range, so the image sat at its natural size
+        // while the section scrolled into view and then snapped to 1.14 the
+        // instant the runway started. ScrollTrigger holds a scrubbed tween at
+        // progress 0 before its range and at 1 after, so the scale is correct
+        // at every scroll position and there is no boundary to pop across.
+        //
+        // It also stops at 1.02, never 1. At exactly 1 the image matches its
+        // frame edge for edge, and sub-pixel rounding on a promoted layer
+        // leaves a flickering hairline of background down the seam — which is
+        // what showed at the very end of the runway. 1.02 keeps it bled past.
+        if (zoom) {
+          gsap.fromTo(
+            zoom,
+            { scale: 1.14 },
+            {
+              scale: 1.02,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: runwayRef.current,
+                start: 'top top',
+                end: 'bottom bottom',
+                scrub: true,
+              },
+            },
+          );
+        }
+
+        // Keyed to the swap zone rather than the whole runway. The runway now
+        // carries a held screen at each end — the frame is pinned but nothing
+        // is changing — and mapping the swaps across all of it would spread
+        // them into that padding instead of leaving it still.
         ScrollTrigger.create({
-          trigger: runwayRef.current,
+          trigger: swapRef.current,
           start: 'top top',
           end: 'bottom bottom',
           onUpdate: ({ progress }) => {
@@ -173,13 +207,6 @@ export function AboutSection() {
               render();
             }
 
-            // The photo is continuous parallax, deliberately not part of the
-            // discrete swap — it reads off raw scroll, which Lenis has already
-            // smoothed, so it never waits on a panel.
-            if (zoom) {
-              zoom.style.transform = `scale(${1.14 - 0.14 * progress})`;
-            }
-
             advance();
           },
         });
@@ -188,7 +215,8 @@ export function AboutSection() {
 
         return () => {
           tween?.kill();
-          // Plain inline writes, so matchMedia has nothing to revert.
+          // matchMedia reverts the parallax tween itself; these are the plain
+          // inline writes it knows nothing about.
           steps.forEach((step, i) => {
             step.style.removeProperty('opacity');
             step.style.removeProperty('pointer-events');
@@ -212,7 +240,13 @@ export function AboutSection() {
         gsap.utils
           .toArray<HTMLElement>('[data-step]', rootRef.current)
           .forEach((step) => {
-            gsap.from(gsap.utils.toArray<HTMLElement>('[data-item]', step), {
+            const plain = gsap.utils
+              .toArray<HTMLElement>('[data-item]', step)
+              .filter((el) => !el.querySelector('[data-reveal]'));
+
+            if (!plain.length) return;
+
+            gsap.from(plain, {
               y: 30,
               opacity: 0,
               duration: 0.8,
@@ -223,6 +257,56 @@ export function AboutSection() {
           });
       });
 
+      // The opening panel's copy rises into place and settles up to full size,
+      // one line after the next. Deliberately outside matchMedia: it reads the
+      // same at every breakpoint, and neither branch owns the spans it targets.
+      //
+      // Every target is an inner span, never the [data-item] wrapper, because
+      // render() rewrites those elements' transforms on every frame of a panel
+      // swap and would wipe these tweens out halfway through.
+      const reveals = gsap.utils.toArray<HTMLElement>(
+        '[data-reveal]',
+        rootRef.current,
+      );
+
+      if (reveals.length) {
+        gsap.from(reveals, {
+          // Absolute pixels, not yPercent — these elements run from a 1px rule
+          // to a three-line paragraph, and a percentage would move the divider
+          // by a third of a pixel while throwing the copy half a line.
+          y: 28,
+          scale: 0.94,
+          opacity: 0,
+          duration: 1.1,
+          ease: 'power3.out',
+          stagger: 0.09,
+          // Triggered off the first line, not the section: the panel is centred
+          // in a full-height frame, so the section's top crosses the viewport
+          // long before this text is anywhere near visible.
+          scrollTrigger: { trigger: reveals[0], start: 'top 88%', once: true },
+        });
+      }
+
+      // The photo gets its own trigger rather than joining the stagger above:
+      // below lg it is order-first, so it sits above the copy and has to reveal
+      // on its own arrival, not on the headline's.
+      const photo =
+        rootRef.current?.querySelector<HTMLElement>('[data-photo]') ?? null;
+
+      if (photo) {
+        gsap.from(photo, {
+          y: 24,
+          // Settles down to full size instead of growing into it. The layer
+          // fills an overflow-hidden frame edge to edge, so approaching from
+          // under 1 would show ink around the photo for the whole tween;
+          // starting over 1 keeps it bled past the frame the entire way.
+          scale: 1.08,
+          opacity: 0,
+          duration: 1.4,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: photo, start: 'top 90%', once: true },
+        });
+      }
 
       return () => mm.revert();
     },
@@ -230,11 +314,20 @@ export function AboutSection() {
   );
 
   return (
-    <section ref={rootRef} id="about" className="relative z-10 bg-ink">
+    // z-20, above the cream section that follows: About is the traveller here.
+    // It covers the hero on the way in, then slides up and off the principles
+    // on the way out, which sit pinned beneath it at z-10.
+    <section
+      ref={rootRef}
+      id="about"
+      // Tells the fixed header to invert while this panel is under it.
+      data-header-surface="dark"
+      className="relative z-20 bg-ink"
+    >
       {/* The runway is what the pinned frame scrubs against: roughly one
           viewport of scroll per panel. On mobile it collapses to nothing and
           the panels simply stack. */}
-      <div ref={runwayRef} className="lg:h-[400svh]">
+      <div ref={runwayRef}>
         <div className="flex flex-col overflow-hidden lg:sticky lg:top-0 lg:h-svh lg:flex-row">
           {/* ---------------- Left: cross-fading panels ---------------- */}
           <div className="relative flex-1 lg:min-w-0">
@@ -255,20 +348,29 @@ export function AboutSection() {
                   data-item
                   className="font-display text-display-md text-cream"
                 >
-                  Dr. Christeen Youssef
+                  {/* The reveal rides this span, not the [data-item] h2 above
+                      it — see the tween for why. `block` is load-bearing:
+                      transforms do not apply to a non-replaced inline box. */}
+                  <span data-reveal className="block origin-bottom">
+                    Dr. Christeen Youssef
+                  </span>
                 </h2>
 
                 <p
                   data-item
                   className="mt-5 font-body text-[0.72rem] tracking-[0.24em] text-gold uppercase sm:text-[0.8rem]"
                 >
-                  Aesthetic Dermatologist &amp; Medical Consultant
+                  <span data-reveal className="block origin-bottom">
+                    Aesthetic Dermatologist &amp; Medical Consultant
+                  </span>
                 </p>
 
-                <div
-                  data-item
-                  className="mt-8 h-px w-24 bg-gradient-gold opacity-70"
-                />
+                <div data-item className="mt-8">
+                  <div
+                    data-reveal
+                    className="h-px w-24 origin-bottom bg-gradient-gold opacity-70"
+                  />
+                </div>
 
                 {INTRO.map((text) => (
                   <p
@@ -276,7 +378,9 @@ export function AboutSection() {
                     data-item
                     className="mt-6 font-body text-[0.95rem]/relaxed text-cream/70 lg:text-base/relaxed"
                   >
-                    {text}
+                    <span data-reveal className="block origin-bottom">
+                      {text}
+                    </span>
                   </p>
                 ))}
               </div>
@@ -380,29 +484,71 @@ export function AboutSection() {
             </div>
           </div>
 
-          {/* ---------------- Right: the photo, pinned ---------------- */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1.2, ease: EASE }}
-            className="relative order-first h-[55svh] w-full shrink-0 overflow-hidden lg:order-none lg:h-svh lg:w-[35%]"
-          >
-            <Image
-              data-zoom
-              src={portrait}
-              alt="Dr. Christeen Youssef"
-              fill
-              placeholder="blur"
-              sizes="(min-width: 1024px) 35vw, 100vw"
-              className="object-cover will-change-transform"
-            />
-            {/* Feathers only the seam where the photo meets the ink column */}
+          {/* ---------------- Right: the photo, pinned ----------------
+              The old mount-time fade never read on desktop: the section sits
+              below the fold, so it had finished long before anyone scrolled
+              here. It is scroll-driven now, like the copy beside it. */}
+          <div className="relative order-first h-[55svh] w-full shrink-0 overflow-hidden lg:order-none lg:h-svh lg:w-[35%]">
+            {/* The reveal needs its own layer. The <Image> below already
+                carries the parallax transform that ScrollTrigger rewrites each
+                frame, so animating it here would be overwritten instantly. */}
+            <div data-photo className="absolute inset-0">
+              <Image
+                data-zoom
+                src={portrait}
+                alt="Dr. Christeen Youssef"
+                fill
+                placeholder="blur"
+                sizes="(min-width: 1024px) 35vw, 100vw"
+                className="object-cover will-change-transform"
+              />
+            </div>
+
+            {/* Feathers only the seam where the photo meets the ink column.
+                Outside [data-photo] on purpose — it is tied to the container
+                edge and must not travel with the reveal. */}
             <div
               aria-hidden
               className="pointer-events-none absolute inset-y-0 left-0 w-[18%] bg-gradient-to-r from-ink/75 to-transparent"
             />
-          </motion.div>
+          </div>
         </div>
+
+        {/* ------ Scroll-only zones. No content, pure runway. ------
+            The frame above is h-svh and sticky, so it occupies the first
+            screen of this container in flow and then pins for the rest of it.
+            That makes the arithmetic below entirely positional:
+
+              frame     100svh  in flow, pinned from the top of the runway
+              swap      220svh  panels trade places over the middle 120svh
+              hold       60svh  pinned, holding the last panel before release
+
+            What the swap zone actually costs is its height minus one screen,
+            because the trigger runs `top top` → `bottom bottom`: 220 - 100 =
+            120svh for two handovers, so roughly 60svh of scroll per panel. It
+            was 400svh, which worked out at 150svh a panel — a screen and a half
+            of scrolling to change one line of copy, which is what made the
+            section feel stuck.
+
+            Nothing else needs adjusting to match. The swap progress is mapped
+            straight onto the panel index (`target = progress * last`), so it is
+            proportional to this height and nothing downstream carries a pixel
+            figure of its own. The one thing not on this scale is the handover
+            tween, which is a fixed 1s and deliberately always plays in full —
+            scroll faster than that and swaps queue rather than half-render.
+
+            The swap zone starts one screen down, which is what gives the
+            opening panel a full screen of held scroll before anything moves —
+            the padding at the top. The hold gives a shorter beat at the bottom.
+            The container is deliberately not given a height: it is the sum of
+            these three, and stating it again would be a second source of truth
+            to drift. */}
+        <div
+          ref={swapRef}
+          aria-hidden
+          className="hidden lg:block lg:h-[220svh]"
+        />
+        <div aria-hidden className="hidden lg:block lg:h-[60svh]" />
       </div>
     </section>
   );

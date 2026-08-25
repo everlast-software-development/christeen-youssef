@@ -49,6 +49,13 @@ export interface BlogPost {
   readTime: string;
   image: StaticImageData;
   content?: string;
+  /**
+   * Extra artwork shown as a strip inside the article. These used to be written
+   * into `content` as `![alt](${imported})` — inside a template literal that
+   * interpolated the imported object, so the src rendered as "[object Object]"
+   * and the images never appeared. A real field cannot fail that way.
+   */
+  gallery?: StaticImageData[];
 }
 
 export interface ScheduleInfo {

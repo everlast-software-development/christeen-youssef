@@ -15,8 +15,12 @@ export default function Home() {
       {/* A held beat between the two sections. The hero is sticky and About
           slides over it, so a transparent spacer does not open a gap — it buys
           extra scroll with the hero still pinned and fully visible, letting it
-          land before the ink panel arrives. */}
-      <div aria-hidden className="h-[15svh] lg:h-[22svh]" />
+          land before the ink panel arrives.
+
+          Collapsed below lg, where the hero is not sticky: with nothing pinned
+          behind it a transparent spacer stops being a held beat and becomes a
+          band of the document's white between the hero and About. */}
+      <div aria-hidden className="h-0 lg:h-[22svh]" />
 
       <AboutSection />
       <PrinciplesSection />

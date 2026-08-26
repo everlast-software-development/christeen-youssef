@@ -322,7 +322,7 @@ export function AboutSection() {
       id="about"
       // Tells the fixed header to invert while this panel is under it.
       data-header-surface="dark"
-      className="relative z-20 bg-ink"
+      className="relative z-20 overflow-x-clip bg-ink"
     >
       {/* The runway is what the pinned frame scrubs against: roughly one
           viewport of scroll per panel. On mobile it collapses to nothing and
@@ -450,16 +450,22 @@ export function AboutSection() {
                     <div
                       key={metric.label}
                       data-item
+                      // Tighter gutters below sm: three columns of an uppercase
+                      // label at 0.14em tracking do not fit a 320px screen
+                      // otherwise — "EXPERIENCE" alone runs wider than the
+                      // column it is in.
                       className={
-                        i > 0 ? 'border-l border-cream/12 pl-5' : 'pr-5'
+                        i > 0
+                          ? 'border-l border-cream/12 pl-3 sm:pl-5'
+                          : 'pr-3 sm:pr-5'
                       }
                     >
                       <dt className="sr-only">{metric.label}</dt>
                       <dd>
-                        <span className="block font-display text-3xl leading-none text-gold lg:text-4xl">
+                        <span className="block font-display text-2xl leading-none text-gold sm:text-3xl lg:text-4xl">
                           {metric.value}
                         </span>
-                        <span className="mt-2 block font-body text-[0.7rem] tracking-[0.14em] text-cream/55 uppercase">
+                        <span className="mt-2 block font-body text-[0.62rem] tracking-[0.08em] text-cream/55 uppercase sm:text-[0.7rem] sm:tracking-[0.14em]">
                           {metric.label}
                         </span>
                       </dd>

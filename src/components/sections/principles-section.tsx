@@ -145,7 +145,7 @@ export function PrinciplesSection() {
       // section one screen before About's box ends, so the two share that much
       // scroll. The sticky title below pins inside the overlap, holding still
       // while the ink panel slides away over it.
-      className="relative z-10 bg-cream text-ink lg:-mt-[100svh]"
+      className="relative z-10 overflow-x-clip bg-cream text-ink lg:-mt-[100svh]"
     >
       {/* Spans exactly the overlap, so its bottom edge tracks About's bottom
           edge — the ink line sweeping up the screen. Collapsed to nothing below
@@ -232,7 +232,10 @@ export function PrinciplesSection() {
 
                   <p
                     data-statement
-                    className="mt-6 max-w-[16ch] font-display text-display-sm text-ink"
+                    // 16ch is an editorial measure for a short statement beside the other
+                    // column; in a single mobile column it just makes the line
+                    // narrow, so the cap starts at sm.
+                    className="mt-6 font-display text-display-sm text-ink sm:max-w-[16ch]"
                   >
                     {principle.statement}
                   </p>

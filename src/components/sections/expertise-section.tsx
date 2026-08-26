@@ -280,7 +280,7 @@ export function ExpertiseSection() {
           so the field still reads as flat cream. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute top-0 left-0 size-[42rem] -translate-x-1/3 -translate-y-1/3 rounded-full opacity-60 blur-3xl"
+        className="pointer-events-none absolute top-0 left-0 size-[42rem] -translate-x-2/3 -translate-y-1/3 rounded-full opacity-60 blur-3xl"
         style={{
           background:
             'radial-gradient(circle, rgba(201,153,40,0.12), transparent 70%)',

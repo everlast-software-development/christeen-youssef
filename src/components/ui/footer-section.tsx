@@ -71,7 +71,7 @@ const footerLinks: FooterSection[] = [
   {
     label: 'Visit',
     links: [
-      { title: 'Book an Appointment', href: '/appointment' },
+      { title: 'Book an Appointment', href: '/reach-me' },
       { title: schedule.phone, href: TEL },
       { title: 'Directions', href: DIRECTIONS },
     ],

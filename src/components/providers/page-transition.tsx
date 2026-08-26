@@ -28,7 +28,11 @@ const SAFETY_MS = 4000;
 const PANEL_VW = 112;
 const DOME_VW = 6;
 
-const X_RIGHT = '100vw'; // parked off-screen right
+// 105vw, not 100vw. At exactly 100vw the panel's left edge — and the 1px gold
+// border on it — sits precisely on the right edge of the viewport, where
+// subpixel rounding leaves a gold hairline down the side of every page. On a
+// phone at devicePixelRatio 3 that reads as a visible stripe.
+const X_RIGHT = '105vw'; // parked off-screen right
 const X_COVER = `-${DOME_VW}vw`; // covering, domes outside the viewport
 const X_LEFT = `-${PANEL_VW}vw`; // swept off-screen left
 
@@ -136,6 +140,10 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
     <TransitionContext.Provider value={{ navigate, phase }}>
       {children}
 
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 z-[200] overflow-hidden"
+      >
       <motion.div
         aria-hidden={phase !== 'loading'}
         role={phase === 'loading' ? 'status' : undefined}
@@ -157,10 +165,9 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
         }}
         className={covered ? 'pointer-events-auto' : 'pointer-events-none'}
         style={{
-          position: 'fixed',
+          position: 'absolute',
           top: 0,
           left: 0,
-          zIndex: 200,
           width: `${PANEL_VW}vw`,
           height: '100svh',
           background: 'var(--ink)',
@@ -180,6 +187,7 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
           <span className="size-9 animate-spin rounded-full border-2 border-cream/20 border-t-gold" />
         </motion.div>
       </motion.div>
+      </div>
     </TransitionContext.Provider>
   );
 }

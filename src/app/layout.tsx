@@ -5,6 +5,7 @@ import './globals.css';
 import { SmoothScroll } from '@/components/providers/smooth-scroll';
 import { SiteHeader } from '@/components/layout/site-header';
 import { Footer } from '@/components/ui/footer-section';
+import { SITE_URL } from '@/lib/site';
 import { PageTransition } from '@/components/providers/page-transition';
 
 // Editorial serif for display type — the "premium" half of the pairing.
@@ -39,8 +40,6 @@ const redound = localFont({
   display: 'swap',
   weight: '400',
 });
-
-const SITE_URL = 'https://drchristeenyoussef.com';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

@@ -38,7 +38,21 @@ export function SiteHeader() {
         transition={{ duration: 0.8, ease: EASE, delay: 0.1 }}
         className="fixed inset-x-0 top-0 z-50"
       >
-        <div className="flex h-18 items-center justify-between px-5 md:px-8">
+        {/* Mobile only. The row is fixed at every width, but below lg it has
+            no field, so the logo sits directly on whatever is scrolling under
+            it. This gives it one, tinted to match the surface the probe already
+            reports — cream over the light sections, ink over the dark ones. At
+            lg the composition is open by design and the pills carry their own
+            glass. */}
+        <div
+          aria-hidden
+          className={cn(
+            'pointer-events-none absolute inset-0 backdrop-blur-md transition-colors duration-500 lg:hidden',
+            onDark ? 'bg-ink/45' : 'bg-cream/55',
+          )}
+        />
+
+        <div className="relative flex h-18 items-center justify-between px-5 md:px-8">
           {/* ---------------- Logo ---------------- */}
           <TransitionLink
             href="/"

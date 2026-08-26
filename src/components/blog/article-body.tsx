@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import Image, { type StaticImageData } from 'next/image';
 import { Check } from 'lucide-react';
 import {
   Accordion,
@@ -7,7 +6,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { ArticleFigure } from '@/components/blog/article-figure';
 import type { Block, Section } from '@/lib/blog-content';
+import type { SectionFigure } from '@/types';
 
 /** `**bold**` and `[text](url)`. Nothing else appears inline in the content. */
 const INLINE = /(\*\*[^*]+\*\*|\[[^\]]+\]\([^)]+\))/g;
@@ -71,7 +72,19 @@ function AbstractParagraph({ text }: { text: string }) {
   );
 }
 
-function Blocks({ blocks }: { blocks: Block[] }) {
+function Blocks({
+  blocks,
+  lead = false,
+}: {
+  blocks: Block[];
+  /**
+   * Set on the standfirst only. Its opening paragraph is set larger than body
+   * copy, the way a magazine sets a standfirst — it is the sentence that decides
+   * whether the rest gets read, and at four of these nine posts' length it is a
+   * meaningful share of the article.
+   */
+  lead?: boolean;
+}) {
   return blocks.map((block, index) => {
     if (block.kind === 'heading') {
       return (
@@ -84,10 +97,50 @@ function Blocks({ blocks }: { blocks: Block[] }) {
       );
     }
 
+    if (block.kind === 'case') {
+      return (
+        <div
+          key={index}
+          data-reveal
+          className="relative my-8 overflow-hidden rounded-2xl border border-ink/10 bg-white/60 p-7 lg:p-8"
+        >
+          {/* The number again, oversized and faint. It is what makes a run of
+              these read as a numbered series at a glance rather than as three
+              more panels. aria-hidden because the label below says it properly. */}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute -top-4 right-4 font-display text-[5.5rem]/none text-gold/10 select-none"
+          >
+            {block.label.replace(/\D/g, '')}
+          </span>
+
+          <span className="font-body text-[0.68rem] tracking-[0.22em] text-gold-dark uppercase">
+            {block.label}
+          </span>
+
+          {block.title && (
+            <h4 className="mt-3 font-display text-xl/snug text-ink">
+              {block.title}
+            </h4>
+          )}
+
+          {block.body.map((text, i) => (
+            <p
+              key={i}
+              className="mt-3 font-body text-[0.98rem]/relaxed text-ink-soft"
+            >
+              {renderInline(text)}
+            </p>
+          ))}
+        </div>
+      );
+    }
+
     if (block.kind === 'quote') {
       return (
         <blockquote
           key={index}
+          data-reveal
           className="my-12 border-l-2 border-gold/60 pl-6 font-display text-2xl/relaxed text-ink italic lg:text-[1.7rem]/relaxed"
         >
           {renderInline(block.text)}
@@ -97,7 +150,7 @@ function Blocks({ blocks }: { blocks: Block[] }) {
 
     if (block.kind === 'list') {
       return (
-        <ul key={index} className="my-8 space-y-4">
+        <ul key={index} data-reveal className="my-8 space-y-4">
           {block.items.map((item, i) => (
             <li key={i} className="flex gap-4">
               <span
@@ -119,7 +172,11 @@ function Blocks({ blocks }: { blocks: Block[] }) {
     return (
       <p
         key={index}
-        className="my-6 font-body text-[1.02rem]/relaxed text-ink-soft"
+        className={
+          lead && index === 0
+            ? 'my-6 font-body text-[1.18rem]/relaxed text-ink lg:text-[1.28rem]/relaxed'
+            : 'my-6 font-body text-[1.02rem]/relaxed text-ink-soft'
+        }
       >
         {renderInline(block.text)}
       </p>
@@ -129,26 +186,85 @@ function Blocks({ blocks }: { blocks: Block[] }) {
 
 function SectionShell({
   section,
+  number,
+  figure,
   children,
 }: {
   section: Section;
+  /** `01`, or null where the article is too short to be worth numbering. */
+  number: string | null;
+  figure?: SectionFigure;
   children: ReactNode;
 }) {
   return (
     // The id and scroll-mt are what the contents list jumps to; the margin
     // clears the fixed header so a heading never lands under it.
-    <section id={section.id} data-section className="scroll-mt-28">
+    //
+    // The gap between sections is here, on the section, not on the h2 where it
+    // was. An h2 is always its section's first child, so `first:mt-0` matched
+    // every single one of them and the mt-16 never applied — every heading on
+    // every article sat hard against the paragraph above it.
+    <section
+      id={section.id}
+      data-section
+      className="scroll-mt-28 [&:not(:first-child)]:mt-16"
+    >
       {section.heading && (
-        <h2 className="mt-16 font-display text-display-sm text-ink first:mt-0">
-          {section.heading}
-        </h2>
+        <>
+          {number && (
+            <span
+              data-reveal
+              className="block font-body text-[0.72rem] tracking-[0.22em] text-gold-dark tabular-nums"
+            >
+              {number}
+              <span aria-hidden className="mx-2 text-gold/40">
+                /
+              </span>
+            </span>
+          )}
+
+          <h2
+            data-reveal-heading
+            className={`font-display text-display-sm text-ink ${
+              number ? 'mt-3' : ''
+            }`}
+          >
+            {section.heading}
+          </h2>
+        </>
       )}
-      {children}
+      {/* flow-root, so a figure taller than its own section's copy is
+          contained here instead of spilling across the next heading. A BFC
+          rather than overflow-hidden: this section is what the contents list
+          scrolls to, and clipping it would clip the scroll margin with it. */}
+      {figure ? (
+        <div className="flow-root">
+          {/* Before the copy in document order — a float only affects the
+              content that follows it. */}
+          <ArticleFigure
+            image={figure.image}
+            side={figure.side}
+            alt={figure.alt}
+            bleed={figure.bleed}
+            crop={figure.crop}
+            focus={figure.focus}
+          />
+          {children}
+        </div>
+      ) : (
+        children
+      )}
     </section>
   );
 }
 
-function SectionContent({ section }: { section: Section }) {
+function SectionContent({
+  section,
+  lead = false,
+}: {
+  section: Section;
+  lead?: boolean;
+}) {
   // ---- Takeaways: the one section people screenshot, so it gets a card ----
   if (section.variant === 'takeaways') {
     const items = section.blocks.flatMap((block) =>
@@ -160,7 +276,7 @@ function SectionContent({ section }: { section: Section }) {
       <>
         {rest.length > 0 && <Blocks blocks={rest} />}
 
-        <ul className="mt-8 grid gap-4 rounded-2xl border border-gold/25 bg-gradient-to-br from-gold/8 to-transparent p-7 lg:p-8">
+        <ul data-reveal className="mt-8 grid gap-4 rounded-2xl border border-gold/25 bg-gradient-to-br from-gold/8 to-transparent p-7 lg:p-8">
           {items.map((item, index) => (
             <li key={index} className="flex gap-4">
               <Check
@@ -187,7 +303,7 @@ function SectionContent({ section }: { section: Section }) {
     );
 
     return (
-      <ol className="mt-8 space-y-3 rounded-2xl bg-cream-dark/60 p-7 lg:p-8">
+      <ol data-reveal className="mt-8 space-y-3 rounded-2xl bg-cream-dark/60 p-7 lg:p-8">
         {items.map((item, index) => (
           <li key={index} className="flex gap-4">
             <span
@@ -208,7 +324,7 @@ function SectionContent({ section }: { section: Section }) {
   // ---- Abstract: keep the paper's own Background/Methods/Results shape ----
   if (section.variant === 'abstract') {
     return (
-      <div className="mt-8 space-y-5 rounded-2xl border border-ink/10 bg-white/50 p-7 lg:p-8">
+      <div data-reveal className="mt-8 space-y-5 rounded-2xl border border-ink/10 bg-white/50 p-7 lg:p-8">
         {section.blocks.map((block, index) =>
           block.kind === 'paragraph' ? (
             <AbstractParagraph key={index} text={block.text} />
@@ -221,7 +337,7 @@ function SectionContent({ section }: { section: Section }) {
   // ---- FAQ: eight headings in a row is a list, so it behaves like one ----
   if (section.variant === 'faq' && section.faqs) {
     return (
-      <Accordion className="mt-8">
+      <Accordion data-reveal className="mt-8">
         {section.faqs.map((faq) => (
           <AccordionItem key={faq.id} value={faq.id}>
             <AccordionTrigger className="text-left font-body text-[0.98rem] text-ink">
@@ -243,47 +359,48 @@ function SectionContent({ section }: { section: Section }) {
     );
   }
 
-  return <Blocks blocks={section.blocks} />;
+  return <Blocks blocks={section.blocks} lead={lead} />;
 }
+
+/**
+ * Sections below which numbering is decoration. Two or three numbered headings
+ * read as an affectation; from four up they read as a structure.
+ */
+const NUMBERING_MIN_SECTIONS = 4;
 
 export function ArticleBody({
   sections,
-  gallery,
+  figures = [],
 }: {
   sections: Section[];
-  gallery?: StaticImageData[];
+  figures?: SectionFigure[];
 }) {
+  // Counted over headed sections only — the standfirst has no heading and must
+  // not consume 01.
+  const headed = sections.filter((section) => section.heading).length;
+  const numbered = headed >= NUMBERING_MIN_SECTIONS;
+
+  let position = 0;
+
   return (
     <div>
-      {sections.map((section, index) => (
-        <div key={section.id || index}>
-          <SectionShell section={section}>
-            <SectionContent section={section} />
-          </SectionShell>
+      {sections.map((section, index) => {
+        const number =
+          numbered && section.heading
+            ? String(++position).padStart(2, '0')
+            : null;
 
-          {/* After the opening section, which is where these sat when they were
-              written into the copy as (broken) markdown images. */}
-          {index === 0 && gallery && gallery.length > 0 && (
-            <div className="mt-12 grid gap-4 sm:grid-cols-2">
-              {gallery.map((image, i) => (
-                <div
-                  key={i}
-                  className="relative aspect-4/3 overflow-hidden rounded-2xl bg-cream-dark"
-                >
-                  <Image
-                    src={image}
-                    alt=""
-                    fill
-                    sizes="(min-width: 640px) 45vw, 90vw"
-                    placeholder="blur"
-                    className="object-cover"
-                  />
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      ))}
+        return (
+          <SectionShell
+            key={section.id || index}
+            section={section}
+            number={number}
+            figure={figures.find((entry) => entry.section === section.id)}
+          >
+            <SectionContent section={section} lead={index === 0} />
+          </SectionShell>
+        );
+      })}
     </div>
   );
 }

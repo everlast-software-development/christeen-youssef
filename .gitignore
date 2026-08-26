@@ -50,3 +50,14 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
+
+# Blog photo originals — the camera and phone files the webp conversions in the
+# same folders were made from. Kept locally so a frame can be re-cropped without
+# re-shooting; never committed. Only the .webp is imported by src/data/blog.ts,
+# and these run to 150MB+, which in git history is permanent.
+src/assets/blogs/**/*.jpg
+src/assets/blogs/**/*.JPG
+src/assets/blogs/**/*.jpeg
+src/assets/blogs/**/*.JPEG
+src/assets/blogs/**/*.mp4
+src/assets/blogs/**/*.MP4

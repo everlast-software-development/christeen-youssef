@@ -1,6 +1,9 @@
 import type { BlogPost } from '../types';
 import sabahAlEmaratImage from '../assets/blog Sabah Al Emarat .webp';
-import fromWoundsToWellnessImage from '../assets/From Wounds to Wellness blog .webp';
+import isdsPodiumImage from '../assets/blogs/ISDS/podium.webp';
+import isdsPodiumWideImage from '../assets/blogs/ISDS/podium-wide.webp';
+import isdsModeratorsImage from '../assets/blogs/ISDS/moderators.webp';
+import isdsRecognitionImage from '../assets/blogs/ISDS/session-recognition.webp';
 import diabeticFootImage from '../assets/Diabetic Foot blog .webp';
 import internationalConferenceImage from '../assets/International Conference Journals.webp';
 import successStoryImage from '../assets/Success Story blog .webp';
@@ -9,96 +12,156 @@ import advanceThreadImage from '../assets/Advance Thread blog .webp';
 import ebdTeachingImage from '../assets/EBD Teaching blog. (2).webp';
 import ebdTeachingImage2 from '../assets/EBD Teaching blog..webp';
 import ebdTeachingImage3 from '../assets/EBD Teaching blog.webp';
+import americanBoardHero from '../assets/blogs/American Board/hero.webp';
+import americanBoardSigning from '../assets/blogs/American Board/img2.webp';
+import americanBoardTable from '../assets/blogs/American Board/img3.webp';
+import germanUniversityImage from '../assets/blogs/germany/signing.webp';
+import germanUniversityImage2 from '../assets/blogs/germany/signing-detail.webp';
+import germanUniversityImage3 from '../assets/blogs/germany/team.webp';
 
 export const blogPosts: BlogPost[] = [
   {
-    id: 'blog-1',
-    slug: 'from-wounds-to-wellness',
-    title: 'From Wounds to Wellness: Dr. Christeen Youssef Redefines Scar Healing Through Regenerative Medicine at the 44th ISDS Annual Meeting',
-    excerpt: 'Insights from the 44th Annual Meeting of the ISDS – International Society for Dermatologic & Aesthetic Surgery. Dr. Youssef shared compelling evidence showing how early intervention combined with regenerative medicine is transforming scar treatment worldwide.',
-    date: '22/10/2025',
+    id: 'blog-12',
+    slug: 'german-university-scientific-collaboration-agreement',
+    title: 'Everlast Signs a Joint Scientific Collaboration Agreement with the German University',
+    excerpt: 'On 3 February 2026, Dr. Christeen Youssef led the signing of a joint scientific collaboration agreement between Everlast Wellness Medical Center and the German University — a framework for exchanging knowledge, expertise and best practice in stem cell research and its modern applications in regenerative medicine.',
+    date: '03/02/2026',
+    category: 'PARTNERSHIP',
+    readTime: '2 min',
+    image: germanUniversityImage,
+    // A portrait phone shot where the ceiling and the air-conditioning grilles
+    // take the top half, so the default 32% fills a wide frame with ceiling.
+    //
+    // The hero anchors at the base, which puts the table, the papers and both
+    // signatories in its 78svh frame. The carousel is centred instead: it is a
+    // taller frame that also spends its hold scaled up around its own centre,
+    // and the two together crop from the top — bottom-anchored there, the drift
+    // walks the signatories' heads off the top edge and leaves the tabletop.
+    imageFocus: { hero: '50% 100%', carousel: '50% 50%' },
+    // The closer signing shot runs beside the section on what the agreement
+    // actually covers, breaking out of the measure into the right margin.
+    // Squared off and anchored to the base: at its own 3:4 the top third is
+    // ceiling and air-conditioning grilles, which is a picture of the room
+    // rather than of the signing.
+    figures: [
+      {
+        section: 'research-training-and-therapeutic-protocols',
+        image: germanUniversityImage2,
+        side: 'right',
+        bleed: true,
+        crop: 'square',
+        focus: '50% 100%',
+        alt: 'Dr. Christeen Youssef’s counterparts signing the collaboration agreement at Everlast Wellness Medical Center.',
+      },
+    ],
+    // The group photograph left alone in the band, so it closes the article on
+    // the full-width letterbox. Centred rather than anchored: a 21:9 slice of
+    // the middle gives all four faces against the centre wall, where the base
+    // would give the floor.
+    gallery: [germanUniversityImage3],
+    content: `On 3 February 2026, Dr. Christeen Youssef led the signing of a landmark scientific collaboration agreement between Everlast Wellness Medical Center and the German University. The partnership establishes a framework for the exchange of scientific knowledge, expertise and best practice in the field of stem cell research and its modern applications in regenerative medicine.
+
+## Research, Training and Therapeutic Protocols
+
+The agreement focuses on collaborative research initiatives, joint training programmes, and the development of innovative therapeutic protocols that carry cutting-edge stem cell technologies into clinical practice. Dr. Christeen highlighted the importance of bridging academic research with practical medical application — so that discoveries in stem cell biology are translated into treatments that are safe and effective for the patient in front of you.
+
+The collaboration also opens the way for faculty and student exchanges, joint workshops and shared publications, so that what is learned moves between international scientific communities rather than staying inside one of them.
+
+## A Regional Hub for Regenerative Medicine
+
+Through this partnership Everlast reinforces its commitment to scientific excellence and innovation, positioning itself as a regional hub for advanced regenerative medicine research. Dr. Christeen emphasised that the collaboration will not only extend the centre’s research capability but also open access to state-of-the-art methodologies, contributing to the development of novel therapies across a range of medical conditions.
+
+## What the Agreement Represents
+
+By combining the strengths of Everlast and the German University, the agreement marks a significant step forward in advancing global stem cell research, improving clinical outcomes, and sustaining international collaboration in a field that is moving quickly. It sets the terms under which the two institutions will work as one research community rather than two that occasionally correspond.`
+  },
+  {
+    id: 'blog-10',
+    slug: 'american-board-cooperation-agreement',
+    title: 'Everlast Signs a Joint Scientific Research and Training Agreement with the American Board of Education',
+    excerpt: 'On 9 February 2026 in Abu Dhabi, Dr. Christeen Youssef led the signing of a joint scientific and educational cooperation agreement between Everlast Wellness Medical Center and the American Board of Education — formalising the centre’s role in research, professional training and the clinical application of modern medical technologies.',
+    date: '09/02/2026',
+    category: 'PARTNERSHIP',
+    readTime: '2 min',
+    image: americanBoardHero,
+    // Both sit in the column beside the copy, in this order. The signing shot
+    // is the portrait of the two, so it takes half the column.
+    gallery: [
+      { image: americanBoardSigning, width: 'half' },
+      americanBoardTable,
+    ],
+    content: `On 9 February 2026, Dr. Christeen Youssef led the signing of a landmark joint scientific and educational cooperation agreement between Everlast Wellness Medical Center and the American Board of Education in the Emirate of Abu Dhabi. This strategic partnership formalises Everlast’s role in advancing scientific research, professional training, and the implementation of modern medical technologies, creating a robust framework for collaboration between local and international experts.
+
+## Evidence-Based Practice, Applied
+
+Under Dr. Christeen’s leadership, Everlast continues to integrate evidence-based clinical practice with pioneering applications in tissue engineering and regenerative medicine. The centre uses advanced technologies to develop innovative therapies, conduct clinical research, and train medical professionals in the latest protocols — so that practitioners and patients alike benefit from the most current approaches in the field.
+
+## Education, Workshops and Mentorship
+
+The agreement also sets out the centre’s role in education: workshops, seminars and specialised training programmes designed to raise the skills of healthcare professionals in the UAE and beyond. Through knowledge exchange, mentorship and research collaboration, the partnership supports a new generation of clinicians and researchers fluent in modern regenerative therapies.
+
+## The Only Accredited Centre of Its Kind in the UAE
+
+The collaboration underscores Everlast’s position as the only accredited centre in the UAE recognised for scientific research within its specialty. It reinforces the institution’s commitment to academic excellence, clinical innovation and international educational and research standards — and it places Abu Dhabi as a hub for advanced medical science and regenerative therapy in the region.`
+  },
+  {
+    id: 'blog-13',
+    slug: 'isds-regenerative-dermatology-leadership',
+    title: 'International Scientific Leadership in Regenerative Dermatology at the 44th ISDS Annual Meeting',
+    excerpt: 'At the 44th Annual Meeting of the ISDS — International Society for Dermatologic & Aesthetic Surgery, in Abu Dhabi, Dr. Christeen Youssef delivered an international scientific lecture and hosted a specialised conference on advanced stem cell therapies and regenerative dermatology.',
+    // TODO(date): the stage banner gives the meeting as 16–18 October 2025 at the
+    // Hilton Yas Island; this is the opening day, not a confirmed lecture day.
+    // Set the actual one if it is known — the sort order, the article meta line
+    // and the sitemap all read this field.
+    date: '16/10/2025',
     category: 'CONFERENCE',
-    readTime: '4 min',
-    image: fromWoundsToWellnessImage,
-    content: `At the 44th Annual Meeting of the International Society for Dermatologic & Aesthetic Surgery (ISDS), held at the Hilton Yas Island in Abu Dhabi, Dr. Christeen Youssef, MD, delivered a groundbreaking presentation that challenges conventional wisdom about scar management.
+    readTime: '3 min',
+    image: isdsPodiumImage,
+    // The podium frame runs beside the section on what was presented, and the
+    // moderators frame beside the section on the exchange between them — each
+    // next to the passage it is evidence for, alternating side down the page.
+    figures: [
+      {
+        section: 'stem-cells-and-tissue-engineering-in-clinical-practice',
+        image: isdsPodiumWideImage,
+        side: 'right',
+        alt: 'Dr. Christeen Youssef presenting at the ISDS podium in Abu Dhabi.',
+      },
+      {
+        section: 'an-international-platform-for-exchange',
+        image: isdsModeratorsImage,
+        side: 'left',
+        alt: 'Dr. Christeen Youssef conferring with a fellow moderator between sessions.',
+      },
+    ],
+    // One frame left in the band, so it takes the full-width letterbox on its
+    // own at the foot of the article.
+    gallery: [isdsRecognitionImage],
+    content: `In October 2025, Dr. Christeen Youssef delivered an international scientific lecture and hosted a specialised conference in collaboration with the ISDS — International Society for Dermatologic & Aesthetic Surgery — at the Hilton Yas Island in Abu Dhabi, on the latest advances in stem cell therapy and regenerative dermatology.
 
-As the Director of Everlast Clinic, a leading human subject research center in Abu Dhabi specializing in nanofat and stem cell therapies, Dr. Youssef shared compelling evidence showing how early intervention combined with regenerative medicine is transforming the treatment of scars and wound healing worldwide.
+## Stem Cells and Tissue Engineering in Clinical Practice
 
-## The Global Impact of Scarring
+Dr. Christeen presented a comprehensive account of the expanding role of stem cells and tissue engineering in modern clinical practice: in the management of chronic dermatological disease, autoimmune skin disorders, hair loss conditions, diabetic foot ulcers, burns and post-burn scarring.
 
-Dr. Youssef began by highlighting the enormous scale of the global scar management challenge. Each year, approximately 12 million lacerations are sutured in the United States alone, and more than 250 million surgical incisions occur globally. The financial burden is staggering—over 20 billion USD is spent annually on scar management, with 170,000 scar revision procedures performed in the U.S. every year.
+She set out how regenerative medicine is transforming the traditional treatment paradigm — integrating cellular therapies, biomaterials and new protocols to improve tissue repair and long-term therapeutic outcome, rather than managing the presentation and accepting the result.
 
-Globally, more than 100 million individuals in developed countries suffer from scar-related conditions, and over 10 million people are affected by keloids, one of the most challenging types of scars to treat.
+## An International Platform for Exchange
 
-## Understanding Why Scars Form
+The conference gave leading dermatologists, aesthetic surgeons and researchers a platform for exchanging expertise, discussing emerging technology and examining evidence-based approaches in advanced dermatologic and aesthetic treatment. Dr. Christeen took part in the session on trending treatments in cell therapy and its regenerative medicine overview.
 
-Scarring occurs as part of the body's natural wound-healing process, which includes four main stages: hemostasis, inflammation, proliferation, and remodeling. Problems arise during the later stages, when abnormal fibroblast proliferation and excessive extracellular matrix (ECM) deposition lead to what Dr. Youssef refers to as fibro-proliferative disorders.
+Through this high-level collaboration, Everlast Wellness Medical Center further strengthened its position as a research-driven institution committed to scientific excellence, international cooperation, and the advancement of innovative, patient-centred regenerative therapy — in the UAE and on a global scale.
 
-The key cellular players involved include fibroblasts, myofibroblasts, keratinocytes, and macrophages. Among the molecular factors, transforming growth factor-beta (TGF-β) plays a critical role and is often overexpressed in pathological scars. Understanding when to upregulate or downregulate these growth factors is essential for successful scar modulation and prevention.
+## Education, Publication and Standardised Protocols
 
-## The Limitations of Traditional Approaches
+The event also underlined the importance of multidisciplinary collaboration in accelerating scientific progress within regenerative medicine. Dr. Christeen underscored the need for continuous medical education, structured research publication, and the development of standardised treatment protocols — which is what safety, efficacy and long-term patient benefit actually rest on.
 
-Despite decades of research, conventional scar treatments remain limited in effectiveness:
+The meeting reinforced Abu Dhabi’s growing role as a regional hub for advanced dermatological research and stem cell innovation, reflecting a shared vision of integrating academic excellence with clinical application to raise standards of care across the region.
 
-- Silicone gels suffer from poor patient compliance.
-- Corticosteroid injections carry a high recurrence rate.
-- Surgical scar revision often fails, with a risk of worsening scarring.
-- Cryotherapy and radiation have significant side effects.
-- Laser therapy alone provides limited benefit for deep scars.
+## Translational Research and Responsible Governance
 
-The main shortcomings of these methods include the inability to modulate collagen remodeling, limited depth of treatment, high recurrence, and lack of personalized approaches tailored to the individual patient's biology.
+The conference further emphasised the strategic importance of building sustainable international research networks, and of partnership between academic institutions, clinical centres and industry. Dr. Christeen highlighted the necessity of translational research — turning laboratory discovery into clinically applicable therapy — as the only route to measurable patient impact.
 
-## A New Paradigm: Combining Energy-Based and Regenerative Therapies
-
-Dr. Youssef presented a pioneering approach that integrates energy-based devices—particularly fractional laser therapy—with cell-based regenerative treatments such as nanofat, stromal vascular fraction (SVF), platelet-rich plasma (PRP), and stem cell therapy.
-
-This combination works at multiple biological levels:
-
-- Fractional laser stimulates controlled skin remodeling and enhances collagen reorganization.
-- Cell-based therapies promote regeneration, delivering growth factors and cytokines that encourage healthy tissue restoration.
-
-The laser can also serve as a delivery system for active materials like corticosteroids, exosomes, or PRP, amplifying therapeutic impact. When combined, these therapies have shown superior outcomes, both histologically and clinically, compared to traditional treatments.
-
-## Transformative Clinical Cases
-
-Dr. Youssef illustrated the real-world power of this approach through several inspiring case studies:
-
-### Case 1: The Glass Accident
-A young man presented with facial lacerations from a glass injury. Early intervention included removal of the initial sutures, cosmetic reclosure, SVF injection, and fractional laser therapy within two weeks. Within six months, the scars were virtually invisible.
-
-### Case 2: The Bicycle Accident
-A diplomat's wife sustained a facial injury above her lip. She was treated immediately with SVF and fractional laser, avoiding surgery entirely. The result was complete scarless healing and restored confidence.
-
-### Case 3: The Burn Patient
-A ten-year-old girl suffered extensive burns affecting her chest and surrounding areas. In cultures where visible scars can have profound psychosocial consequences, early combined treatment made an extraordinary difference. With nanofat and fractional laser therapy, the patient achieved remarkable skin regeneration—restoring both her appearance and self-esteem.
-
-## The Critical Message: Don't Wait
-
-Dr. Youssef's most important message to clinicians was clear: early intervention is essential.
-
-While traditional protocols advise waiting six months or more before initiating scar therapy, new evidence supports starting treatment as early as two to three weeks post-injury. Studies comparing SVF therapy to saline controls have demonstrated significantly improved healing and aesthetic outcomes when early intervention is applied—even in challenging keloid cases.
-
-## Key Takeaways
-
-- Early intervention is critical
-- Combination therapy is superior
-- Conventional methods have limits
-- Understanding biology matters
-- Clinical evidence is growing
-
-## The Future of Scar Management
-
-At Everlast Clinic, Dr. Youssef and her team are conducting advanced clinical studies on wound healing, diabetic ulcers, and scar management, contributing valuable evidence to the growing field of regenerative dermatology. The clinic has even received referrals from the Department of Health (DOH) in Abu Dhabi, reflecting increasing institutional recognition of these emerging therapies.
-
-While Dr. Youssef acknowledges that we are still in the early stages of understanding and optimizing nanofat and regenerative approaches, she emphasizes the urgent need for more clinical studies, research collaborations, and scientific awareness to advance this promising field.
-
-## Conclusion
-
-Scar therapy is entering a new era. With the integration of cell-based regenerative medicine, smart nanomaterials, and advanced laser technologies, physicians can now achieve outcomes once thought impossible—even in severe cases like keloids and burns.
-
-Dr. Christeen Youssef's pioneering work in Abu Dhabi represents the forefront of this transformation, uniting science, technology, and compassion to redefine what healing can look like.
-
-"Early intervention changes everything," Dr. Youssef emphasizes. "We are not just treating scars — we are restoring confidence, beauty, and quality of life."`
+She also stressed the role of ethical governance, regulatory alignment and quality assurance in advancing stem cell and regenerative treatment responsibly. Taken together, the engagement raised the level of professional dialogue and contributed to positioning Abu Dhabi as a forward-thinking centre for innovation in regenerative dermatology and advanced aesthetic medicine.`
   },
   {
     id: 'blog-2',
@@ -207,6 +270,13 @@ You can watch the full episode through this link`
     category: 'CONFERENCE',
     readTime: '5 min',
     image: diabeticFootImage,
+    // From the 63-patient study the talk is built on, quoted below.
+    stats: [
+      { value: '63', label: 'patients with chronic, non-healing ulcers' },
+      { value: '51', label: 'achieved full wound closure within six months' },
+      { value: '50', label: 'still fully healed at one year' },
+      { value: '10cm²', label: 'wounds and larger responded positively' },
+    ],
     content: `Based on Dr. Christeen's speech at the 16th Abu Dhabi Wound Care Conference (ADWCC) 2025, organized by the IWCG.
 
 ## Why Diabetic Foot Ulcers Deserve Serious Attention?

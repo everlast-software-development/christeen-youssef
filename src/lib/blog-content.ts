@@ -16,11 +16,26 @@ export type ListItem = {
   text: string;
 };
 
+/**
+ * A `### Case 1: The Glass Accident` heading and the paragraphs under it.
+ *
+ * Recognised as its own kind because these are the evidence in the clinical
+ * talks, and as plain `###` headings they looked like any other subheading — the
+ * three cases in the ISDS piece were indistinguishable from "Laser Safety".
+ */
+export type CaseStudy = {
+  /** `Case 1` — the label as written, so the numbering is the author's. */
+  label: string;
+  title?: string;
+  body: string[];
+};
+
 export type Block =
   | { kind: 'heading'; text: string }
   | { kind: 'paragraph'; text: string }
   | { kind: 'quote'; text: string }
-  | { kind: 'list'; items: ListItem[] };
+  | { kind: 'list'; items: ListItem[] }
+  | ({ kind: 'case' } & CaseStudy);
 
 export type SectionVariant =
   | 'prose'
@@ -85,15 +100,28 @@ export function parseArticle(content: string): Section[] {
   let paragraph: string[] = [];
   let list: ListItem[] = [];
 
+  /**
+   * The case block currently collecting paragraphs, if any. It has already been
+   * pushed into `current.blocks` — this is the same object, mutated in place, so
+   * the paragraphs land inside the card rather than after it.
+   */
+  let openCase: (Block & { kind: 'case' }) | null = null;
+
   const flush = () => {
     if (paragraph.length) {
       const text = paragraph.join(' ').trim();
-      // A line opening on a quotation mark is a pull quote, not body copy —
-      // which is how the closing line of the ISDS piece is set.
-      current.blocks.push({
-        kind: text.startsWith('"') ? 'quote' : 'paragraph',
-        text,
-      });
+
+      if (openCase) {
+        openCase.body.push(text);
+      } else {
+        // A line opening on a quotation mark is a pull quote, not body copy —
+        // which is how the closing line of the ISDS piece is set.
+        current.blocks.push({
+          kind: text.startsWith('"') ? 'quote' : 'paragraph',
+          text,
+        });
+      }
+
       paragraph = [];
     }
 
@@ -122,6 +150,7 @@ export function parseArticle(content: string): Section[] {
 
     if (trimmed.startsWith('## ')) {
       closeSection();
+      openCase = null;
 
       const heading = trimmed.slice(3).trim();
       current = {
@@ -135,13 +164,36 @@ export function parseArticle(content: string): Section[] {
 
     if (trimmed.startsWith('### ')) {
       flush();
-      current.blocks.push({ kind: 'heading', text: trimmed.slice(4).trim() });
+
+      const text = trimmed.slice(4).trim();
+      // `Case 1: The Glass Accident`, or a bare `Case 1`. The separator is
+      // loose because the three posts that use this do not agree on it.
+      const asCase = text.match(/^Case\s+(\d+)\s*[:.–—-]?\s*(.*)$/i);
+
+      if (asCase) {
+        const [, number, title] = asCase;
+        const block: Block & { kind: 'case' } = {
+          kind: 'case',
+          label: `Case ${number}`,
+          title: title || undefined,
+          body: [],
+        };
+        current.blocks.push(block);
+        openCase = block;
+        continue;
+      }
+
+      openCase = null;
+      current.blocks.push({ kind: 'heading', text });
       continue;
     }
 
     if (trimmed.startsWith('- ')) {
-      // A list interrupts a paragraph, never merges into one.
+      // A list interrupts a paragraph, never merges into one. It also ends a
+      // case: the cards are narrative, and a bullet list is the article
+      // resuming rather than part of the case.
       if (paragraph.length) flush();
+      openCase = null;
       list.push(parseListItem(trimmed.slice(2).trim()));
       continue;
     }

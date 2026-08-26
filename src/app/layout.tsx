@@ -99,7 +99,14 @@ export default function RootLayout({
       className={`${playfair.variable} ${cairo.variable} ${geist.variable} ${redound.variable}`}
       suppressHydrationWarning
     >
-      <body>
+      {/* clip, not hidden. `overflow-x: hidden` would make this a scroll
+          container and break every `position: sticky` on the site — the home
+          page hero is sticky for the whole of <main>, and the Principles rail
+          and the article contents rail both depend on it. `clip` creates no
+          scroll container, so sticky keeps resolving against the viewport, and
+          it does not establish a containing block for the fixed header either.
+          A guard, not a fix: anything that overflows still wants finding. */}
+      <body className="overflow-x-clip">
         {/* A refresh must land at the top. The hero plays its entry animation
             on mount with fixed delays, and the about section builds its
             ScrollTriggers from wherever the page starts — restoring a mid-page

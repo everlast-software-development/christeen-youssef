@@ -21,7 +21,12 @@ type CtaPillProps = {
 
 /** Shared by both exports, so the two can never drift out of step. */
 const PILL_SHELL =
-  'group relative flex h-12 items-center justify-center overflow-hidden rounded-full px-6 font-body text-sm tracking-[0.14em] whitespace-nowrap uppercase transition-colors duration-500';
+  // w-fit because `flex` is block-level: in a flex row the pill shrink-wraps on
+  // its own, but given a block parent it stretched to the full column. That is
+  // how the carousel's "Read article" came to run the entire width of the slide
+  // and sit under the arrow buttons at the other end of it. A pill is sized by
+  // its label everywhere; no call site wants it edge to edge.
+  'group relative flex h-12 w-fit items-center justify-center overflow-hidden rounded-full px-6 font-body text-sm tracking-[0.14em] whitespace-nowrap uppercase transition-colors duration-500';
 
 // Both, deliberately: `hover:` drives the cascade when the pill itself is
 // hovered, `group-hover:` lets an outer group drive it — a wrapper with a badge

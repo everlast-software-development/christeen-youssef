@@ -1,5 +1,11 @@
 [phases.install]
-cmds = ["npm ci"]
+# --include=dev is not optional here. Railway sets npm's legacy `production`
+# config (see the "npm warn config production" line in the build log), which
+# makes `npm ci` omit devDependencies — and the build needs several of them:
+# @tailwindcss/postcss and tailwindcss for the CSS pipeline, typescript and the
+# @types packages for the type check `next build` runs. Without it the install
+# succeeds and the build then fails on a missing PostCSS plugin.
+cmds = ["npm ci --include=dev"]
 
 [phases.build]
 cmds = ["npm run build"]

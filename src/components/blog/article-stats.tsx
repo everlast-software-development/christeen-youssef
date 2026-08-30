@@ -21,7 +21,7 @@ export function ArticleStats({
       aria-label="Key figures"
       className="border-y border-ink/8 bg-cream-dark/40"
     >
-      <dl className="mx-auto grid max-w-7xl gap-y-10 px-5 py-14 sm:grid-cols-2 md:px-8 lg:grid-cols-4 lg:gap-x-8 lg:px-12 xl:px-20">
+      <dl className="mx-auto grid max-w-[88rem] gap-y-10 px-5 py-14 sm:grid-cols-2 md:px-8 lg:grid-cols-4 lg:gap-x-8 lg:px-12 xl:px-20">
         {stats.map((stat) => (
           <div key={stat.label} data-reveal className="lg:px-2">
             <dt className="sr-only">{stat.label}</dt>

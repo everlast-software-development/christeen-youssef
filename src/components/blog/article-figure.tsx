@@ -1,44 +1,36 @@
+import type { CSSProperties } from 'react';
 import Image, { type StaticImageData } from 'next/image';
 
 /**
  * A photograph set inside a body section, with the copy running past it.
  *
- * The gallery band is the right home for a set of event photographs seen as a
- * set. It is the wrong home for one photograph that belongs to one part of the
- * argument — put four frames in a band at the foot and the podium shot has been
- * separated from the paragraph about what was said at the podium.
+ * Every picture on every post is one of these. There is no gallery band and no
+ * picture column any more — put the podium shot in a strip at the foot and it
+ * has been separated from the paragraph about what was said at the podium.
  *
  * Floated rather than laid out in a grid beside the prose, because the article
- * column is a measure (68ch) and not a layout: a grid would have to narrow that
+ * column is a measure (72ch) and not a layout: a grid would have to narrow that
  * measure for the whole section, including the paragraphs below the image. A
- * float only borrows the width it needs, and the copy closes back over it.
+ * float only borrows the width it needs, and the copy closes back over it —
+ * which is the shape this is for, so the frame is sized to make sure the copy
+ * gets there. See the width note below.
+ *
+ * A float is now the *only* thing this does. It used to take a `bleed` that let
+ * the frame out into the page margin and a `column` mode that split the article
+ * in two — both of which changed the shape of the page they landed on, so an
+ * article's spine depended on which pictures it happened to carry.
  */
 export function ArticleFigure({
   image,
   side = 'right',
   alt = '',
-  bleed = false,
   crop,
   focus,
+  width,
 }: {
   image: StaticImageData;
   side?: 'left' | 'right';
   alt?: string;
-  /**
-   * Let the frame out of the 68ch measure and into the page margin.
-   *
-   * The outdent grows with the image, so the *footprint* inside the measure
-   * stays put: 22rem outdented 4rem and 26rem outdented 8rem both leave the
-   * same ~18rem for the copy to wrap against. A bigger picture that does not
-   * cost the paragraph beside it any more width than the smaller one did.
-   *
-   * Capped at 8rem because the outdent has to clear the tightest layout it can
-   * land in, which is an article that also carries the contents rail: at xl
-   * that leaves ~11rem between the measure and the container edge, and the
-   * gutter absorbs the rest. Going further would push a horizontal scrollbar
-   * onto the page on exactly the posts with a sidebar.
-   */
-  bleed?: boolean;
   /**
    * Square the frame off instead of keeping the source's own shape.
    *
@@ -51,36 +43,62 @@ export function ArticleFigure({
   crop?: 'square';
   /** `object-position`, for a cropped frame. Ignored at natural aspect. */
   focus?: string;
+  /**
+   * A flat width in pixels from sm up, in place of the responsive default.
+   *
+   * Still a percentage below sm — a fixed 350px frame on a 360px phone is the
+   * whole column with no room to float against, and would leave the copy
+   * wrapping in the few pixels beside it.
+   */
+  width?: number;
 }) {
-  const width = bleed
-    ? 'sm:w-[42%] lg:w-[22rem] xl:w-[26rem]'
-    : 'sm:w-[42%]';
+  // How wide the float runs, from the shape of what is in it.
+  //
+  // One flat percentage cannot serve both, because what actually matters is the
+  // frame's *height* against the length of the section it sits in. These
+  // sections run 50 to 100 words — about eight to fourteen lines beside a
+  // float — so a frame much taller than that leaves the copy stopping level
+  // with its middle and a wedge of empty page beneath.
+  //
+  // At a 72ch measure a landscape at 46% is roughly 210 tall and any section
+  // here clears it. The same 46% given to a 2:3 portrait is 440, which no
+  // section here clears — so portraits run narrower, trading some size for the
+  // copy actually closing back underneath them. Cropping them to a landscape
+  // would be the other way out, and it is wrong for this set: they are
+  // full-length group shots, and the crop that makes them wrap takes off the
+  // heads and the feet.
+  const ratio = crop === 'square' ? 1 : image.width / image.height;
+  const shape = ratio < 0.9 ? 'sm:w-[36%]' : 'sm:w-[46%]';
 
-  const outdent = bleed
-    ? side === 'left'
-      ? 'lg:-ml-16 xl:-ml-32'
-      : 'lg:-mr-16 xl:-mr-32'
-    : '';
+  // Below sm it is a full-measure block: a float on a phone is a thumbnail with
+  // two words per line beside it.
+  const widthClass = width ? 'sm:w-[var(--figure-width)]' : shape;
 
-  // Below sm it is a full-measure block: a 42% float on a phone is a thumbnail
-  // with two words per line beside it.
   const flow =
-    side === 'left'
-      ? 'sm:float-left sm:mr-8'
-      : 'sm:float-right sm:ml-8';
+    side === 'left' ? 'sm:float-left sm:mr-8' : 'sm:float-right sm:ml-8';
 
-  const sizes = bleed
-    ? '(min-width: 1280px) 26rem, (min-width: 1024px) 22rem, (min-width: 640px) 17rem, 92vw'
-    : '(min-width: 640px) 17rem, 92vw';
+  // Not the viewport: a float is a percentage of the 72ch measure, not of the
+  // window, and quoting a vw here would have next/image fetch a file several
+  // times the size of the one drawn.
+  const sizes = width
+    ? `(min-width: 640px) ${width}px, 92vw`
+    : ratio < 0.9
+      ? '(min-width: 640px) 14rem, 92vw'
+      : '(min-width: 640px) 18rem, 92vw';
 
   return (
     <figure
       // clipPath only, per ArticleMotion — no transform, so the float is safe.
       data-reveal-image
-      className={`my-8 overflow-hidden rounded-2xl bg-cream-dark sm:my-6 ${width} ${outdent} ${flow}`}
+      style={
+        width
+          ? ({ '--figure-width': `${width}px` } as CSSProperties)
+          : undefined
+      }
+      className={`my-8 overflow-hidden rounded-2xl bg-cream-dark sm:my-6 ${widthClass} ${flow}`}
     >
       {/* A laid-out image, not a `fill` inside an aspect-ratio box.
-      
+
           The box version is one missing utility away from vanishing: `fill`
           makes the img absolute, so the wrapper's only height comes from
           `aspect-square`, and without that rule in the sheet the wrapper is 0px
@@ -92,15 +110,11 @@ export function ArticleFigure({
       <Image
         src={image}
         alt={alt}
-        // Not the viewport: 42% of a 68ch measure is ~17rem, and quoting a vw
-        // here would have next/image fetch a far larger file than is drawn.
         sizes={sizes}
         placeholder="blur"
         style={crop && focus ? { objectPosition: focus } : undefined}
         className={
-          crop === 'square'
-            ? 'aspect-square w-full object-cover'
-            : 'w-full'
+          crop === 'square' ? 'aspect-square w-full object-cover' : 'w-full'
         }
       />
     </figure>

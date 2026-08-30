@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import type { StaticImageData } from 'next/image';
 import { Check } from 'lucide-react';
 import {
   Accordion,
@@ -187,13 +188,14 @@ function Blocks({
 function SectionShell({
   section,
   number,
-  figure,
+  figures,
   children,
 }: {
   section: Section;
   /** `01`, or null where the article is too short to be worth numbering. */
   number: string | null;
-  figure?: SectionFigure;
+  /** Every figure belonging to this section, not just the first. */
+  figures: SectionFigure[];
   children: ReactNode;
 }) {
   return (
@@ -237,18 +239,21 @@ function SectionShell({
           contained here instead of spilling across the next heading. A BFC
           rather than overflow-hidden: this section is what the contents list
           scrolls to, and clipping it would clip the scroll margin with it. */}
-      {figure ? (
+      {figures.length > 0 ? (
         <div className="flow-root">
           {/* Before the copy in document order — a float only affects the
               content that follows it. */}
-          <ArticleFigure
-            image={figure.image}
-            side={figure.side}
-            alt={figure.alt}
-            bleed={figure.bleed}
-            crop={figure.crop}
-            focus={figure.focus}
-          />
+          {figures.map((figure, index) => (
+            <ArticleFigure
+              key={index}
+              image={figure.image}
+              side={figure.side}
+              alt={figure.alt}
+              crop={figure.crop}
+              focus={figure.focus}
+              width={figure.width}
+            />
+          ))}
           {children}
         </div>
       ) : (
@@ -363,44 +368,142 @@ function SectionContent({
 }
 
 /**
- * Sections below which numbering is decoration. Two or three numbered headings
- * read as an affectation; from four up they read as a structure.
+ * Sections below which numbering is decoration.
+ *
+ * Two, matching TOC_MIN_ITEMS at the call site, and for the same reason: the
+ * numbers and the contents rail are one device seen twice, so a post that shows
+ * `03 /` beside a heading has `03` to point at in the rail, and a post with
+ * neither has genuinely nothing to number. Set at four, the two disagreed —
+ * three articles carried a contents rail listing headings that were not
+ * numbered on the page the rail was for.
  */
-const NUMBERING_MIN_SECTIONS = 4;
+const NUMBERING_MIN_SECTIONS = 2;
+
+/** Roughly how many characters of copy a section has for a float to wrap. */
+function measureOf(section: Section) {
+  return section.blocks.reduce((total, block) => {
+    if (block.kind === 'paragraph' || block.kind === 'quote') {
+      return total + block.text.length;
+    }
+    if (block.kind === 'case') return total + block.body.join(' ').length;
+    if (block.kind === 'list') {
+      return (
+        total +
+        block.items.reduce(
+          (sum, item) => sum + (item.lead?.length ?? 0) + item.text.length,
+          0,
+        )
+      );
+    }
+    return total;
+  }, 0);
+}
+
+/**
+ * Gives every gallery photograph a section to sit in.
+ *
+ * The gallery used to be a column of its own beside the copy, and before that a
+ * band underneath it. Both read as an appendix — a strip of pictures the article
+ * had finished with — when on the event posts the photographs *are* the article:
+ * they are what happened. So they go where the authored figures go, floated into
+ * the prose with the copy running past them.
+ *
+ * Which section gets which picture is decided by how much copy the section has,
+ * not by spacing them evenly down the page. A float only reads as a float if the
+ * text closes back underneath it, and that is a question of whether there are
+ * enough lines beside the frame to clear it — so the longest sections take the
+ * pictures. Sections `figures` has already claimed are out: the author put a
+ * photograph there for a reason, and a second one would stack against it.
+ */
+function placeGallery(
+  sections: Section[],
+  authored: SectionFigure[],
+  gallery: StaticImageData[],
+): SectionFigure[] {
+  if (gallery.length === 0) return [];
+
+  const claimed = new Set(authored.map((entry) => entry.section));
+
+  // Headed sections only. The standfirst is the sentence that decides whether
+  // the rest gets read, and it is set as a lead — a float in the first two
+  // lines of the article is competing with it.
+  const open = sections.filter(
+    (section) => section.heading && !claimed.has(section.id),
+  );
+
+  if (open.length === 0) return [];
+
+  // The roomiest sections, put back into reading order so the pictures are met
+  // in the order the post lists them.
+  const roomiest = new Set(
+    [...open]
+      .sort((a, b) => measureOf(b) - measureOf(a))
+      .slice(0, gallery.length),
+  );
+  const chosen = open.filter((section) => roomiest.has(section));
+
+  return gallery.map((image, index) => ({
+    // More pictures than sections doubles them up on the last one rather than
+    // dropping any — SectionShell renders every figure it is given.
+    section: (chosen[index] ?? open[open.length - 1]).id,
+    image,
+  }));
+}
 
 export function ArticleBody({
   sections,
   figures = [],
+  gallery = [],
 }: {
   sections: Section[];
   figures?: SectionFigure[];
+  gallery?: StaticImageData[];
 }) {
   // Counted over headed sections only — the standfirst has no heading and must
   // not consume 01.
   const headed = sections.filter((section) => section.heading).length;
   const numbered = headed >= NUMBERING_MIN_SECTIONS;
 
+  // Worked out up front rather than inside the map, because the count runs over
+  // headed sections while the map runs over all of them — a standfirst sits in
+  // the list too, and incrementing during the render would number it.
   let position = 0;
+  const numbers = sections.map((section) =>
+    numbered && section.heading ? String(++position).padStart(2, '0') : null,
+  );
+
+  // Authored placements and spread-out gallery frames are the same thing from
+  // here on: a picture that belongs to a section.
+  const order = new Map(sections.map((section, index) => [section.id, index]));
+  const placed = [...figures, ...placeGallery(sections, figures, gallery)].sort(
+    (a, b) => (order.get(a.section) ?? 0) - (order.get(b.section) ?? 0),
+  );
+
+  // Sides alternate down the whole article, so two frames never stack against
+  // the same margin. Done over the merged list in document order rather than
+  // per post in the data, which is how it used to be kept — by hand, and only
+  // correct for as long as nobody inserted a picture in the middle.
+  const sided: SectionFigure[] = [];
+  for (const figure of placed) {
+    const previous = sided[sided.length - 1]?.side;
+    sided.push({
+      ...figure,
+      side: figure.side ?? (previous === 'right' ? 'left' : 'right'),
+    });
+  }
 
   return (
     <div>
-      {sections.map((section, index) => {
-        const number =
-          numbered && section.heading
-            ? String(++position).padStart(2, '0')
-            : null;
-
-        return (
-          <SectionShell
-            key={section.id || index}
-            section={section}
-            number={number}
-            figure={figures.find((entry) => entry.section === section.id)}
-          >
-            <SectionContent section={section} lead={index === 0} />
-          </SectionShell>
-        );
-      })}
+      {sections.map((section, index) => (
+        <SectionShell
+          key={section.id || index}
+          section={section}
+          number={numbers[index]}
+          figures={sided.filter((entry) => entry.section === section.id)}
+        >
+          <SectionContent section={section} lead={index === 0} />
+        </SectionShell>
+      ))}
     </div>
   );
 }

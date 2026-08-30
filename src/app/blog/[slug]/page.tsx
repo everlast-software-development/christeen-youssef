@@ -9,34 +9,22 @@ import { ArticleBody } from '@/components/blog/article-body';
 import { ArticleToc } from '@/components/blog/article-toc';
 import { ArticleStats } from '@/components/blog/article-stats';
 import { ArticleMotion } from '@/components/blog/article-motion';
-import { ArticleImages } from '@/components/blog/article-images';
-import { cn } from '@/lib/utils';
 import { blogPosts } from '@/data/blog';
 import { byNewest } from '@/lib/blog-date';
 import { parseArticle, tableOfContents } from '@/lib/blog-content';
 
 type Params = { params: Promise<{ slug: string }> };
 
-/** Below this a contents sidebar is furniture rather than navigation. */
-const TOC_MIN_ITEMS = 4;
-
 /**
- * Under this many words a piece is a note, not an article, and gets the layout
- * below instead.
+ * Below this a contents sidebar is furniture rather than navigation.
  *
- * Four of the nine posts are under this — two of them a single 40-word
- * paragraph. Given the full article frame they read as broken: you scroll past a
- * screen of hero and the piece has ended before the fold, leaving a page of empty
- * cream and a contents rail pointing at nothing. Narrowed, with the closing CTA
- * pulled up behind it, the same 40 words read as deliberate.
- *
- * This is a layout accommodation and not a fix. The two 40-word posts are
- * placeholders and want real copy.
+ * Two, not four. The threshold used to be set by what a rail needs to earn its
+ * place on its own page; it is now set by the fact that every article is the
+ * same page. A reader who has learned that the contents live in the left rail
+ * should find them there on the next piece too, and only the two single-
+ * paragraph posts have nothing to put in one.
  */
-const NOTE_MAX_WORDS = 350;
-
-/** A piece with this many sections is an article whatever its word count. */
-const NOTE_MAX_SECTIONS = 3;
+const TOC_MIN_ITEMS = 2;
 
 /** Cards at the foot of the article. */
 const RELATED_COUNT = 3;
@@ -70,6 +58,21 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   };
 }
 
+/**
+ * One frame for every article.
+ *
+ * There used to be three. A post with a gallery was laid out in two columns with
+ * the photographs in a rail on the right; a post under 350 words was narrowed
+ * and centred as a "note"; and only the posts that had neither got the contents
+ * rail, the numbered sections and the single measure — the shape of the SVF
+ * piece. Which meant ten posts read as three different publications, and the one
+ * a reader saw first was whichever they happened to click.
+ *
+ * The SVF shape is now the shape. Hero, figures band, contents rail on the left,
+ * one measure of copy — and the photographs set into that copy rather than
+ * shown alongside it. What varies between posts is what each has to put in the
+ * frame, not the frame.
+ */
 export default async function BlogPostPage({ params }: Params) {
   const { slug } = await params;
   const post = blogPosts.find((p) => p.slug === slug);
@@ -99,26 +102,7 @@ export default async function BlogPostPage({ params }: Params) {
     ),
   ].slice(0, RELATED_COUNT);
 
-  const words = (post.content ?? post.excerpt).trim().split(/\s+/).length;
-
-  // Short *and* unstructured. A ~330-word piece can still carry four real
-  // sections, and on length alone it would have been demoted to a note —
-  // structure is the better test of whether something is an article, so both
-  // have to be true.
-  const isNote = words < NOTE_MAX_WORDS && toc.length < NOTE_MAX_SECTIONS;
-
-  const images = post.gallery ?? [];
-
-  // Two columns whenever there is something to put in the second one. A note is
-  // too short to carry a side column, so its images stack under the copy.
-  const twoColumn = !isNote && images.length > 0;
-
-  // A note is never long enough to need a contents rail, whatever its heading
-  // count. Nor is an article with pictures: the rail and the images want the
-  // same side of the page, and three columns is not the simple layout this is.
-  // Stated here rather than left to CSS, so a post with both never silently
-  // drops one of them.
-  const showToc = !isNote && !twoColumn && toc.length >= TOC_MIN_ITEMS;
+  const showToc = toc.length >= TOC_MIN_ITEMS;
 
   return (
     <main className="bg-cream text-ink">
@@ -130,42 +114,38 @@ export default async function BlogPostPage({ params }: Params) {
         </ArticleMotion>
       )}
 
-      {/* One wrapper around copy and pictures both, so a single GSAP context
-          covers them and the images are part of the same sequence. */}
+      {/* One GSAP context over the whole article, so the headings, the lists
+          and the photographs inside them reveal as a single sequence. */}
       <ArticleMotion>
-        <div
-          className={
-            isNote
-              ? 'mx-auto max-w-7xl px-5 pt-16 pb-16 md:px-8 lg:px-12 lg:pt-24 xl:px-20'
-              : 'mx-auto max-w-7xl px-5 pt-16 pb-24 md:px-8 lg:px-12 lg:pt-24 lg:pb-32 xl:px-20'
-          }
-        >
-          <div
-            className={cn(
-              showToc &&
-                'grid gap-12 xl:grid-cols-[15rem_minmax(0,1fr)] xl:gap-20',
-              // Copy left, pictures right. The image column is capped rather
-              // than left as 1fr: the space beside a 68ch measure on a wide
-              // screen is close to 500px, and a portrait photograph that wide
-              // runs to 750 tall. Only a grid from lg — below it the two are
-              // simply one block after the other, at full width.
-              twoColumn &&
-                'lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)] lg:gap-16',
+        <div className="mx-auto max-w-[88rem] px-5 pt-16 pb-24 md:px-8 lg:px-12 lg:pt-24 lg:pb-32 xl:px-20">
+          {/* The rail column is reserved on every post, whether or not that post
+              has contents to put in it. It is what lands the copy in the same
+              place on every article — a page that dropped the empty column
+              would start its first line 20rem left of the one before it. */}
+          <div className="grid gap-12 xl:grid-cols-[15rem_minmax(0,1fr)] xl:gap-20">
+            {showToc ? (
+              <ArticleToc items={toc} />
+            ) : (
+              <div aria-hidden className="hidden xl:block" />
             )}
-          >
-            {showToc && <ArticleToc items={toc} />}
 
             {/* A measure, not the column width: body copy stops being readable
-                somewhere around 75 characters however much room is going. A
-                note takes a narrower one still and sits centred, because there
-                is no sidebar and no length to give the page a spine. */}
-            <article
-              className={isNote ? 'mx-auto max-w-[58ch]' : 'max-w-[68ch]'}
-            >
-              <ArticleBody sections={sections} figures={post.figures} />
-            </article>
+                somewhere around 75 characters however much room is going, so the
+                wider container above buys the copy a few characters and spends
+                the rest on the margins.
 
-            {images.length > 0 && <ArticleImages images={images} />}
+                The photographs are inside this, not beside it. There is no
+                picture column and no gallery band any more — a post's images go
+                into the sections they belong to and the copy runs past them, so
+                the article is one thing rather than a piece of writing with a
+                strip of photographs alongside. */}
+            <article className="min-w-0 max-w-[72ch]">
+              <ArticleBody
+                sections={sections}
+                figures={post.figures}
+                gallery={post.gallery}
+              />
+            </article>
           </div>
         </div>
       </ArticleMotion>
@@ -174,7 +154,7 @@ export default async function BlogPostPage({ params }: Params) {
       {(newer || older) && (
         <nav
           aria-label="More articles"
-          className="mx-auto max-w-7xl border-t border-ink/10 px-5 py-14 md:px-8 lg:px-12 xl:px-20"
+          className="mx-auto max-w-[88rem] border-t border-ink/10 px-5 py-14 md:px-8 lg:px-12 xl:px-20"
         >
           <div className="grid gap-6 sm:grid-cols-2">
             {older ? (
@@ -214,7 +194,7 @@ export default async function BlogPostPage({ params }: Params) {
 
       {/* ---------------- Related ---------------- */}
       {related.length > 0 && (
-        <section className="mx-auto max-w-7xl px-5 pb-24 md:px-8 lg:px-12 lg:pb-32 xl:px-20">
+        <section className="mx-auto max-w-[88rem] px-5 pb-24 md:px-8 lg:px-12 lg:pb-32 xl:px-20">
           <div className="flex items-center gap-6">
             <h2 className="shrink-0 font-display text-display-sm text-ink">
               Keep reading

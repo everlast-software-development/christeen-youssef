@@ -1,18 +1,25 @@
-import type { BlogPost, GalleryFrame, ImageFocus } from '@/types';
+import type { BlogPost, ImageFocus } from '@/types';
 
 /**
- * Where a photograph is anchored in the full-bleed frames.
+ * Where a photograph is anchored when the post says nothing.
  *
- * Faces sit above centre in most of these, and a wide crop of a portrait
- * photograph centred on 50% lands on the chin — so the default pulls up to 32%.
+ * The two frames want different answers. In the article hero, faces sit above
+ * centre in most of these and a wide crop of a portrait photograph centred on
+ * 50% lands on the chin — so that default pulls up to 32%. The carousel runs
+ * the posts back to back, and a shared centre crop is what makes the run read
+ * as one sequence rather than a set of separately-tuned stills, so it stays at
+ * dead centre and only a post that actually needs otherwise opts out.
  */
-const DEFAULT_FOCUS = '50% 32%';
+const DEFAULT_FOCUS = {
+  hero: '50% 32%',
+  carousel: '50% 50%',
+} as const;
 
 function resolve(focus: ImageFocus | undefined, surface: 'hero' | 'carousel') {
-  if (!focus) return DEFAULT_FOCUS;
+  if (!focus) return DEFAULT_FOCUS[surface];
   if (typeof focus === 'string') return focus;
 
-  return focus[surface] ?? DEFAULT_FOCUS;
+  return focus[surface] ?? DEFAULT_FOCUS[surface];
 }
 
 /**
@@ -38,21 +45,3 @@ export function carouselFocus(post: BlogPost) {
   return resolve(post.imageFocus, 'carousel');
 }
 
-/**
- * A gallery entry as the renderer wants it: an image and a crop anchor.
- *
- * The gallery frames are `object-cover`, and a portrait photograph dropped into
- * a square or a 4:3 slot loses a third of its height to a centred crop. Where
- * the subject is not in the middle of the source that crop is wrong — the
- * German University signing is shot from across the room with the ceiling and
- * the air-conditioning taking the top of the frame, so centring it fills half
- * the tile with ceiling and pushes the signatories to the bottom edge.
- *
- * Undefined focus is left undefined rather than defaulted to `50% 50%`, so the
- * untouched entries render with no inline style at all.
- */
-export function galleryFrame(frame: GalleryFrame) {
-  return 'image' in frame
-    ? { image: frame.image, focus: frame.focus, width: frame.width ?? 'full' }
-    : { image: frame, focus: undefined, width: 'full' as const };
-}

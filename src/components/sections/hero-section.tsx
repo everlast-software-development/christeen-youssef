@@ -6,6 +6,7 @@ import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import { TransitionLink } from "@/components/ui/transition-link";
 import { CountUp } from "@/components/ui/count-up";
+import { EventSpotlight } from "@/components/ui/event-spotlight";
 import { gsap, SplitText, useGSAP } from "@/lib/gsap";
 import { stats } from "@/data/stats";
 import portrait from "@/assets/hero-portrait.webp";
@@ -355,6 +356,15 @@ export function HeroSection() {
           </TransitionLink>
         </motion.div>
       </motion.div>
+
+      {/* The upcoming event. A direct child of the section so its thumbnail
+          positions against the hero's own box, and carrying data-hero-fade so it
+          dissolves with everything else as About rides over.
+
+          Its overlay is portalled to the body from inside — see EventSpotlight
+          — because this section is `isolate` and would otherwise stack the
+          poster underneath the fixed header. */}
+      <EventSpotlight />
 
       {/* Film grain: ties the type, gradient and photo into one surface
           instead of three stacked layers.

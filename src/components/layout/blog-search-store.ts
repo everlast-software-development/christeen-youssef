@@ -3,22 +3,23 @@
 import { useSyncExternalStore } from 'react';
 
 /**
- * The blog listing's search term, held outside React.
+ * Two separate things that used to be one string.
  *
- * It lives here because the field and the results are no longer in the same
- * tree: the input is in the fixed header, which is mounted once in the root
- * layout, and the grid it filters is inside the page. A context provider would
- * mean wrapping the layout in a client component just to carry one string, and
- * lifting the state into the layout would re-render the whole app on every
- * keystroke. A module-level store with useSyncExternalStore re-renders exactly
- * the two components that read it.
+ * **The typed term** belongs to the header field, which now opens a menu of
+ * matching articles rather than filtering the page underneath it. It is held
+ * outside React because the field is rendered twice — once inline in the header
+ * row at lg, once in its own row below that — and the two copies have to agree.
+ * A context provider would mean wrapping the layout in a client component just
+ * to carry one string; lifting it into the layout would re-render the whole app
+ * on every keystroke. A module-level store with useSyncExternalStore re-renders
+ * exactly the components that read it.
  *
- * The hash is folded into the same snapshot rather than read separately. A
- * `/blog#conference` link — which is how the About page's "Explore" buttons
- * arrive — seeds the term, and the filter already matches on category, so no
- * separate category UI is needed. Doing it here means the header's input shows
- * the seeded term too, which it could not if the hash were only read inside the
- * page.
+ * **The hash** belongs to the listing. A `/blog#conference` link — which is how
+ * the About page's three Explore buttons arrive — filters the grid by category.
+ * That is a deep link into the page, and it survived the header field becoming a
+ * menu: the two were only ever folded into one snapshot because the field used
+ * to filter the same grid the hash does. Now that it does not, a term typed in
+ * the header no longer silently outranks the URL the reader arrived on.
  *
  * No effects anywhere in this file, deliberately. Reading the hash with an
  * effect means calling setState inside an effect, which the react-hooks rules
@@ -31,16 +32,7 @@ import { useSyncExternalStore } from 'react';
  * ship its fallback as HTML instead of the articles.
  */
 
-/**
- * Null until someone types, so the hash is in force until then and is then
- * dropped for good — a reader who has started editing the box should not have it
- * overwritten by the URL they arrived on.
- */
-let typed: string | null = null;
-
-/** Bumped by the field's submit. See `useBlogSearchSubmit`. */
-let submitCount = 0;
-
+let typed = '';
 
 const listeners = new Set<() => void>();
 
@@ -50,8 +42,8 @@ function emit() {
 
 function subscribe(onChange: () => void) {
   listeners.add(onChange);
-  // Covers back/forward between two hashes, which changes the term without any
-  // component doing anything.
+  // Covers back/forward between two hashes, which changes the filter without
+  // any component doing anything.
   window.addEventListener('hashchange', onChange);
 
   return () => {
@@ -74,28 +66,32 @@ function hashQuery() {
  * useSyncExternalStore's Object.is check only loops if the snapshot is a new
  * object every time.
  */
-const getQuery = () => typed ?? hashQuery();
-const getQueryOnServer = () => '';
+const getTyped = () => typed;
+const getHash = () => hashQuery();
+const getEmpty = () => '';
 
-const getSubmitCount = () => submitCount;
-const getSubmitCountOnServer = () => 0;
-
-
-/** The term in force: what was typed, or the hash it was seeded from. */
+/** What is in the header field. Drives its menu, and nothing else. */
 export function useBlogSearchQuery() {
-  return useSyncExternalStore(subscribe, getQuery, getQueryOnServer);
+  return useSyncExternalStore(subscribe, getTyped, getEmpty);
+}
+
+/** The category deep-link in the URL. Drives the listing grid, and nothing else. */
+export function useBlogHashFilter() {
+  return useSyncExternalStore(subscribe, getHash, getEmpty);
 }
 
 /**
- * A counter, not a boolean, so a second submit of the same term is still a
- * distinct value for the listing's effect to react to.
+ * Drops the category deep-link and shows the whole listing again.
+ *
+ * Not a `<Link href="/blog">`: Next routes with `history.pushState`, which does
+ * not fire `hashchange`, so the store would never hear that the filter had gone
+ * and the grid would stay filtered under a clean URL. Rewriting the URL here and
+ * emitting by hand keeps the two in step — which is also why this lives in the
+ * store rather than at the call site.
  */
-export function useBlogSearchSubmit() {
-  return useSyncExternalStore(
-    subscribe,
-    getSubmitCount,
-    getSubmitCountOnServer,
-  );
+export function clearBlogHashFilter() {
+  window.history.replaceState(null, '', window.location.pathname);
+  emit();
 }
 
 export function setBlogSearchQuery(value: string) {
@@ -104,19 +100,12 @@ export function setBlogSearchQuery(value: string) {
 }
 
 /**
- * Called when the listing unmounts. Without it a term typed before navigating
- * away is still filtering the grid on the way back, and — because `typed` being
- * non-null outranks the hash — a later `/blog#research` link would silently do
- * nothing.
+ * Called when the field unmounts. A term left behind would still be in the box
+ * on the way back, with its menu ready to open over a page the reader has just
+ * arrived at.
  */
 export function resetBlogSearch() {
-  if (typed === null && submitCount === 0) return;
-  typed = null;
-  submitCount = 0;
-  emit();
-}
-
-export function submitBlogSearch() {
-  submitCount += 1;
+  if (!typed) return;
+  typed = '';
   emit();
 }

@@ -40,31 +40,7 @@ export interface CareerEntry {
 }
 
 /**
- * One frame in a post's gallery.
- *
- * A bare import wherever the default centre crop is right, which is almost
- * everywhere — the object form only where a photograph has to be anchored
- * somewhere else. Kept as a union rather than making every entry an object so
- * the eight posts that never needed a crop are not rewritten to say so.
- */
-export type GalleryFrame =
-  | StaticImageData
-  | {
-      image: StaticImageData;
-      /** `object-position` for this frame. See `galleryFrame`. */
-      focus?: string;
-      /**
-       * How much of the image column this frame takes. Defaults to all of it.
-       *
-       * `half` is for a portrait among landscapes: at full column width a 2:3
-       * source is half again as tall as the frames around it and stops being one
-       * picture in a set.
-       */
-      width?: 'half' | 'full';
-    };
-
-/**
- * A photograph placed inside one body section rather than in the gallery band.
+ * A photograph set inside one body section, with the copy running past it.
  *
  * Keyed by the section's slug rather than by its index, so inserting a `##`
  * above it does not silently move the picture to a different argument.
@@ -73,17 +49,39 @@ export interface SectionFigure {
   /** The `##` heading's slug — `slugify(heading)`, i.e. `Section.id`. */
   section: string;
   image: StaticImageData;
-  /** Which side the copy runs past. Alternates down the article by hand. */
+  /**
+   * Which side the copy runs past.
+   *
+   * Left unset almost everywhere: ArticleBody alternates sides down the article
+   * on its own, and every value that used to be written here was the one the
+   * alternation would have produced anyway. Set it only to break that rhythm
+   * deliberately.
+   */
   side?: 'left' | 'right';
   /** Left empty for a decorative frame; set where the picture carries fact. */
   alt?: string;
-  /** Let the frame out of the measure into the page margin. See ArticleFigure. */
-  bleed?: boolean;
   /** Square the frame off rather than keeping the source's shape. */
   crop?: 'square';
   /** `object-position` for a cropped frame. */
   focus?: string;
+  /**
+   * A flat width in pixels, from sm up, instead of the responsive default.
+   *
+   * The default scales the frame with the viewport, which is right where the
+   * picture is simply "a picture beside this paragraph". Set this where the
+   * frame has a size it wants to be held at.
+   */
+  width?: number;
 }
+
+/*
+ * `bleed` and `layout: 'column'` used to live here too. A bled frame leaned out
+ * of the measure into the page margin; a column frame split the article in two
+ * from its own section down, copy on one side and picture on the other. Both
+ * were per-post accommodations, and between them they meant three of the ten
+ * articles had a different spine from the rest. A figure is now one thing on
+ * every post: a float inside the measure that the copy closes back over.
+ */
 
 /**
  * A crop anchor for the full-bleed frames: one value for both, or one each.
@@ -120,16 +118,19 @@ export interface BlogPost {
   imageFocus?: ImageFocus;
   content?: string;
   /**
-   * Extra artwork shown as a strip inside the article. These used to be written
-   * into `content` as `![alt](${imported})` — inside a template literal that
-   * interpolated the imported object, so the src rendered as "[object Object]"
-   * and the images never appeared. A real field cannot fail that way.
+   * A post's photographs, in the order they should be met.
+   *
+   * They are set into the body like `figures` are, and for the same reason: a
+   * photograph from the day is part of the article, not an appendix to it. The
+   * difference is only that nobody has said which passage each one belongs to,
+   * so ArticleBody spreads them down the sections `figures` has not already
+   * claimed. Name the section and it becomes a `figure` instead.
    */
-  gallery?: GalleryFrame[];
+  gallery?: StaticImageData[];
   /**
-   * Photographs set into the body, beside the section they belong to. Distinct
-   * from `gallery`, which is the band at the foot of the article — a set seen as
-   * a set. A frame belongs here when it illustrates one specific passage.
+   * Photographs whose place in the argument is known — the podium shot beside
+   * the paragraph about what was said at the podium. Everything else goes in
+   * `gallery` and is placed for you.
    */
   figures?: SectionFigure[];
   /**

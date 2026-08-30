@@ -169,7 +169,19 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
           top: 0,
           left: 0,
           width: `${PANEL_VW}vw`,
-          height: '100svh',
+          // 100% of the fixed wrapper above, not a viewport unit.
+          //
+          // This was `100svh`, which is the *small* viewport — the height the
+          // page has when a phone browser is showing its URL bar and toolbars.
+          // Scrolled down, those retract and the visible viewport becomes the
+          // large one, so the sweep came up short and left a strip of the page
+          // showing along the bottom edge for the whole transition.
+          //
+          // `100dvh` would track that, but it also re-measures whenever the bars
+          // slide, which is a relayout in the middle of an animation. The
+          // wrapper is `fixed inset-0` and already spans whatever the viewport
+          // actually is, so inheriting it is both correct and stable.
+          height: '100%',
           background: 'var(--ink)',
           // Elliptical leading/trailing edges soften the sweep.
           borderRadius: `${DOME_VW}vw / 50%`,

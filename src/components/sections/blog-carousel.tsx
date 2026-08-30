@@ -121,9 +121,10 @@ export function BlogCarousel({ posts }: { posts: BlogPost[] }) {
               priority={index === 0}
               sizes="100vw"
               placeholder="blur"
-              // Per post — see heroFocus. Usually the same value the article
-              // hero reads, so the crop survives the click; a post may set the
-              // two apart where this frame's height and zoom need it to.
+              // Centred unless the post says otherwise — see the carousel
+              // default in blog-image. A shared centre crop is what makes the
+              // run of slides read as one sequence, so a post only opts out
+              // where centring actually loses its subject.
               style={{ objectPosition: carouselFocus(active) }}
               className="object-cover"
             />

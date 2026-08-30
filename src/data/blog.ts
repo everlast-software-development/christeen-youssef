@@ -1,63 +1,61 @@
-import type { BlogPost } from '../types';
-import sabahAlEmaratImage from '../assets/blog Sabah Al Emarat .webp';
-import isdsPodiumImage from '../assets/blogs/ISDS/podium.webp';
-import isdsPodiumWideImage from '../assets/blogs/ISDS/podium-wide.webp';
-import isdsModeratorsImage from '../assets/blogs/ISDS/moderators.webp';
-import isdsRecognitionImage from '../assets/blogs/ISDS/session-recognition.webp';
-import diabeticFootImage from '../assets/Diabetic Foot blog .webp';
-import internationalConferenceImage from '../assets/International Conference Journals.webp';
-import successStoryImage from '../assets/Success Story blog .webp';
-import botulinumResearchImage from '../assets/blog.webp';
-import advanceThreadImage from '../assets/Advance Thread blog .webp';
-import ebdTeachingImage from '../assets/EBD Teaching blog. (2).webp';
-import ebdTeachingImage2 from '../assets/EBD Teaching blog..webp';
-import ebdTeachingImage3 from '../assets/EBD Teaching blog.webp';
-import americanBoardHero from '../assets/blogs/American Board/hero.webp';
-import americanBoardSigning from '../assets/blogs/American Board/img2.webp';
-import americanBoardTable from '../assets/blogs/American Board/img3.webp';
-import germanUniversityImage from '../assets/blogs/germany/signing.webp';
-import germanUniversityImage2 from '../assets/blogs/germany/signing-detail.webp';
-import germanUniversityImage3 from '../assets/blogs/germany/team.webp';
+import type { BlogPost } from "../types";
+import sabahAlEmaratImage from "../assets/blog Sabah Al Emarat .webp";
+import isdsPodiumImage from "../assets/blogs/ISDS/podium.webp";
+import isdsPodiumWideImage from "../assets/blogs/ISDS/podium-wide.webp";
+import isdsModeratorsImage from "../assets/blogs/ISDS/moderators.webp";
+import isdsRecognitionImage from "../assets/blogs/ISDS/session-recognition.webp";
+import diabeticFootImage from "../assets/Diabetic Foot blog .webp";
+import internationalConferenceImage from "../assets/International Conference Journals.webp";
+import successStoryImage from "../assets/Success Story blog .webp";
+import botulinumResearchImage from "../assets/blog.webp";
+import advanceThreadImage from "../assets/Advance Thread blog .webp";
+import ebdTeachingImage from "../assets/EBD Teaching blog. (2).webp";
+import ebdTeachingImage2 from "../assets/EBD Teaching blog..webp";
+import ebdTeachingImage3 from "../assets/EBD Teaching blog.webp";
+import americanBoardHero from "../assets/blogs/American Board/hero.webp";
+import americanBoardSigning from "../assets/blogs/American Board/img2.webp";
+import americanBoardTable from "../assets/blogs/American Board/img3.webp";
+import germanUniversityImage from "../assets/blogs/germany/signing.webp";
+import germanUniversityImage2 from "../assets/blogs/germany/signing-detail.webp";
+import germanUniversityImage3 from "../assets/blogs/germany/team.webp";
 
 export const blogPosts: BlogPost[] = [
   {
-    id: 'blog-12',
-    slug: 'german-university-scientific-collaboration-agreement',
-    title: 'Everlast Signs a Joint Scientific Collaboration Agreement with the German University',
-    excerpt: 'On 3 February 2026, Dr. Christeen Youssef led the signing of a joint scientific collaboration agreement between Everlast Wellness Medical Center and the German University — a framework for exchanging knowledge, expertise and best practice in stem cell research and its modern applications in regenerative medicine.',
-    date: '03/02/2026',
-    category: 'PARTNERSHIP',
-    readTime: '2 min',
+    id: "blog-12",
+    slug: "german-university-scientific-collaboration-agreement",
+    title:
+      "Everlast Signs a Joint Scientific Collaboration Agreement with the German University",
+    excerpt:
+      "On 3 February 2026, Dr. Christeen Youssef led the signing of a joint scientific collaboration agreement between Everlast Wellness Medical Center and the German University — a framework for exchanging knowledge, expertise and best practice in stem cell research and its modern applications in regenerative medicine.",
+    date: "03/02/2026",
+    category: "PARTNERSHIP",
+    readTime: "2 min",
     image: germanUniversityImage,
     // A portrait phone shot where the ceiling and the air-conditioning grilles
-    // take the top half, so the default 32% fills a wide frame with ceiling.
+    // take the top half, so a centred crop of a wide frame is mostly ceiling.
     //
-    // The hero anchors at the base, which puts the table, the papers and both
-    // signatories in its 78svh frame. The carousel is centred instead: it is a
-    // taller frame that also spends its hold scaled up around its own centre,
-    // and the two together crop from the top — bottom-anchored there, the drift
-    // walks the signatories' heads off the top edge and leaves the tabletop.
-    imageFocus: { hero: '50% 100%', carousel: '50% 50%' },
-    // The closer signing shot runs beside the section on what the agreement
-    // actually covers, breaking out of the measure into the right margin.
-    // Squared off and anchored to the base: at its own 3:4 the top third is
-    // ceiling and air-conditioning grilles, which is a picture of the room
-    // rather than of the signing.
+    // Anchored near the base in both frames, which is what puts the table, the
+    // papers and both signatories in shot — 85% rather than a flat 100%, so the
+    // crop keeps a margin of floor under the table instead of cutting on it.
+    // Worth knowing for the carousel: it is the taller frame and it spends its
+    // hold scaled up around its own centre, so late in a slide the drift takes
+    // the top of the crop and the signatories sit higher than they start.
+    imageFocus: "50% 85%",
+    // The closer signing shot floats beside the section on what the agreement
+    // actually covers. Squared off and anchored to the base: at its own 3:4 the
+    // top third is ceiling and air-conditioning grilles, which is a picture of
+    // the room rather than of the signing.
     figures: [
       {
-        section: 'research-training-and-therapeutic-protocols',
+        section: "research-training-and-therapeutic-protocols",
         image: germanUniversityImage2,
-        side: 'right',
-        bleed: true,
-        crop: 'square',
-        focus: '50% 100%',
-        alt: 'Dr. Christeen Youssef’s counterparts signing the collaboration agreement at Everlast Wellness Medical Center.',
+        crop: "square",
+        focus: "50% 100%",
+        alt: "Dr. Christeen Youssef’s counterparts signing the collaboration agreement at Everlast Wellness Medical Center.",
       },
     ],
-    // The group photograph left alone in the band, so it closes the article on
-    // the full-width letterbox. Centred rather than anchored: a 21:9 slice of
-    // the middle gives all four faces against the centre wall, where the base
-    // would give the floor.
+    // The group photograph has no one passage it belongs to, so it is left for
+    // ArticleBody to place — which drops it into the closing section.
     gallery: [germanUniversityImage3],
     content: `On 3 February 2026, Dr. Christeen Youssef led the signing of a landmark scientific collaboration agreement between Everlast Wellness Medical Center and the German University. The partnership establishes a framework for the exchange of scientific knowledge, expertise and best practice in the field of stem cell research and its modern applications in regenerative medicine.
 
@@ -73,23 +71,32 @@ Through this partnership Everlast reinforces its commitment to scientific excell
 
 ## What the Agreement Represents
 
-By combining the strengths of Everlast and the German University, the agreement marks a significant step forward in advancing global stem cell research, improving clinical outcomes, and sustaining international collaboration in a field that is moving quickly. It sets the terms under which the two institutions will work as one research community rather than two that occasionally correspond.`
+By combining the strengths of Everlast and the German University, the agreement marks a significant step forward in advancing global stem cell research, improving clinical outcomes, and sustaining international collaboration in a field that is moving quickly. It sets the terms under which the two institutions will work as one research community rather than two that occasionally correspond.`,
   },
   {
-    id: 'blog-10',
-    slug: 'american-board-cooperation-agreement',
-    title: 'Everlast Signs a Joint Scientific Research and Training Agreement with the American Board of Education',
-    excerpt: 'On 9 February 2026 in Abu Dhabi, Dr. Christeen Youssef led the signing of a joint scientific and educational cooperation agreement between Everlast Wellness Medical Center and the American Board of Education — formalising the centre’s role in research, professional training and the clinical application of modern medical technologies.',
-    date: '09/02/2026',
-    category: 'PARTNERSHIP',
-    readTime: '2 min',
+    id: "blog-10",
+    slug: "american-board-cooperation-agreement",
+    title:
+      "Everlast Signs a Joint Scientific Research and Training Agreement with the American Board of Education",
+    excerpt:
+      "On 9 February 2026 in Abu Dhabi, Dr. Christeen Youssef led the signing of a joint scientific and educational cooperation agreement between Everlast Wellness Medical Center and the American Board of Education — formalising the centre’s role in research, professional training and the clinical application of modern medical technologies.",
+    date: "09/02/2026",
+    category: "PARTNERSHIP",
+    readTime: "2 min",
     image: americanBoardHero,
-    // Both sit in the column beside the copy, in this order. The signing shot
-    // is the portrait of the two, so it takes half the column.
-    gallery: [
-      { image: americanBoardSigning, width: 'half' },
-      americanBoardTable,
+    // The signing shot floats beside the first section, so the picture of the
+    // signing sits next to the paragraph about what was signed. No flat width:
+    // it is a 2:3 portrait, and ArticleFigure already runs those narrower than
+    // the landscapes so the copy can close back under them.
+    figures: [
+      {
+        section: "evidence-based-practice-applied",
+        image: americanBoardSigning,
+        alt: "Dr. Christeen Youssef signing the cooperation agreement with the American Board of Education in Abu Dhabi.",
+      },
     ],
+    // Which leaves the table shot to be placed, in the closing section.
+    gallery: [americanBoardTable],
     content: `On 9 February 2026, Dr. Christeen Youssef led the signing of a landmark joint scientific and educational cooperation agreement between Everlast Wellness Medical Center and the American Board of Education in the Emirate of Abu Dhabi. This strategic partnership formalises Everlast’s role in advancing scientific research, professional training, and the implementation of modern medical technologies, creating a robust framework for collaboration between local and international experts.
 
 ## Evidence-Based Practice, Applied
@@ -102,40 +109,44 @@ The agreement also sets out the centre’s role in education: workshops, seminar
 
 ## The Only Accredited Centre of Its Kind in the UAE
 
-The collaboration underscores Everlast’s position as the only accredited centre in the UAE recognised for scientific research within its specialty. It reinforces the institution’s commitment to academic excellence, clinical innovation and international educational and research standards — and it places Abu Dhabi as a hub for advanced medical science and regenerative therapy in the region.`
+The collaboration underscores Everlast’s position as the only accredited centre in the UAE recognised for scientific research within its specialty. It reinforces the institution’s commitment to academic excellence, clinical innovation and international educational and research standards — and it places Abu Dhabi as a hub for advanced medical science and regenerative therapy in the region.`,
   },
   {
-    id: 'blog-13',
-    slug: 'isds-regenerative-dermatology-leadership',
-    title: 'International Scientific Leadership in Regenerative Dermatology at the 44th ISDS Annual Meeting',
-    excerpt: 'At the 44th Annual Meeting of the ISDS — International Society for Dermatologic & Aesthetic Surgery, in Abu Dhabi, Dr. Christeen Youssef delivered an international scientific lecture and hosted a specialised conference on advanced stem cell therapies and regenerative dermatology.',
+    id: "blog-13",
+    slug: "isds-regenerative-dermatology-leadership",
+    title:
+      "International Scientific Leadership in Regenerative Dermatology at the 44th ISDS Annual Meeting",
+    excerpt:
+      "At the 44th Annual Meeting of the ISDS — International Society for Dermatologic & Aesthetic Surgery, in Abu Dhabi, Dr. Christeen Youssef delivered an international scientific lecture and hosted a specialised conference on advanced stem cell therapies and regenerative dermatology.",
     // TODO(date): the stage banner gives the meeting as 16–18 October 2025 at the
     // Hilton Yas Island; this is the opening day, not a confirmed lecture day.
     // Set the actual one if it is known — the sort order, the article meta line
     // and the sitemap all read this field.
-    date: '16/10/2025',
-    category: 'CONFERENCE',
-    readTime: '3 min',
+    date: "16/10/2025",
+    category: "CONFERENCE",
+    readTime: "3 min",
     image: isdsPodiumImage,
+    // Anchored above centre in both frames: the podium and the speaker sit high
+    // in the source, so a wide crop taken from the middle keeps the stage floor
+    // and loses her.
+    imageFocus: "50% 33%",
     // The podium frame runs beside the section on what was presented, and the
     // moderators frame beside the section on the exchange between them — each
-    // next to the passage it is evidence for, alternating side down the page.
+    // next to the passage it is evidence for. Which margin each takes is not
+    // set here; ArticleBody alternates them down the page.
     figures: [
       {
-        section: 'stem-cells-and-tissue-engineering-in-clinical-practice',
+        section: "stem-cells-and-tissue-engineering-in-clinical-practice",
         image: isdsPodiumWideImage,
-        side: 'right',
-        alt: 'Dr. Christeen Youssef presenting at the ISDS podium in Abu Dhabi.',
+        alt: "Dr. Christeen Youssef presenting at the ISDS podium in Abu Dhabi.",
       },
       {
-        section: 'an-international-platform-for-exchange',
+        section: "an-international-platform-for-exchange",
         image: isdsModeratorsImage,
-        side: 'left',
-        alt: 'Dr. Christeen Youssef conferring with a fellow moderator between sessions.',
+        alt: "Dr. Christeen Youssef conferring with a fellow moderator between sessions.",
       },
     ],
-    // One frame left in the band, so it takes the full-width letterbox on its
-    // own at the foot of the article.
+    // The recognition shot is left unplaced, and lands in the last section.
     gallery: [isdsRecognitionImage],
     content: `In October 2025, Dr. Christeen Youssef delivered an international scientific lecture and hosted a specialised conference in collaboration with the ISDS — International Society for Dermatologic & Aesthetic Surgery — at the Hilton Yas Island in Abu Dhabi, on the latest advances in stem cell therapy and regenerative dermatology.
 
@@ -161,16 +172,18 @@ The meeting reinforced Abu Dhabi’s growing role as a regional hub for advanced
 
 The conference further emphasised the strategic importance of building sustainable international research networks, and of partnership between academic institutions, clinical centres and industry. Dr. Christeen highlighted the necessity of translational research — turning laboratory discovery into clinically applicable therapy — as the only route to measurable patient impact.
 
-She also stressed the role of ethical governance, regulatory alignment and quality assurance in advancing stem cell and regenerative treatment responsibly. Taken together, the engagement raised the level of professional dialogue and contributed to positioning Abu Dhabi as a forward-thinking centre for innovation in regenerative dermatology and advanced aesthetic medicine.`
+She also stressed the role of ethical governance, regulatory alignment and quality assurance in advancing stem cell and regenerative treatment responsibly. Taken together, the engagement raised the level of professional dialogue and contributed to positioning Abu Dhabi as a forward-thinking centre for innovation in regenerative dermatology and advanced aesthetic medicine.`,
   },
   {
-    id: 'blog-2',
-    slug: 'sabah-al-emarat-revolutionary-scarfree',
-    title: 'Dr. Christeen on "Sabah Al Emarat": Revolutionary Scar-Free Burn Healing',
-    excerpt: 'Dr. Christeen, owner of Everlast Wellness Medical Center, recently shared a groundbreaking advancement in burn scar treatment on the "Sabah Al Emarat" TV program. Discover how tissue bio-engineering is rewriting the lives of burn survivors.',
-    date: '01/06/2025',
-    category: 'MEDIA',
-    readTime: '8 min',
+    id: "blog-2",
+    slug: "sabah-al-emarat-revolutionary-scarfree",
+    title:
+      'Dr. Christeen on "Sabah Al Emarat": Revolutionary Scar-Free Burn Healing',
+    excerpt:
+      'Dr. Christeen, owner of Everlast Wellness Medical Center, recently shared a groundbreaking advancement in burn scar treatment on the "Sabah Al Emarat" TV program. Discover how tissue bio-engineering is rewriting the lives of burn survivors.',
+    date: "01/06/2025",
+    category: "MEDIA",
+    readTime: "8 min",
     image: sabahAlEmaratImage,
     content: `Dr. Christeen, owner of Everlast Wellness Medical Center, recently shared a groundbreaking advancement in burn scar treatment on the "Sabah Al Emarat" TV program. Discover how tissue bio-engineering is rewriting the lives of burn survivors, offering renewed hope and confidence.
 
@@ -259,23 +272,25 @@ By reducing the need for surgeries, hospital stays, and extensive care, bio-tiss
 
 Treatment is tailored to each patient's needs, often involving several sessions over a period of weeks or months for the best possible results.
 
-You can watch the full episode through this link`
+You can watch the full episode through this link`,
   },
   {
-    id: 'blog-3',
-    slug: 'svf-diabetic-foot-treatment',
-    title: 'The Role of Stromal Vascular Fraction (SVF) in the Treatment of Diabetic Foot: A Promising Therapeutic Approach',
-    excerpt: 'Based on Dr. Christeen\'s speech at the 16th Abu Dhabi Wound Care Conference (ADWCC) 2025. Discover how SVF therapy offers new hope for patients with diabetic foot ulcers, significantly increasing healing rates and helping avoid amputation.',
-    date: '15/03/2025',
-    category: 'CONFERENCE',
-    readTime: '5 min',
+    id: "blog-3",
+    slug: "svf-diabetic-foot-treatment",
+    title:
+      "The Role of Stromal Vascular Fraction (SVF) in the Treatment of Diabetic Foot: A Promising Therapeutic Approach",
+    excerpt:
+      "Based on Dr. Christeen's speech at the 16th Abu Dhabi Wound Care Conference (ADWCC) 2025. Discover how SVF therapy offers new hope for patients with diabetic foot ulcers, significantly increasing healing rates and helping avoid amputation.",
+    date: "15/03/2025",
+    category: "CONFERENCE",
+    readTime: "5 min",
     image: diabeticFootImage,
     // From the 63-patient study the talk is built on, quoted below.
     stats: [
-      { value: '63', label: 'patients with chronic, non-healing ulcers' },
-      { value: '51', label: 'achieved full wound closure within six months' },
-      { value: '50', label: 'still fully healed at one year' },
-      { value: '10cm²', label: 'wounds and larger responded positively' },
+      { value: "63", label: "patients with chronic, non-healing ulcers" },
+      { value: "51", label: "achieved full wound closure within six months" },
+      { value: "50", label: "still fully healed at one year" },
+      { value: "10cm²", label: "wounds and larger responded positively" },
     ],
     content: `Based on Dr. Christeen's speech at the 16th Abu Dhabi Wound Care Conference (ADWCC) 2025, organized by the IWCG.
 
@@ -361,27 +376,29 @@ Yes, studies suggest that SVF therapy can help prevent limb loss by promoting he
 
 ## A New Era in Diabetic Wound Healing
 
-SVF therapy offers new hope to patients with diabetic foot ulcers. It is safe, minimally invasive, and backed by scientific evidence. As more clinics adopt this approach, SVF may soon become a standard treatment, helping more people heal and avoid amputation.`
+SVF therapy offers new hope to patients with diabetic foot ulcers. It is safe, minimally invasive, and backed by scientific evidence. As more clinics adopt this approach, SVF may soon become a standard treatment, helping more people heal and avoid amputation.`,
   },
   {
-    id: 'blog-4',
-    slug: 'international-conference-journals',
-    title: 'International Conference Journals',
-    excerpt: 'Active member of the international healthcare community with a passion on furthering standards of excellence in Aesthetic Dermatology spearheading clinically proven and safe best practices. Dynamic mentor dedicated to influencing positive change.',
-    date: '09/01/2024',
-    category: 'CONFERENCE',
-    readTime: '1 min',
+    id: "blog-4",
+    slug: "international-conference-journals",
+    title: "International Conference Journals",
+    excerpt:
+      "Active member of the international healthcare community with a passion on furthering standards of excellence in Aesthetic Dermatology spearheading clinically proven and safe best practices. Dynamic mentor dedicated to influencing positive change.",
+    date: "09/01/2024",
+    category: "CONFERENCE",
+    readTime: "1 min",
     image: internationalConferenceImage,
-    content: `Active member of the international healthcare community with a passion on furthering standards of excellence in Aesthetic Dermatology spearheading clinically proven and safe best practices. Dynamic mentor dedicated to influencing positive change as a peer adviser, consultant, and healthcare educator.`
+    content: `Active member of the international healthcare community with a passion on furthering standards of excellence in Aesthetic Dermatology spearheading clinically proven and safe best practices. Dynamic mentor dedicated to influencing positive change as a peer adviser, consultant, and healthcare educator.`,
   },
   {
-    id: 'blog-5',
-    slug: 'success-story-client-everlast',
-    title: 'A Success Story: A Client of Everlast Wellness Medical Center',
-    excerpt: 'An active member of the international healthcare community with a passion for furthering standards of excellence in Aesthetic Dermatology. Dynamic mentor dedicated to influencing positive change.',
-    date: '01/06/2025',
-    category: 'TESTIMONIAL',
-    readTime: '1 min',
+    id: "blog-5",
+    slug: "success-story-client-everlast",
+    title: "A Success Story: A Client of Everlast Wellness Medical Center",
+    excerpt:
+      "An active member of the international healthcare community with a passion for furthering standards of excellence in Aesthetic Dermatology. Dynamic mentor dedicated to influencing positive change.",
+    date: "01/06/2025",
+    category: "TESTIMONIAL",
+    readTime: "1 min",
     image: successStoryImage,
     content: `An active member of the international healthcare community with a passion for furthering standards of excellence in Aesthetic Dermatology spearheading clinically proven and safe best practices. Dynamic mentor dedicated to influencing positive change as a peer adviser, consultant, and healthcare educator.
 
@@ -391,16 +408,18 @@ An active member of the international healthcare community with a passion for fu
 
 ## Watch the Full Story
 
-You can watch the full success story through this link: [https://www.youtube.com/watch?v=BAC-q8VhDQY](https://www.youtube.com/watch?v=BAC-q8VhDQY)`
+You can watch the full success story through this link: [https://www.youtube.com/watch?v=BAC-q8VhDQY](https://www.youtube.com/watch?v=BAC-q8VhDQY)`,
   },
   {
-    id: 'blog-6',
-    slug: 'botulinum-neurotoxin-consensus',
-    title: 'Dr. Christeen Youssef\'s Pioneering Work in Botulinum Neurotoxin Research Now on PubMed',
-    excerpt: 'Consensus Statement on the Use of Botulinum Neurotoxin in the Middle East. A multinational group of ten key opinion leaders, experts in facial plastic surgery and dermatology, convened the Middle East Aesthetics Consensus Group.',
-    date: '01/06/2025',
-    category: 'RESEARCH',
-    readTime: '8 min',
+    id: "blog-6",
+    slug: "botulinum-neurotoxin-consensus",
+    title:
+      "Dr. Christeen Youssef's Pioneering Work in Botulinum Neurotoxin Research Now on PubMed",
+    excerpt:
+      "Consensus Statement on the Use of Botulinum Neurotoxin in the Middle East. A multinational group of ten key opinion leaders, experts in facial plastic surgery and dermatology, convened the Middle East Aesthetics Consensus Group.",
+    date: "01/06/2025",
+    category: "RESEARCH",
+    readTime: "8 min",
     image: botulinumResearchImage,
     content: `## Consensus Statement on the Use of Botulinum Neurotoxin in the Middle East
 
@@ -453,27 +472,30 @@ Keywords: Middle East; aesthetic use; botulinum neurotoxin type A; consensus.
 - Yi KH, Lee JH, Hu HW, et al. Novel anatomical proposal for botulinum neurotoxin injection targeting depressor anguli oris for treating drooping mouth corner. Anat Cell Biol. 2023;56(2):161–165.
 - Kaufman-Janette J, Cox SE, Dayan S, Joseph J. Botulinum toxin type a for glabellar frown lines: what impact of higher doses on outcomes? Toxins. 2021;13(7):494.
 - Dayan S, Joseph J, Moradi A, et al. Subject satisfaction and psychological well-being with escalating abobotulinumtoxinA injection dose for the treatment of moderate to severe glabellar lines. J Cosmet Dermatol. 2022;21(6):2407–2416.
-- Fabi SG, Carruthers J, Joseph J, et al. High-dose neuromodulators: a roundtable on making sense of the data in real-world clinical practice. Aesthet Surg J Open Forum. 2021;3(4):ojab036.`
+- Fabi SG, Carruthers J, Joseph J, et al. High-dose neuromodulators: a roundtable on making sense of the data in real-world clinical practice. Aesthet Surg J Open Forum. 2021;3(4):ojab036.`,
   },
   {
-    id: 'blog-7',
-    slug: 'advance-thread-lifting-techniques',
-    title: 'Dr.Christeen Youssef – Advance Thread Lifting Techniques',
-    excerpt: 'Active member of the international healthcare community with a passion on furthering standards of excellence in Aesthetic Dermatology spearheading clinically proven and safe best practices.',
-    date: '01/06/2025',
-    category: 'CONFERENCE',
-    readTime: '1 min',
+    id: "blog-7",
+    slug: "advance-thread-lifting-techniques",
+    title: "Dr.Christeen Youssef – Advance Thread Lifting Techniques",
+    excerpt:
+      "Active member of the international healthcare community with a passion on furthering standards of excellence in Aesthetic Dermatology spearheading clinically proven and safe best practices.",
+    date: "01/06/2025",
+    category: "CONFERENCE",
+    readTime: "1 min",
     image: advanceThreadImage,
-    content: `Active member of the international healthcare community with a passion on furthering standards of excellence in Aesthetic Dermatology spearheading clinically proven and safe best practices. Dynamic mentor dedicated to influencing positive change as a peer adviser, consultant, and healthcare educator.`
+    content: `Active member of the international healthcare community with a passion on furthering standards of excellence in Aesthetic Dermatology spearheading clinically proven and safe best practices. Dynamic mentor dedicated to influencing positive change as a peer adviser, consultant, and healthcare educator.`,
   },
   {
-    id: 'blog-8',
-    slug: 'hands-on-laser-ebd-teaching-courses',
-    title: 'Exploring the Exciting Sessions of Hands-On Laser and EBD Teaching Courses',
-    excerpt: 'Hands-on laser and EBD teaching courses offer participants a unique opportunity to delve into the world of laser technology and evidence-based design principles.',
-    date: '08/01/2024',
-    category: 'WORKSHOP',
-    readTime: '4 min',
+    id: "blog-8",
+    slug: "hands-on-laser-ebd-teaching-courses",
+    title:
+      "Exploring the Exciting Sessions of Hands-On Laser and EBD Teaching Courses",
+    excerpt:
+      "Hands-on laser and EBD teaching courses offer participants a unique opportunity to delve into the world of laser technology and evidence-based design principles.",
+    date: "08/01/2024",
+    category: "WORKSHOP",
+    readTime: "4 min",
     image: ebdTeachingImage,
     gallery: [ebdTeachingImage2, ebdTeachingImage3],
     content: `## Introduction
@@ -506,6 +528,6 @@ In addition to lasers, energy-based devices (EBDs) play a significant role in me
 
 ## Conclusion
 
-Hands-on laser and EBD teaching courses offer a wide range of sessions that equip educators with valuable knowledge and practical skills. From understanding laser tissue interaction to exploring various applications such as laser hair removal, vascular lesions, pigmented lesions, and rejuvenation, these courses empower educators to incorporate laser technology and evidence-based design principles into their teaching methodologies. By embracing these innovative approaches, educators can create engaging learning experiences and inspire students to explore the fascinating world of laser technology and energy-based devices.`
-  }
+Hands-on laser and EBD teaching courses offer a wide range of sessions that equip educators with valuable knowledge and practical skills. From understanding laser tissue interaction to exploring various applications such as laser hair removal, vascular lesions, pigmented lesions, and rejuvenation, these courses empower educators to incorporate laser technology and evidence-based design principles into their teaching methodologies. By embracing these innovative approaches, educators can create engaging learning experiences and inspire students to explore the fascinating world of laser technology and energy-based devices.`,
+  },
 ];

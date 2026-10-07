@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
-import { gsap, useGSAP } from '@/lib/gsap';
+import { gsap, useGSAP, prefersReducedMotion } from '@/lib/gsap';
 
 // Three authored lines, not one string that happens to wrap. The break after
 // each clause is the whole rhythm of the thing, so it is never left to the
@@ -24,6 +24,12 @@ export function ManifestoBand() {
 
   useGSAP(
     () => {
+      // Nothing here is essential to reading the section: every tween below is
+      // a `gsap.from`, so the elements are already in their finished state and
+      // not running them is exactly the right outcome. An early return, not a
+      // shorter duration — the ask is for less motion, not faster motion.
+      if (prefersReducedMotion()) return;
+
       const rule = rootRef.current?.querySelector<HTMLElement>('[data-rule]');
       const lines = gsap.utils.toArray<HTMLElement>(
         '[data-line]',

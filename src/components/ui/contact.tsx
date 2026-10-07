@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { CtaSubmit } from '@/components/ui/cta-pill';
 import { Input } from '@/components/ui/input';
+import { PhoneField } from '@/components/ui/phone-field';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -14,6 +15,7 @@ import { SocialIcon } from '@/components/icons/social-icon';
 import { socialLinks } from '@/data/socials';
 import { services } from '@/data/services';
 import { schedule } from '@/data/schedule';
+import { countries, type Country } from '@/data/countries';
 import banner from '@/assets/main-banner.webp';
 
 interface ContactSectionProps {
@@ -33,7 +35,17 @@ interface ContactSectionProps {
 const contactSchema = z.object({
   name: z.string().trim().min(2, 'Please enter your name.'),
   email: z.email('Please enter a valid email address.'),
-  phone: z.string().trim().min(5, 'Please enter a contact number.'),
+  // The national part only — the dial code is a separate control and is
+  // joined on at submit. Counted in digits so spaces and dashes are free, and
+  // capped at E.164's 15 including the country code.
+  phone: z
+    .string()
+    .trim()
+    .min(1, 'Please enter a contact number.')
+    .refine((value) => {
+      const digits = value.replace(/\D/g, '');
+      return digits.length >= 5 && digits.length <= 15;
+    }, 'Please enter a valid contact number.'),
   message: z
     .string()
     .trim()
@@ -49,6 +61,16 @@ type ContactValues = z.infer<typeof contactSchema>;
  * email template will actually render them, and the subject is fixed.
  */
 const SUBJECT = 'Consultation enquiry — website';
+
+/**
+ * Where the dial code starts before anything is known about the reader.
+ *
+ * The clinic is in Abu Dhabi and most enquiries are local, so this is the right
+ * guess far more often than a blank or an alphabetical first entry would be. It
+ * is only a starting point: /api/country replaces it as soon as it answers.
+ */
+const FALLBACK_COUNTRY =
+  countries.find((entry) => entry.code === 'AE') ?? countries[0];
 
 const TEL = `tel:${schedule.phone.replace(/\s+/g, '')}`;
 const DIRECTIONS = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
@@ -73,6 +95,10 @@ export function ContactSection({
   // native inputs, so registering them would mean a Controller each, and they
   // are not part of what the server validates.
   const [interests, setInterests] = useState<string[]>([]);
+
+  // Not part of what the server validates either: the dial code is joined onto
+  // the number in onValid, so the API still receives one `phone` string.
+  const [country, setCountry] = useState<Country>(FALLBACK_COUNTRY);
   const [status, setStatus] = useState<{ ok: boolean; text: string } | null>(
     null,
   );
@@ -86,6 +112,32 @@ export function ContactSection({
     resolver: zodResolver(contactSchema),
     defaultValues: { name: '', email: '', phone: '', message: '' },
   });
+
+  // Ask where the reader is and preselect their dial code. Best-effort by
+  // design: the route answers `null` off Cloudflare and on a local IP, and any
+  // failure simply leaves the fallback in place — this must never be able to
+  // stop the form rendering or block a submission.
+  //
+  // The setState is inside the promise rather than the effect body, so this is
+  // a subscription to an external answer and not a cascading render.
+  useEffect(() => {
+    const abort = new AbortController();
+
+    fetch('/api/country', { signal: abort.signal })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data: { countryCode?: string | null } | null) => {
+        const match = countries.find(
+          (entry) => entry.code === data?.countryCode,
+        );
+        if (match) setCountry(match);
+      })
+      .catch(() => {
+        // Aborted on unmount, offline, or the lookup failed. The fallback
+        // stands either way.
+      });
+
+    return () => abort.abort();
+  }, []);
 
   const toggleInterest = (title: string, checked: boolean) =>
     setInterests((current) =>
@@ -105,7 +157,14 @@ export function ContactSection({
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...values, message, subject: SUBJECT }),
+        body: JSON.stringify({
+        ...values,
+        // The two halves rejoined. Sent with a space rather than run together,
+        // so the number is readable in the inbox and still dials.
+        phone: `${country.dialCode} ${values.phone.trim()}`,
+        message,
+        subject: SUBJECT,
+      }),
       });
 
       // The route answers 400 with `errors[]` and 500 with `error`, so both
@@ -277,13 +336,12 @@ export function ContactSection({
                 <Label htmlFor="phone" className={FIELD_LABEL}>
                   Phone
                 </Label>
-                <Input
+                <PhoneField
                   id="phone"
-                  type="tel"
-                  autoComplete="tel"
-                  aria-invalid={Boolean(errors.phone)}
-                  className={FIELD}
-                  {...register('phone')}
+                  country={country}
+                  onCountryChange={setCountry}
+                  invalid={Boolean(errors.phone)}
+                  inputProps={register('phone')}
                 />
                 <FieldError message={errors.phone?.message} />
               </div>

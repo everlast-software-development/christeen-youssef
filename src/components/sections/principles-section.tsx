@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 import { motion, useScroll, useSpring } from 'motion/react';
-import { gsap, SplitText, useGSAP } from '@/lib/gsap';
+import { gsap, SplitText, useGSAP, prefersReducedMotion } from '@/lib/gsap';
 
 const PRINCIPLES = [
   {
@@ -52,6 +52,12 @@ export function PrinciplesSection() {
 
   useGSAP(
     () => {
+      // Nothing here is essential to reading the section: every tween below is
+      // a `gsap.from`, so the elements are already in their finished state and
+      // not running them is exactly the right outcome. An early return, not a
+      // shorter duration — the ask is for less motion, not faster motion.
+      if (prefersReducedMotion()) return;
+
       // ---- Sticky title: per-line mask reveal ----
       // autoSplit re-splits once the webfont resolves; splitting against
       // fallback metrics would break the lines in the wrong places.

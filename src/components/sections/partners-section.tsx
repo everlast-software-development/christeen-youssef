@@ -2,7 +2,7 @@
 
 import Image, { type StaticImageData } from 'next/image';
 import { useRef } from 'react';
-import { gsap, SplitText, useGSAP } from '@/lib/gsap';
+import { gsap, ScrollTrigger, SplitText, useGSAP } from '@/lib/gsap';
 
 // Renamed from the delivered `1 (1).webp`, `2-1.webp`, `3.webp`… for two
 // reasons: a space and parentheses in a filename are exactly the hazard
@@ -128,9 +128,34 @@ export function PartnersSection() {
           repeat: -1,
         });
 
-        // Hold still while a logo is being looked at.
-        const pause = () => loop.pause();
-        const resume = () => loop.play();
+        // Two independent reasons to hold still, resolved in one place so they
+        // cannot fight: a pointer resting on a logo, and the row being nowhere
+        // near the screen. Without the second one this tween runs for as long as
+        // the tab is open — it repeats forever, so scrolling past does not end
+        // it, and an off-screen marquee keeps GSAP's ticker awake at 60fps for
+        // something nobody is looking at.
+        let hovered = false;
+        let onScreen = true;
+        const sync = () => (hovered || !onScreen ? loop.pause() : loop.play());
+
+        const pause = () => {
+          hovered = true;
+          sync();
+        };
+        const resume = () => {
+          hovered = false;
+          sync();
+        };
+
+        const visibility = ScrollTrigger.create({
+          trigger: viewport,
+          start: 'top bottom',
+          end: 'bottom top',
+          onToggle: ({ isActive }) => {
+            onScreen = isActive;
+            sync();
+          },
+        });
 
         viewport.addEventListener('pointerenter', pause);
         viewport.addEventListener('pointerleave', resume);
@@ -144,6 +169,7 @@ export function PartnersSection() {
           viewport.removeEventListener('pointerleave', resume);
           viewport.removeEventListener('focusin', pause);
           viewport.removeEventListener('focusout', resume);
+          visibility.kill();
         };
       });
 

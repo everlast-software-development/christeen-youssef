@@ -6,8 +6,14 @@ import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import { TransitionLink } from "@/components/ui/transition-link";
 import { CountUp } from "@/components/ui/count-up";
-import { EventSpotlight } from "@/components/ui/event-spotlight";
-import { gsap, SplitText, useGSAP } from "@/lib/gsap";
+import {
+  gsap,
+  ScrollTrigger,
+  SplitText,
+  useGSAP,
+  prefersReducedMotion,
+  MOTION_OK,
+} from "@/lib/gsap";
 import { stats } from "@/data/stats";
 import portrait from "@/assets/hero-portrait.webp";
 
@@ -30,6 +36,24 @@ export function HeroSection() {
     () => {
       const lines = gsap.utils.toArray<HTMLElement>("[data-line]");
       if (!lines.length) return;
+
+      // The name ships at opacity 0 (see the markup) so the un-split text never
+      // flashes in its flat fallback before SplitText dresses it. That makes
+      // this the one reveal on the site that cannot simply be skipped — with no
+      // tween to turn it back on, the headline would stay invisible forever.
+      // So reduced motion gets the name, immediately, and none of the rest:
+      // no per-character rise, and no endlessly repeating shimmer.
+      if (prefersReducedMotion()) {
+        gsap.set(lines, { opacity: 1 });
+        return;
+      }
+
+      // Every timeline built below, so the one ScrollTrigger after the loop can
+      // stop them together. The shimmer repeats forever, and left alone it goes
+      // on writing a custom property every frame long after the hero has been
+      // scrolled past — which keeps the ticker awake and the phone warm for an
+      // effect nobody can see.
+      const timelines: gsap.core.Timeline[] = [];
 
       lines.forEach((line, i) => {
         SplitText.create(line, {
@@ -87,9 +111,18 @@ export function HeroSection() {
               "+=0.35",
             );
 
+            timelines.push(tl);
             return tl;
           },
         });
+      });
+
+      ScrollTrigger.create({
+        trigger: sectionRef.current,
+        start: "top bottom",
+        end: "bottom top",
+        onToggle: ({ isActive }) =>
+          timelines.forEach((tl) => (isActive ? tl.resume() : tl.pause())),
       });
     },
     { scope: nameRef },
@@ -111,7 +144,9 @@ export function HeroSection() {
       // a hero that is still half on screen.
       const mm = gsap.matchMedia();
 
-      mm.add("(min-width: 1024px)", () => {
+      // Reduced motion drops the dissolve with it: About is opaque and covers
+      // the hero on its own, so the only thing lost is the fade underneath it.
+      mm.add(`(min-width: 1024px) and ${MOTION_OK}`, () => {
       gsap.to("[data-hero-fade]", {
         opacity: 0,
         // Linear: the scroll position is the timeline here, and Lenis has
@@ -356,15 +391,6 @@ export function HeroSection() {
           </TransitionLink>
         </motion.div>
       </motion.div>
-
-      {/* The upcoming event. A direct child of the section so its thumbnail
-          positions against the hero's own box, and carrying data-hero-fade so it
-          dissolves with everything else as About rides over.
-
-          Its overlay is portalled to the body from inside — see EventSpotlight
-          — because this section is `isolate` and would otherwise stack the
-          poster underneath the fixed header. */}
-      <EventSpotlight />
 
       {/* Film grain: ties the type, gradient and photo into one surface
           instead of three stacked layers.

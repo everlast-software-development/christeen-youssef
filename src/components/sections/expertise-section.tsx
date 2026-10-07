@@ -2,7 +2,13 @@
 
 import Image, { type StaticImageData } from 'next/image';
 import { useRef } from 'react';
-import { gsap, ScrollTrigger, SplitText, useGSAP } from '@/lib/gsap';
+import {
+  gsap,
+  ScrollTrigger,
+  SplitText,
+  useGSAP,
+  prefersReducedMotion,
+} from '@/lib/gsap';
 
 // Filenames are deliberately URL-safe. The image optimizer re-fetches the
 // built asset by path, and an `&` in the filename truncates that request —
@@ -99,6 +105,13 @@ export function ExpertiseSection() {
 
   useGSAP(
     () => {
+      // Everything below is either a reveal or the pinned sideways run. The
+      // reveals are `gsap.from`s and are already finished; the pinned run is
+      // scroll-jacking, which is exactly what someone asking for less motion is
+      // asking to be spared. Skipping both is safe only because the markup
+      // above keeps its native horizontal scroller when motion is not welcome.
+      if (prefersReducedMotion()) return;
+
       // ---- Header: per-line mask reveal, same device as the other sections ----
       // The trigger is the whole point here. Keyed to `top 65%` this fired
       // while the section was still two thirds of a screen below the fold and
@@ -329,12 +342,18 @@ export function ExpertiseSection() {
             At lg it is clipped instead and GSAP translates the track inside it.
             The native scrollbar is hidden to match the rest of the page, where
             the gold rail is the scroll indicator. */}
-        <div className="overflow-x-auto [scrollbar-width:none] lg:overflow-hidden [&::-webkit-scrollbar]:hidden">
+        {/* The clip is what lets GSAP translate the track inside a fixed frame, so
+            it is gated on motion being welcome. Without it the wrapper stays the
+            plain `overflow-x-auto` scroller it already is below lg — which is
+            the whole reduced-motion story here: same panels, same order, moved
+            by hand instead of by the page. Clipping without the pin would hide
+            every panel past the first. */}
+        <div className="overflow-x-auto [scrollbar-width:none] lg:motion-safe:overflow-hidden [&::-webkit-scrollbar]:hidden">
           <div
             ref={trackRef}
             // w-max, not a percentage: the track has to be as wide as its own
             // content for the distance measurement above to mean anything.
-            className="flex w-max snap-x snap-mandatory gap-4 px-5 md:gap-6 md:px-8 lg:snap-none lg:gap-8 lg:px-12 xl:px-20"
+            className="flex w-max snap-x snap-mandatory gap-4 px-5 md:gap-6 md:px-8 lg:gap-8 lg:px-12 lg:motion-safe:snap-none xl:px-20"
           >
             {PANELS.map((panel, i) => (
               <article

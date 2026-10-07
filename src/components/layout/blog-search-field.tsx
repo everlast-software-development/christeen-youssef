@@ -246,7 +246,14 @@ export function BlogSearchField({
             </p>
           ) : (
             <>
-              <ul ref={listRef} className="max-h-[26rem] overflow-y-auto p-2">
+              <ul
+                ref={listRef}
+                // See the note in phone-field.tsx: Lenis cancels the native
+                // scroll for the whole page, and a nested scroller needs this to
+                // get its wheel events back.
+                data-lenis-prevent
+                className="max-h-[26rem] overflow-y-auto overscroll-contain p-2"
+              >
                 {shown.map((post, index) => (
                   <li key={post.slug}>
                     <TransitionLink

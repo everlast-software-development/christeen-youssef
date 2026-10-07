@@ -2,7 +2,12 @@
 
 import Image from 'next/image';
 import { useRef } from 'react';
-import { gsap, ScrollTrigger, useGSAP } from '@/lib/gsap';
+import {
+  gsap,
+  ScrollTrigger,
+  useGSAP,
+  prefersReducedMotion,
+} from '@/lib/gsap';
 import portrait from '@/assets/about-me.jpeg';
 
 const INTRO = [
@@ -29,8 +34,12 @@ const STEP_COUNT = 3;
 
 // Shared by all three panels: ordinary stacked blocks on small screens, exactly
 // overlaid inside the pinned frame from lg up so they can cross-fade in place.
+// The overlay half is gated on motion: stacking the panels on top of each
+// other only makes sense while something is cross-fading between them. With the
+// sequence skipped they stay ordinary blocks in flow at every width — the same
+// layout small screens already get — so all three are simply read in order.
 const STEP_CLASS =
-  'relative px-5 py-20 md:px-8 lg:absolute lg:inset-0 lg:flex lg:items-center lg:px-12 lg:py-0 xl:px-20';
+  'relative px-5 py-20 md:px-8 lg:px-12 lg:motion-safe:absolute lg:motion-safe:inset-0 lg:motion-safe:flex lg:motion-safe:items-center lg:motion-safe:py-0 xl:px-20';
 
 export function AboutSection() {
   const rootRef = useRef<HTMLElement>(null);
@@ -39,6 +48,13 @@ export function AboutSection() {
 
   useGSAP(
     () => {
+      // The panel sequence is this section's layout at lg, not decoration — so
+      // it cannot simply be skipped without the markup changing too. It does:
+      // STEP_CLASS and the frame below only overlay and pin under `motion-safe`,
+      // so with motion unwelcome all three panels flow down the page as blocks
+      // and every reveal here is left unrun, which leaves them visible.
+      if (prefersReducedMotion()) return;
+
       const mm = gsap.matchMedia();
 
       // From lg up the panels are stacked in one pinned frame and cross-fade.
@@ -328,7 +344,7 @@ export function AboutSection() {
           viewport of scroll per panel. On mobile it collapses to nothing and
           the panels simply stack. */}
       <div ref={runwayRef}>
-        <div className="flex flex-col overflow-hidden lg:sticky lg:top-0 lg:h-svh lg:flex-row">
+        <div className="flex flex-col overflow-hidden lg:motion-safe:sticky lg:motion-safe:top-0 lg:motion-safe:h-svh lg:motion-safe:flex-row">
           {/* ---------------- Left: cross-fading panels ---------------- */}
           <div className="relative flex-1 lg:min-w-0">
             {/* Warm bloom so the ink field has a centre of gravity */}
@@ -494,7 +510,7 @@ export function AboutSection() {
               The old mount-time fade never read on desktop: the section sits
               below the fold, so it had finished long before anyone scrolled
               here. It is scroll-driven now, like the copy beside it. */}
-          <div className="relative order-first h-[55svh] w-full shrink-0 overflow-hidden lg:order-none lg:h-svh lg:w-[35%]">
+          <div className="relative order-first h-[55svh] w-full shrink-0 overflow-hidden lg:motion-safe:order-none lg:motion-safe:h-svh lg:motion-safe:w-[35%]">
             {/* The reveal needs its own layer. The <Image> below already
                 carries the parallax transform that ScrollTrigger rewrites each
                 frame, so animating it here would be overwritten instantly. */}
@@ -552,9 +568,11 @@ export function AboutSection() {
         <div
           ref={swapRef}
           aria-hidden
-          className="hidden lg:block lg:h-[220svh]"
+          // Scroll runway for the pinned frame. With nothing pinned it would
+          // be 220svh of empty ink, so it goes with the sequence.
+          className="hidden lg:motion-safe:block lg:h-[220svh]"
         />
-        <div aria-hidden className="hidden lg:block lg:h-[60svh]" />
+        <div aria-hidden className="hidden lg:motion-safe:block lg:h-[60svh]" />
       </div>
     </section>
   );

@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
-import { gsap, SplitText, useGSAP } from '@/lib/gsap';
+import { gsap, SplitText, useGSAP, prefersReducedMotion } from '@/lib/gsap';
 import { CtaPill } from '@/components/ui/cta-pill';
 import { schedule } from '@/data/schedule';
 
@@ -20,6 +20,12 @@ export function FinalCta() {
 
   useGSAP(
     () => {
+      // Nothing here is essential to reading the section: every tween below is
+      // a `gsap.from`, so the elements are already in their finished state and
+      // not running them is exactly the right outcome. An early return, not a
+      // shorter duration — the ask is for less motion, not faster motion.
+      if (prefersReducedMotion()) return;
+
       const title = rootRef.current?.querySelector<HTMLElement>('[data-title]');
       const items = gsap.utils.toArray<HTMLElement>(
         '[data-item]',

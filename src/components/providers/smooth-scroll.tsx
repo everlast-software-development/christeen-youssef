@@ -1,7 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useSyncExternalStore } from 'react';
 import { useLocation } from 'react-router';
 import { ReactLenis, useLenis } from 'lenis/react';
-import { useReducedMotion } from 'motion/react';
 import { gsap, ScrollTrigger } from '@/lib/gsap';
 
 /**
@@ -67,12 +66,23 @@ function RouteScrollReset() {
   return null;
 }
 
+const REDUCED = '(prefers-reduced-motion: reduce)';
+const subscribe = (onChange: () => void) => {
+  const query = window.matchMedia(REDUCED);
+  query.addEventListener('change', onChange);
+  return () => query.removeEventListener('change', onChange);
+};
+
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
   // Reduced motion turns the smoothing off rather than unmounting Lenis. The
   // wrapper has to be in the tree either way: the server cannot know the
   // preference, and a client tree with one provider fewer shifts every useId
   // beneath it, which React reports as a hydration mismatch.
-  const reducedMotion = useReducedMotion() ?? false;
+  const reducedMotion = useSyncExternalStore(
+    subscribe,
+    () => window.matchMedia(REDUCED).matches,
+    () => false,
+  );
 
   return (
     <ReactLenis

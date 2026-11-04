@@ -9,17 +9,19 @@
  * sitemap.xml and robots.txt.
  */
 import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
-import { dirname, join, resolve } from 'node:path';
+import { dirname, join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { SITE_URL } from '../src/lib/site';
 
-const root = resolve(import.meta.dirname, '..');
+// npm runs the build from the project root; this file runs compiled, from dist.
+const root = process.cwd();
 const clientDir = join(root, 'dist/client');
 const serverEntry = join(root, 'dist/server/entry-server.js');
 
 type ServerEntry = {
   ROUTES: string[];
-  render: (url: string) => { html: string; head: string };
+  render: (url: string) => Promise<{ html: string; head: string }>;
+  pageSource: (url: string) => string | undefined;
   blogPosts: Array<{ slug: string; date: string }>;
 };
 
@@ -38,6 +40,37 @@ async function fontPreloads() {
     .filter(Boolean)
     .map((file) => `<link rel="preload" href="/assets/${file}" as="font" type="font/woff2" crossorigin />`)
     .join('\n    ');
+}
+
+type Manifest = Record<string, { file: string; css?: string[]; imports?: string[]; isEntry?: boolean }>;
+
+/** A chunk's file and every chunk it statically imports, recursively. */
+function chunkFiles(manifest: Manifest, key: string, files = new Set<string>(), css = new Set<string>()) {
+  const chunk = manifest[key];
+  if (!chunk || files.has(chunk.file)) return { files, css };
+  files.add(chunk.file);
+  chunk.css?.forEach((file) => css.add(file));
+  chunk.imports?.forEach((child) => chunkFiles(manifest, child, files, css));
+  return { files, css };
+}
+
+/**
+ * Each page is its own chunk, and main.tsx loads the current one before it
+ * hydrates. Preloading it (and the shared chunks it imports) next to the
+ * entry keeps that from becoming a second round trip.
+ */
+function chunkPreloads(manifest: Manifest, source: string | undefined) {
+  if (!source || !manifest[source]) return '';
+  const entryKey = Object.keys(manifest).find((key) => manifest[key].isEntry);
+  // The entry and what it imports are already linked from index.html.
+  const inEntry = entryKey ? chunkFiles(manifest, entryKey).files : new Set<string>();
+  const { files, css } = chunkFiles(manifest, source);
+  return [
+    ...[...css].map((file) => `<link rel="stylesheet" href="/${file}" />`),
+    ...[...files]
+      .filter((file) => !inEntry.has(file))
+      .map((file) => `<link rel="modulepreload" crossorigin href="/${file}" />`),
+  ].join('\n    ');
 }
 
 function sitemap(entry: ServerEntry) {
@@ -87,9 +120,10 @@ async function main() {
   const entry = (await import(pathToFileURL(serverEntry).href)) as ServerEntry;
   const template = await readFile(join(clientDir, 'index.html'), 'utf8');
   const preloads = await fontPreloads();
+  const manifest = JSON.parse(await readFile(join(clientDir, '.vite/manifest.json'), 'utf8')) as Manifest;
 
-  const page = (url: string) => {
-    const { html, head } = entry.render(url);
+  const page = async (url: string) => {
+    const { html, head } = await entry.render(url);
     // React 19 renders <title>, <meta> and <link> where the component puts
     // them (react-helmet-async v3 hands them to React rather than collecting
     // them), and hoists them itself only when it renders the whole document.
@@ -102,21 +136,23 @@ async function main() {
     });
     return template
       .replace('<!--font-preloads-->', preloads)
-      .replace('<!--app-head-->', [head, ...hoisted].filter(Boolean).join('\n    '))
+      .replace('<!--app-head-->', [chunkPreloads(manifest, entry.pageSource(url)), head, ...hoisted].filter(Boolean).join('\n    '))
       .replace('<!--app-html-->', body);
   };
 
   for (const route of entry.ROUTES) {
     const file = route === '/' ? join(clientDir, 'index.html') : join(clientDir, route, 'index.html');
     await mkdir(dirname(file), { recursive: true });
-    await writeFile(file, page(route));
+    await writeFile(file, await page(route));
   }
-  await writeFile(join(clientDir, '404.html'), page('/404'));
+  await writeFile(join(clientDir, '404.html'), await page('/404'));
   await writeFile(join(clientDir, 'sitemap.xml'), sitemap(entry));
   await writeFile(join(clientDir, 'robots.txt'), robots);
 
-  // The server bundle was only needed to render; it is not deployed.
+  // The server bundle was only needed to render, and the manifest only to
+  // find the page chunks; neither is served.
   await rm(join(root, 'dist/server'), { recursive: true, force: true });
+  await rm(join(clientDir, '.vite'), { recursive: true, force: true });
 
   console.log(`prerendered ${entry.ROUTES.length} routes + 404.html, sitemap.xml, robots.txt`);
 }

@@ -107,7 +107,9 @@ export function CompareSlider({
     >
       <Image src={after} alt={`${label}, after treatment`} fill sizes={sizes} preload={preload} placeholder="blur" style={fit} className="object-cover" draggable={false} />
       <div className={cn('absolute inset-0', ease)} style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}>
-        <Image src={before} alt={`${label}, before treatment`} fill sizes={sizes} preload={preload} placeholder="blur" style={fit} className="object-cover" draggable={false} />
+        {/* Eager but not high priority: the after photo is the larger paint
+            (the page's LCP), so it gets the bandwidth first. */}
+        <Image src={before} alt={`${label}, before treatment`} fill sizes={sizes} loading={preload ? 'eager' : undefined} placeholder="blur" style={fit} className="object-cover" draggable={false} />
       </div>
 
       {children}

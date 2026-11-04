@@ -37,9 +37,9 @@ serves prerendered HTML that React hydrates. Check the real thing with
 
 | Script              | Purpose                                                          |
 | ------------------- | ---------------------------------------------------------------- |
-| `npm run dev`       | Express + Vite dev middleware (app and API on one port)          |
-| `npm run build`     | Client build → SSR build → prerender every route to `dist/client` |
-| `npm start`         | Express serving `dist/client` and the API (`PORT`, default 3000) |
+| `npm run dev`       | Express + Vite dev middleware (app and API on one port), run by tsx |
+| `npm run build`     | Client build → SSR build → prerender every route to `dist/client` → server compiled to `dist/node/server.js` (esbuild) |
+| `npm start`         | Plain `node dist/node/server.js`: `dist/client` and the API (`PORT`, default 3000) |
 | `npm run preview`   | `build` then `start`                                             |
 | `npm run lint`      | ESLint (typescript-eslint + react-hooks)                         |
 | `npm run typecheck` | `tsc --noEmit` (app, server and scripts)                         |
@@ -50,9 +50,10 @@ serves prerendered HTML that React hydrates. Check the real thing with
 index.html            # HTML shell: boot scripts, <!--app-head--> / <!--app-html--> slots
 vite.config.ts        # Vite, Tailwind, imagetools (the `asset` image format)
 src/
-├── main.tsx          # browser entry: hydrates prerendered HTML
+├── main.tsx          # browser entry: loads the page's chunk, hydrates prerendered HTML
 ├── entry-server.tsx  # render(url) + the list of routes to prerender
 ├── App.tsx           # chrome (header, footer, preloader) + routes + legacy redirects
+├── routes.tsx        # each page as its own chunk, preloadable (no Suspense flash)
 ├── pages/            # one component per route (home, about, blog, blog-post, …)
 ├── components/
 │   ├── ui/           # shadcn primitives + Image (next/image replacement)
@@ -68,7 +69,8 @@ _legacy/              # pre-redesign components, reference only
 ```
 
 Adding a page: create it in `src/pages/`, give it a `<Seo path=… />`, add the
-`<Route>` in `App.tsx` and its URL to `ROUTES` in `entry-server.tsx` (blog
+`<Route>` in `App.tsx`, a `splitPage` + `SPLIT_ROUTES` entry in `routes.tsx`, and
+its URL to `ROUTES` in `entry-server.tsx` (blog
 posts are picked up from `src/data/blog.ts` automatically).
 
 ### Design tokens
@@ -152,8 +154,11 @@ ever moves content, never hides it.
 ## Deployment (Railway)
 
 Railway runs `npm ci --include=dev && npm run build`, then `npm start`
-(`railway.json`, `nixpacks.toml`). Express listens on `$PORT` and serves the
-prerendered `dist/client` with the API on the same origin.
+(`railway.json`, `nixpacks.toml`) — plain Node on the compiled
+`dist/node/server.js`, no TypeScript at runtime. Express listens on `$PORT` and
+serves the prerendered `dist/client` with the API on the same origin. Node
+`^20.19 || >=22.12` (`engines`, the floor Vite 8 needs); Railway uses the
+version in `.node-version` (24).
 
 Environment variables (see `.env.example`): `EMAIL_HOST`, `EMAIL_PORT`,
 `EMAIL_SECURE`, `EMAIL_USER`, `EMAIL_PASS`, `EMAIL_TO` — unchanged from the

@@ -4,6 +4,7 @@ import { StaticRouter } from 'react-router';
 import { HelmetProvider, type HelmetServerState } from 'react-helmet-async';
 import { App } from '@/App';
 import { blogPosts } from '@/data/blog';
+import { preloadAllPages, routeFor } from '@/routes';
 
 /** Every URL prerendered to static HTML at build time. */
 export const ROUTES = [
@@ -15,8 +16,17 @@ export const ROUTES = [
   ...blogPosts.map((post) => `/blog/${post.slug}`),
 ];
 
-/** The same app main.tsx hydrates, rendered once for `url`. */
-export function render(url: string) {
+/** The page's source module, for its chunk in Vite's manifest. */
+export function pageSource(url: string) {
+  return routeFor(url)?.source;
+}
+
+/**
+ * The same app main.tsx hydrates, rendered once for `url`. Every split page
+ * is loaded first, so the render is a single synchronous pass.
+ */
+export async function render(url: string) {
+  await preloadAllPages();
   const helmetContext: { helmet?: HelmetServerState } = {};
 
   const html = renderToString(

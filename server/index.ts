@@ -1,12 +1,14 @@
 import { existsSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { join } from 'node:path';
 import express, { type NextFunction, type Request, type Response } from 'express';
 import compression from 'compression';
 import { ipKeyGenerator, rateLimit } from 'express-rate-limit';
 import { contact } from './contact';
 import { country } from './country';
 
-const root = resolve(import.meta.dirname, '..');
+// The project root: npm runs every script from it, and the compiled server
+// (dist/node/server.js) no longer sits one level below it.
+const root = process.cwd();
 const dist = join(root, 'dist/client');
 
 // Local SMTP settings from .env (Railway injects real environment variables,

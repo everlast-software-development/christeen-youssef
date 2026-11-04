@@ -7,6 +7,7 @@ import '@fontsource/cormorant-garamond/500-italic.css';
 import '@fontsource-variable/manrope/wght.css';
 import '@/styles/globals.css';
 import { App } from '@/App';
+import { preloadPage } from '@/routes';
 
 const app = (
   <StrictMode>
@@ -24,5 +25,9 @@ const root = document.getElementById('root')!;
 // over (hydrate); the dev server sends a root holding only the <!--app-html-->
 // placeholder comment, so React renders it. An element, not any child node:
 // the comment alone must not count as markup.
-if (root.firstElementChild) hydrateRoot(root, app);
-else createRoot(root).render(app);
+// The current page's chunk loads first (the prerendered HTML already
+// modulepreloads it), so hydration renders exactly what the server did.
+preloadPage(window.location.pathname).then(() => {
+  if (root.firstElementChild) hydrateRoot(root, app);
+  else createRoot(root).render(app);
+});

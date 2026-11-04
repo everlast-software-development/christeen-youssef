@@ -2,14 +2,15 @@
 # --include=dev is not optional here. Railway sets npm's legacy `production`
 # config, which makes `npm ci` omit devDependencies — and the build needs
 # several of them: vite, @vitejs/plugin-react, @tailwindcss/vite and
-# vite-imagetools for the client and prerender builds, typescript and the
-# @types packages for type checking.
+# vite-imagetools for the client and prerender builds, esbuild to compile the
+# prerender script and the server.
 cmds = ["npm ci --include=dev"]
 
 [phases.build]
-# Client build, SSR build, then every route prerendered to dist/client.
+# Client build, SSR build, every route prerendered to dist/client, then the
+# server compiled to dist/node/server.js.
 cmds = ["npm run build"]
 
 [start]
-# Express serves dist/client and the API, listening on $PORT.
+# node dist/node/server.js: Express serves dist/client and the API on $PORT.
 cmd = "npm start"

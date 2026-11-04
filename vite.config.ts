@@ -68,6 +68,8 @@ export default defineConfig({
   build: {
     outDir: 'dist/client',
     emptyOutDir: true,
+    // Read by scripts/prerender.ts to modulepreload each page's chunk.
+    manifest: true,
   },
   ssr: {
     // Bundled into the prerender build rather than required at runtime, so the

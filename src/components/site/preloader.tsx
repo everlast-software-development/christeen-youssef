@@ -9,6 +9,7 @@ import {
 import { useLocation, useNavigate } from 'react-router';
 import { useLenis } from 'lenis/react';
 import { gsap, ScrollTrigger, prefersReducedMotion } from '@/lib/gsap';
+import { preloadPage } from '@/routes';
 
 /** sessionStorage key: set once the full preloader has played this session. */
 export const PRELOADED_KEY = 'cy:preloaded';
@@ -161,7 +162,16 @@ export function Preloader({ children }: { children: React.ReactNode }) {
       // No lenis.stop() here: its stopped state clips the root's overflow,
       // which drops the scroll position to 0 before the ink is even up.
       setCover(true);
-      timers.current.push(window.setTimeout(() => go(href), NAV_IN_MS));
+      // The route changes once the ink is up and the page's chunk is in, so
+      // the swap happens behind it rather than through an empty fallback.
+      const loaded = preloadPage(path).catch(() => undefined);
+      timers.current.push(
+        window.setTimeout(() => {
+          loaded.then(() => {
+            if (target.current === path) go(href);
+          });
+        }, NAV_IN_MS),
+      );
       timers.current.push(window.setTimeout(reveal, NAV_IN_MS + NAV_SAFETY_MS));
     },
     [pathname, go, clear, reveal],

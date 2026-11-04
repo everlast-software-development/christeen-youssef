@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { Navigate, Route, Routes, useParams } from 'react-router';
 import { SmoothScroll } from '@/components/providers/smooth-scroll';
 import { ScrollMotion } from '@/components/providers/scroll-motion';
@@ -5,12 +6,8 @@ import { Preloader } from '@/components/site/preloader';
 import { SiteHeader } from '@/components/site/header';
 import { SiteFooter } from '@/components/site/footer';
 import { ScrollProgress } from '@/components/layout/scroll-progress';
-import Home from '@/pages/home';
-import About from '@/pages/about';
-import BeforeAndAfter from '@/pages/before-and-after';
-import Blog from '@/pages/blog';
-import BlogPost from '@/pages/blog-post';
-import ReachMe from '@/pages/reach-me';
+import { About, BeforeAndAfter, Blog, BlogPost, Home, ReachMe } from '@/routes';
+// Not split: the blog post page renders it for an unknown slug too.
 import NotFound from '@/pages/not-found';
 
 /** `/blogs/:slug` was the old URL for an article. */
@@ -22,7 +19,9 @@ function LegacyBlogPost() {
 /**
  * The site: the shared chrome (skip link, smooth scroll, preloader, header,
  * footer) around the routes. The same tree renders on the server at build
- * time (entry-server.tsx) and hydrates in the browser (main.tsx).
+ * time (entry-server.tsx) and hydrates in the browser (main.tsx). Each page is
+ * its own chunk (routes.tsx); the Suspense boundary only ever shows during a
+ * client-side navigation that outruns its preload — never on first load.
  *
  * The legacy redirects are also answered with a 301 by the Express server;
  * these only cover in-app navigation to an old URL.
@@ -42,21 +41,23 @@ export function App() {
           <ScrollProgress />
           <SiteHeader />
           <ScrollMotion />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about-me" element={<About />} />
-            <Route path="/before-and-after" element={<BeforeAndAfter />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/:slug" element={<BlogPost />} />
-            <Route path="/reach-me" element={<ReachMe />} />
+          <Suspense fallback={null}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/about-me" element={<About />} />
+              <Route path="/before-and-after" element={<BeforeAndAfter />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:slug" element={<BlogPost />} />
+              <Route path="/reach-me" element={<ReachMe />} />
 
-            <Route path="/gallery" element={<Navigate to="/before-and-after" replace />} />
-            <Route path="/publications" element={<Navigate to="/before-and-after" replace />} />
-            <Route path="/appointment" element={<Navigate to="/reach-me" replace />} />
-            <Route path="/blogs/:slug" element={<LegacyBlogPost />} />
+              <Route path="/gallery" element={<Navigate to="/before-and-after" replace />} />
+              <Route path="/publications" element={<Navigate to="/before-and-after" replace />} />
+              <Route path="/appointment" element={<Navigate to="/reach-me" replace />} />
+              <Route path="/blogs/:slug" element={<LegacyBlogPost />} />
 
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
           <SiteFooter />
         </Preloader>
       </SmoothScroll>

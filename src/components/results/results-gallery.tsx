@@ -43,7 +43,10 @@ export function ResultsGallery() {
               <li key={item.id} data-reveal-item>
                 <BeforeAfterCard
                   item={item}
-                  preload={index < 3}
+                  // Only the first card loads up front: on a phone it is the
+                  // only one on screen, and every eager image beside it slows
+                  // the page's largest paint. The rest load lazily as they near.
+                  preload={index === 0}
                   hint={index === 0}
                   sizes="(min-width: 1024px) 400px, (min-width: 768px) 46vw, 92vw"
                   onOpen={() => setOpen(index)}

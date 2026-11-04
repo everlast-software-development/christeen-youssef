@@ -2,9 +2,9 @@ import { Image, type StaticImageData } from '@/components/ui/image';
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { CHIP as CHIP_STYLE } from '@/components/site/surfaces';
 
-const CHIP =
-  'pointer-events-none absolute top-3 z-20 rounded-full bg-cream px-3 py-1 type-eyebrow text-ink';
+const CHIP = cn(CHIP_STYLE, 'pointer-events-none absolute top-3 z-20');
 
 const clamp = (n: number) => Math.min(100, Math.max(0, n));
 

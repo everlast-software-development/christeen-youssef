@@ -4,7 +4,11 @@
  * GLASS_PANEL — the frosted panel of the home page's Patient Stories.
  * CARD — the Built on Trust card; pair it with a tone from CARD_TONE: `cream`
  * on page-coloured sections, `page` on cream ones (never white).
+ * CHIP — the small label over a photo (Before / After, a treatment's number);
+ * position it where it is used.
  */
+export const CHIP = 'rounded-full bg-cream px-3 py-1 type-eyebrow text-ink';
+
 export const GLASS_PANEL =
   'rounded-[16px] border border-white/14 bg-[linear-gradient(160deg,rgba(255,255,255,0.10),rgba(255,255,255,0.03))] backdrop-blur-[16px]';
 

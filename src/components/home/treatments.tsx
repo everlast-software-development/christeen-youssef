@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { Image, type StaticImageData } from '@/components/ui/image';
 import { Eyebrow } from '@/components/site/layout';
+import { CHIP } from '@/components/site/surfaces';
 import { TransitionLink } from '@/components/ui/transition-link';
 import { gsap, ScrollTrigger, useGSAP, prefersReducedMotion } from '@/lib/gsap';
 
@@ -73,9 +74,14 @@ const TREATMENTS: Treatment[] = [
 
 function TreatmentCard({ item }: { item: Treatment }) {
   return (
+    // The one rounded, clipping box. No background or border under the photo
+    // (either shows as a light fringe at the anti-aliased corners); the hairline
+    // is an inset ring drawn on top. `isolate` + translateZ(0) give the clip its
+    // own compositing layer, so the hover zoom and the moving carousel never
+    // paint square corners in Chrome or Safari.
     <TransitionLink
       href="/before-and-after"
-      className="group relative flex aspect-[3/4] w-[clamp(260px,24vw,320px)] shrink-0 flex-col justify-end overflow-hidden rounded-[16px] bg-ink text-white"
+      className="group relative isolate flex aspect-[3/4] w-[clamp(260px,24vw,320px)] shrink-0 transform-[translateZ(0)] flex-col justify-end overflow-hidden rounded-card text-white after:pointer-events-none after:absolute after:inset-0 after:z-10 after:rounded-[inherit] after:ring-1 after:ring-white/10 after:ring-inset after:content-['']"
     >
       <Image
         src={item.image}
@@ -90,7 +96,7 @@ function TreatmentCard({ item }: { item: Treatment }) {
         className="absolute inset-0"
         style={{ background: 'linear-gradient(180deg, rgba(23,21,15,0) 45%, rgba(23,21,15,0.85) 100%)' }}
       />
-      <span className="absolute top-3.5 left-3.5 rounded-full bg-cream px-[11px] py-[3px] text-[12px] font-semibold text-text tabular-nums">
+      <span className={`${CHIP} absolute top-4 left-4 tabular-nums`}>
         {item.index}
       </span>
       <div className="relative flex flex-col gap-1.5 p-5">

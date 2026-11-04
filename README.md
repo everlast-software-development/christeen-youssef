@@ -15,8 +15,7 @@ Aesthetic dermatology & wellness practice site — Abu Dhabi, UAE.
 | Images        | vite-imagetools: AVIF + WebP srcsets and blur placeholders    |
 | Fonts         | Fontsource — Cormorant Garamond 500 / 500 italic, Manrope (variable) |
 | UI motion     | Motion                                                        |
-| Scroll FX     | GSAP + ScrollTrigger                                          |
-| Smooth scroll | Lenis (driven by GSAP's ticker)                               |
+| Scroll FX     | GSAP + ScrollTrigger and CSS scroll timelines, on native scrolling |
 | Icons         | Lucide, react-icons (social marks)                            |
 | Forms         | react-hook-form + Zod                                         |
 | Server        | Express 5: `/api/contact` (Nodemailer, rate-limited), `/api/country`, static hosting |
@@ -57,7 +56,7 @@ src/
 ├── pages/            # one component per route (home, about, blog, blog-post, …)
 ├── components/
 │   ├── ui/           # shadcn primitives + Image (next/image replacement)
-│   ├── providers/    # SmoothScroll (Lenis + GSAP bridge), ScrollMotion
+│   ├── providers/    # RouteScroll (top on route change), ScrollMotion
 │   ├── site/         # design system: layout, buttons, header, footer, Seo, cards
 ├── data/             # content: blog, services, testimonials, schedule…
 ├── lib/              # gsap registry, email template, cn()

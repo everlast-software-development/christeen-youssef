@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Image } from '@/components/ui/image';
 import { useLocation } from 'react-router';
 import { Dialog } from '@base-ui/react/dialog';
-import { useLenis } from 'lenis/react';
 import { Clock, Phone, X } from 'lucide-react';
 import { TransitionLink } from '@/components/ui/transition-link';
 import { Button } from '@/components/site/button';
@@ -27,14 +26,6 @@ const HOURS = `${schedule.workingDays[0]} – ${
 export function MobileMenu() {
   const [open, setOpen] = useState(false);
   const pathname = useLocation().pathname;
-  const lenis = useLenis();
-
-  // The dialog locks native scroll; Lenis runs its own loop and has to be told.
-  useEffect(() => {
-    if (!lenis) return;
-    if (open) lenis.stop();
-    else lenis.start();
-  }, [open, lenis]);
 
   const close = () => setOpen(false);
 

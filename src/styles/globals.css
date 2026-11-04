@@ -190,10 +190,11 @@
 
     html {
         @apply font-body;
-        /* Lenis drives scrolling; CSS smooth-scroll would fight it. */
+        /* Native scrolling everywhere, and every jump is instant. */
         scroll-behavior: auto;
-        /* Jumps to an id (no-JS, skip link) land below the fixed header. */
-        scroll-padding-top: calc(64px + env(safe-area-inset-top));
+        /* Jumps to an id (#links, the skip link, an article's contents) land
+           below the scrolled header: its 64px plus 24px of air. */
+        scroll-padding-top: calc(88px + env(safe-area-inset-top));
         -webkit-text-size-adjust: 100%;
 
         /* The gold bar at the top is the scroll indicator, so the native
@@ -213,8 +214,7 @@
         /* Cormorant defaults to old-style figures, which turn "01" into "o1". */
         font-variant-numeric: lining-nums;
         /* clip, not hidden: overflow-x: hidden turns body into a scroll
-           container, which fights Lenis for control of the scroll and breaks
-           every position: sticky on the site. */
+           container, which breaks every position: sticky on the site. */
         overflow-x: clip;
     }
 
@@ -659,6 +659,10 @@
     @media (min-width: 961px) {
         .pin-scroll {
             view-timeline-name: --pin;
+            /* The stage sticks at top: 0, so the timeline measures the whole
+               viewport. Left at auto it would subtract html's scroll-padding-top
+               and start the slide ~88px before the section has pinned. */
+            view-timeline-inset: 0;
         }
 
         .pin-track {
@@ -674,20 +678,6 @@
             animation-range: contain 0% contain 100%;
         }
     }
-}
-
-/* Lenis: required for the smooth-scroll wrapper to behave */
-html.lenis,
-html.lenis body {
-    height: auto;
-}
-
-.lenis.lenis-smooth {
-    scroll-behavior: auto !important;
-}
-
-.lenis.lenis-stopped {
-    overflow: clip;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -747,7 +737,7 @@ html[data-preloader='done'] .preloader:not([data-live]) {
 }
 
 /* Scroll is locked from the first paint while the first-visit screen is up —
-   before the app (and Lenis) have even hydrated. */
+   before the app has even hydrated. */
 html[data-preloader='run'] {
     overflow: hidden;
 }

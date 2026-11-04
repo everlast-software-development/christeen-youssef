@@ -1,57 +1,45 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router';
-import { useLenis } from 'lenis/react';
 
 /**
  * Gold scroll-progress bar pinned to the top of the viewport, standing in for
- * the hidden native scrollbar.
+ * the hidden native scrollbar: scrollY / (scrollHeight − innerHeight), read
+ * once per frame from a passive scroll listener and written straight to the
+ * bar's transform — no React render per frame.
  *
- * Driven from Lenis rather than Motion's useScroll for two reasons: Lenis
- * already lerps its scroll position, so the raw value is smooth without a
- * spring that would have to unwind on navigation; and Lenis recalculates its
- * own `limit` when content height changes, so the bar stays correct after a
- * route swap to a page of a different length. The bar is written straight to
- * the DOM each frame — no React render, and no animation library in the
- * site's shell for one transform.
+ * A page too short to scroll reads 0, not 1: an empty bar is the right answer
+ * when there is nothing below.
  */
 export function ScrollProgress() {
   const pathname = useLocation().pathname;
   const bar = useRef<HTMLDivElement>(null);
-  const set = useCallback((value: number) => {
-    if (bar.current) bar.current.style.transform = `scaleX(${value})`;
-  }, []);
 
-  const lenis = useLenis((instance) => {
-    // Lenis returns progress 1 when limit is 0 ("all content seen"), which
-    // would paint a full gold bar on any page too short to scroll. An empty
-    // bar is the correct reading there.
-    set(instance.limit > 0 ? instance.progress : 0);
-  });
-
-  // Snap back to empty on navigation.
+  // Re-subscribed per route, which also re-reads the new page from the top.
   useEffect(() => {
-    set(0);
-  }, [pathname, set]);
-
-  // Reduced motion means Lenis is never mounted, so fall back to native scroll.
-  useEffect(() => {
-    if (lenis) return;
-
+    let frame = 0;
     const read = () => {
-      const el = document.documentElement;
-      const max = el.scrollHeight - el.clientHeight;
-      set(max > 0 ? el.scrollTop / max : 0);
+      frame = 0;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const value = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      if (bar.current) bar.current.style.transform = `scaleX(${value})`;
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(read);
     };
 
     read();
-    window.addEventListener('scroll', read, { passive: true });
-    window.addEventListener('resize', read);
-
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    // The page also grows without a scroll (lazy images, a section opening).
+    const grow = new ResizeObserver(schedule);
+    grow.observe(document.body);
     return () => {
-      window.removeEventListener('scroll', read);
-      window.removeEventListener('resize', read);
+      grow.disconnect();
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+      cancelAnimationFrame(frame);
     };
-  }, [lenis, set]);
+  }, [pathname]);
 
   return (
     <div

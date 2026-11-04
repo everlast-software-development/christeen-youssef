@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Image } from '@/components/ui/image';
 import { useLocation } from 'react-router';
-import { useLenis } from 'lenis/react';
 import { TransitionLink } from '@/components/ui/transition-link';
 import { Container } from '@/components/site/layout';
 import { Button } from '@/components/site/button';
@@ -18,47 +17,37 @@ const SCROLLED_AT = 40;
  * Fixed to the top of every page. Over the opening band it is transparent and
  * 88px tall, exactly as the heroes are laid out for; once the page has moved
  * 40px it turns to a blurred ink bar 64px tall (no line under it), so the
- * same light type stays legible over cream and page sections too. Reads the
- * position from Lenis (one update per frame) and resets on every route, which
- * Lenis puts back at the top.
+ * same light type stays legible over cream and page sections too. Reads
+ * window.scrollY once per frame and re-checks on every route.
  *
  * Sits above the page (z-100) but under the mobile menu (120), the lightbox
  * (110+) and the preloader (500).
  */
 export function SiteHeader() {
   const pathname = useLocation().pathname;
-  const lenis = useLenis();
   const [scrolled, setScrolled] = useState(false);
   const frame = useRef(0);
 
-  // One check per frame, from Lenis's position when it is running and the
-  // window's otherwise (before Lenis mounts, or a reload restored mid-page).
+  // window.scrollY, at most once per frame, from a passive listener.
   useEffect(() => {
-    const check = (scroll?: number) => {
+    const check = () => {
       if (frame.current) return;
       frame.current = requestAnimationFrame(() => {
         frame.current = 0;
-        const y = scroll ?? lenis?.scroll ?? window.scrollY;
-        setScrolled(Math.max(y, window.scrollY) >= SCROLLED_AT);
+        setScrolled(window.scrollY >= SCROLLED_AT);
       });
     };
-    const onLenis = ({ scroll }: { scroll: number }) => check(scroll);
-    const onWindow = () => check();
 
     // The state on mount and after every route change — a page opened or
     // reloaded halfway down starts compact.
     check();
-    lenis?.on('scroll', onLenis);
-    // Native scroll too: Lenis is paused under the preloader and mobile menu,
-    // and the browser can restore a position without Lenis reporting it.
-    window.addEventListener('scroll', onWindow, { passive: true });
+    window.addEventListener('scroll', check, { passive: true });
     return () => {
-      lenis?.off('scroll', onLenis);
-      window.removeEventListener('scroll', onWindow);
+      window.removeEventListener('scroll', check);
       cancelAnimationFrame(frame.current);
       frame.current = 0;
     };
-  }, [lenis, pathname]);
+  }, [pathname]);
 
   return (
     <header

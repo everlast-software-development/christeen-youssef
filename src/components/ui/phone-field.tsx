@@ -190,12 +190,6 @@ export function PhoneField({
             ref={listRef}
             role="listbox"
             aria-label="Country"
-            // Lenis owns the page's wheel and touch events and cancels the
-            // native scroll, so a nested scroller gets nothing and sits there
-            // frozen while the page moves behind it. This is Lenis's own
-            // opt-out: events inside are left alone and the browser scrolls
-            // this element normally.
-            data-lenis-prevent
             className="max-h-64 overflow-y-auto overscroll-contain py-1"
           >
             {matches.length === 0 ? (

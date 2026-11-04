@@ -7,7 +7,6 @@ import {
   useState,
 } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import { useLenis } from 'lenis/react';
 import { gsap, ScrollTrigger, prefersReducedMotion } from '@/lib/gsap';
 import { preloadPage } from '@/routes';
 
@@ -68,12 +67,10 @@ const pageLoaded = () =>
 export function Preloader({ children }: { children: React.ReactNode }) {
   const go = useNavigate();
   const pathname = useLocation().pathname;
-  const lenis = useLenis();
 
   const overlay = useRef<HTMLDivElement>(null);
   const content = useRef<HTMLDivElement>(null);
   const bar = useRef<HTMLSpanElement>(null);
-  const [running, setRunning] = useState(false);
 
   // ---------------- First visit ----------------
   useEffect(() => {
@@ -83,7 +80,6 @@ export function Preloader({ children }: { children: React.ReactNode }) {
     // The app has taken over: switch off both failsafes.
     (window as Window & { __cyPreloaderLive?: boolean }).__cyPreloaderLive = true;
     overlay.current.dataset.live = '';
-    setRunning(true);
 
     const reduced = prefersReducedMotion();
     const fill = gsap.fromTo(bar.current, { scaleX: 0 }, { scaleX: 0.9, duration: MIN_MS / 1000, ease: 'power2.out' });
@@ -101,8 +97,8 @@ export function Preloader({ children }: { children: React.ReactNode }) {
           // Private mode: it simply plays again next time.
         }
         html.dataset.preloader = 'done';
+        // Unlocks scroll too (see below).
         if (overlay.current) overlay.current.style.display = 'none';
-        setRunning(false);
         window.dispatchEvent(new Event(PRELOADER_DONE));
         requestAnimationFrame(() => ScrollTrigger.refresh());
       };
@@ -125,12 +121,11 @@ export function Preloader({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  // Scroll stays locked while the first-visit screen is up.
-  useEffect(() => {
-    if (!lenis) return;
-    if (running) lenis.stop();
-    else lenis.start();
-  }, [lenis, running]);
+  // Scroll stays locked while the first-visit screen is up: <html> is
+  // overflow: hidden while data-preloader="run" (globals.css), from the first
+  // paint — before this script has even loaded — until `finish` sets "done".
+  // The scrollbar is hidden site-wide, so the unlock cannot shift the layout,
+  // and overflow: hidden keeps the scroll position, so nothing jumps.
 
   // ---------------- Navigation ----------------
   const [cover, setCover] = useState(false);
@@ -159,8 +154,6 @@ export function Preloader({ children }: { children: React.ReactNode }) {
       }
       clear();
       target.current = path;
-      // No lenis.stop() here: its stopped state clips the root's overflow,
-      // which drops the scroll position to 0 before the ink is even up.
       setCover(true);
       // The route changes once the ink is up and the page's chunk is in, so
       // the swap happens behind it rather than through an empty fallback.
@@ -177,7 +170,7 @@ export function Preloader({ children }: { children: React.ReactNode }) {
     [pathname, go, clear, reveal],
   );
 
-  // The new route has rendered (and SmoothScroll has put it at the top):
+  // The new route has rendered (and RouteScroll has put it at the top):
   // give it a frame to paint behind the ink, then fade out.
   useEffect(() => {
     if (target.current !== pathname) return;

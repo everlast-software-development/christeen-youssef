@@ -74,6 +74,6 @@ export default defineConfig({
   ssr: {
     // Bundled into the prerender build rather than required at runtime, so the
     // server bundle sees the same CSS and image imports the client does.
-    noExternal: ['@fontsource/cormorant-garamond', '@fontsource-variable/manrope', 'lenis', 'react-icons'],
+    noExternal: ['@fontsource/cormorant-garamond', '@fontsource-variable/manrope', 'react-icons'],
   },
 });

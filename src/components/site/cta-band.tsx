@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import { Image } from '@/components/ui/image';
 import { Clock, MapPin } from 'lucide-react';
 import { Eyebrow } from '@/components/site/layout';
 import { Button } from '@/components/site/button';

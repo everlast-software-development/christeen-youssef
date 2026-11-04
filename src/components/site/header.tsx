@@ -1,8 +1,6 @@
-'use client';
-
 import { useEffect, useRef, useState } from 'react';
-import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { Image } from '@/components/ui/image';
+import { useLocation } from 'react-router';
 import { useLenis } from 'lenis/react';
 import { TransitionLink } from '@/components/ui/transition-link';
 import { Container } from '@/components/site/layout';
@@ -28,7 +26,7 @@ const SCROLLED_AT = 40;
  * (110+) and the preloader (500).
  */
 export function SiteHeader() {
-  const pathname = usePathname();
+  const pathname = useLocation().pathname;
   const lenis = useLenis();
   const [scrolled, setScrolled] = useState(false);
   const frame = useRef(0);

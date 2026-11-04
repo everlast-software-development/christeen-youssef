@@ -1,5 +1,3 @@
-'use client';
-
 import { BUTTON_RADIUS } from '@/components/site/button';
 import { cn } from '@/lib/utils';
 

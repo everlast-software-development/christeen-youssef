@@ -1,4 +1,4 @@
-import type { StaticImageData } from 'next/image';
+import type { StaticImageData } from '@/components/ui/image';
 import type { LucideIcon } from 'lucide-react';
 
 export interface NavItem {

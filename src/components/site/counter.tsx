@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect, useRef } from 'react';
 import { animate } from 'motion/react';
 import { prefersReducedMotion } from '@/lib/gsap';

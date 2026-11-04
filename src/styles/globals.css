@@ -109,6 +109,11 @@
 }
 
 :root {
+    /* The two families, self-hosted through Fontsource (imported in main.tsx).
+       These were next/font's variables; the names are kept so nothing else changes. */
+    --font-cormorant: "Cormorant Garamond";
+    --font-manrope: "Manrope Variable";
+
     /* Raw palette */
     --page: #ece6dc;
     --cream: #f7f3ed;

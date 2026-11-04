@@ -1,5 +1,3 @@
-'use client';
-
 import {
   createContext,
   useCallback,
@@ -8,7 +6,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { useLocation, useNavigate } from 'react-router';
 import { useLenis } from 'lenis/react';
 import { gsap, ScrollTrigger, prefersReducedMotion } from '@/lib/gsap';
 
@@ -67,8 +65,8 @@ const pageLoaded = () =>
  * releases the page after 4s, and <noscript> hides it outright.
  */
 export function Preloader({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
-  const pathname = usePathname();
+  const go = useNavigate();
+  const pathname = useLocation().pathname;
   const lenis = useLenis();
 
   const overlay = useRef<HTMLDivElement>(null);
@@ -152,10 +150,10 @@ export function Preloader({ children }: { children: React.ReactNode }) {
 
   const navigate = useCallback(
     (href: string) => {
-      // The route alone: a query or hash does not change usePathname().
+      // The route alone: a query or hash does not change useLocation().pathname.
       const path = href.split(/[?#]/)[0] || pathname;
       if (path === pathname) {
-        router.push(href);
+        go(href);
         return;
       }
       clear();
@@ -163,10 +161,10 @@ export function Preloader({ children }: { children: React.ReactNode }) {
       // No lenis.stop() here: its stopped state clips the root's overflow,
       // which drops the scroll position to 0 before the ink is even up.
       setCover(true);
-      timers.current.push(window.setTimeout(() => router.push(href), NAV_IN_MS));
+      timers.current.push(window.setTimeout(() => go(href), NAV_IN_MS));
       timers.current.push(window.setTimeout(reveal, NAV_IN_MS + NAV_SAFETY_MS));
     },
-    [pathname, router, clear, reveal],
+    [pathname, go, clear, reveal],
   );
 
   // The new route has rendered (and SmoothScroll has put it at the top):
@@ -189,7 +187,6 @@ export function Preloader({ children }: { children: React.ReactNode }) {
           style={{ background: 'radial-gradient(ellipse 60% 70% at 50% 0%, #2E2A22 0%, #17150F 70%)' }}
         />
         <div ref={content} className="relative flex flex-col items-center">
-          {/* eslint-disable-next-line @next/next/no-img-element -- a 48px static mark */}
           <img src="/favicon.webp" alt="" width={48} height={48} className="size-12 brightness-0 invert" />
           <p className="m-0 mt-4 font-display text-[1.5rem] leading-none text-cream">Christeen Youssef</p>
           <span className="mt-6 block h-px w-40 bg-white/13">

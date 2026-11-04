@@ -1,7 +1,5 @@
-'use client';
-
 import { useEffect, useMemo, useRef, useState } from 'react';
-import Image from 'next/image';
+import { Image } from '@/components/ui/image';
 import { setBlogFilters, useBlogFilters } from '@/components/layout/blog-filters';
 import { BlogHero } from '@/components/blog/blog-hero';
 import { Container, Section } from '@/components/site/layout';
@@ -12,7 +10,6 @@ import { TransitionLink } from '@/components/ui/transition-link';
 import { blogPosts } from '@/data/blog';
 import { byNewest, formatBlogDate } from '@/lib/blog-date';
 import { heroFocus } from '@/lib/blog-image';
-import { cn } from '@/lib/utils';
 
 const PAGE_SIZE = 8;
 

@@ -3,11 +3,8 @@ node_modules
 .pnp
 .pnp.*
 
-# Next.js build output
-/.next/
-/out/
-/build
-next-env.d.ts
+# Build output (client build + prerendered pages; dist/server is temporary)
+/dist/
 *.tsbuildinfo
 
 # Caches

@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import { Image } from '@/components/ui/image';
 import { PageHero } from '@/components/site/page-hero';
 import { RotatingBadge } from '@/components/site/rotating-badge';
 import heroPortrait from '@/assets/dr-christeen.webp';

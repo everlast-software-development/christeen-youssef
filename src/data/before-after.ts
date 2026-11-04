@@ -1,4 +1,4 @@
-import type { StaticImageData } from 'next/image';
+import type { StaticImageData } from '@/components/ui/image';
 
 import before01 from '@/assets/before-after/case-01-before.webp';
 import after01 from '@/assets/before-after/case-01-after.webp';

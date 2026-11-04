@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import { Image } from '@/components/ui/image';
 import { PageHero } from '@/components/site/page-hero';
 import { formatBlogDate } from '@/lib/blog-date';
 import { heroFocus } from '@/lib/blog-image';

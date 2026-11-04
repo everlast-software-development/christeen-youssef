@@ -1,7 +1,5 @@
-'use client';
-
 import { useEffect, useRef } from 'react';
-import { usePathname } from 'next/navigation';
+import { useLocation } from 'react-router';
 import { ReactLenis, useLenis } from 'lenis/react';
 import { useReducedMotion } from 'motion/react';
 import { gsap, ScrollTrigger } from '@/lib/gsap';
@@ -49,7 +47,7 @@ function LenisGsapBridge() {
  */
 function RouteScrollReset() {
   const lenis = useLenis();
-  const pathname = usePathname();
+  const pathname = useLocation().pathname;
   const previous = useRef(pathname);
 
   useEffect(() => {

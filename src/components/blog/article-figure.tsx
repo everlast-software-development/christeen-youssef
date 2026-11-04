@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import Image, { type StaticImageData } from 'next/image';
+import { Image, type StaticImageData } from '@/components/ui/image';
 
 /**
  * A photograph set inside a body section, with the copy running past it.

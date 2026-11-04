@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import { Image } from '@/components/ui/image';
 import { Eyebrow } from '@/components/site/layout';
 import { Button } from '@/components/site/button';
 import { TransitionLink } from '@/components/ui/transition-link';

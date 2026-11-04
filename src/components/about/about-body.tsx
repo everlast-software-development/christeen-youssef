@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import Image from 'next/image';
+import { Image } from '@/components/ui/image';
 import { GraduationCap, MapPin } from 'lucide-react';
 import { BAND_Y, Container, Eyebrow, SPLIT } from '@/components/site/layout';
 import { Button } from '@/components/site/button';

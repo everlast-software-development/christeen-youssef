@@ -1,15 +1,15 @@
 [phases.install]
 # --include=dev is not optional here. Railway sets npm's legacy `production`
-# config (see the "npm warn config production" line in the build log), which
-# makes `npm ci` omit devDependencies — and the build needs several of them:
-# @tailwindcss/postcss and tailwindcss for the CSS pipeline, typescript and the
-# @types packages for the type check `next build` runs. Without it the install
-# succeeds and the build then fails on a missing PostCSS plugin.
+# config, which makes `npm ci` omit devDependencies — and the build needs
+# several of them: vite, @vitejs/plugin-react, @tailwindcss/vite and
+# vite-imagetools for the client and prerender builds, typescript and the
+# @types packages for type checking.
 cmds = ["npm ci --include=dev"]
 
 [phases.build]
+# Client build, SSR build, then every route prerendered to dist/client.
 cmds = ["npm run build"]
 
 [start]
-# next start binds to $PORT automatically.
+# Express serves dist/client and the API, listening on $PORT.
 cmd = "npm start"

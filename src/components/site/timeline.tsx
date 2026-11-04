@@ -1,5 +1,3 @@
-'use client';
-
 import { useRef } from 'react';
 import { gsap, ScrollTrigger, useGSAP } from '@/lib/gsap';
 import { cn } from '@/lib/utils';

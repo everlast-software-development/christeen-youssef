@@ -1,4 +1,4 @@
-import Image, { type StaticImageData } from 'next/image';
+import { Image, type StaticImageData } from '@/components/ui/image';
 import { Eyebrow } from '@/components/site/layout';
 import { CARD, CARD_TONE } from '@/components/site/surfaces';
 import { cn } from '@/lib/utils';

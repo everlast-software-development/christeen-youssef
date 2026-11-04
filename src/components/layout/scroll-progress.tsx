@@ -1,7 +1,5 @@
-'use client';
-
 import { useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import { useLocation } from 'react-router';
 import { motion, useMotionValue } from 'motion/react';
 import { useLenis } from 'lenis/react';
 
@@ -16,7 +14,7 @@ import { useLenis } from 'lenis/react';
  * route swap to a page of a different length.
  */
 export function ScrollProgress() {
-  const pathname = usePathname();
+  const pathname = useLocation().pathname;
   const progress = useMotionValue(0);
 
   const lenis = useLenis((instance) => {

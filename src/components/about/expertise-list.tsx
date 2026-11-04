@@ -1,5 +1,3 @@
-'use client';
-
 import { useRef, useState, type ReactNode } from 'react';
 import { gsap, ScrollTrigger, useGSAP, prefersReducedMotion } from '@/lib/gsap';
 import type { Discipline } from '@/data/about';

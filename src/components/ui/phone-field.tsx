@@ -1,5 +1,3 @@
-'use client';
-
 import {
   useEffect,
   useMemo,
@@ -7,7 +5,7 @@ import {
   useState,
   type ComponentPropsWithoutRef,
 } from 'react';
-import Image from 'next/image';
+import { Image } from '@/components/ui/image';
 import { Check, ChevronDown, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { countries, getFlagImageUrl, type Country } from '@/data/countries';

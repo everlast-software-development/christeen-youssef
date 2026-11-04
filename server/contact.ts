@@ -1,14 +1,13 @@
-import { NextResponse } from 'next/server';
+import type { Request, Response } from 'express';
 import nodemailer from 'nodemailer';
 import { z } from 'zod';
 import {
   renderContactEmail,
   renderContactText,
   type ContactSubmission,
-} from '@/lib/email-template';
+} from '../src/lib/email-template';
 
-// Same rules the Express handler enforced, expressed as a schema so the
-// error shape is consistent and the payload is typed on the way through.
+// The contact form's fields, validated server-side whatever the client did.
 const contactSchema = z.object({
   name: z.string().trim().min(2, 'Invalid name.'),
   phone: z.string().trim().min(5, 'Invalid phone.'),
@@ -19,7 +18,7 @@ const contactSchema = z.object({
 
 let transporter: nodemailer.Transporter | null = null;
 
-// Built lazily so a missing SMTP config can't break the build or cold start.
+// Built lazily so a missing SMTP config can't break start-up.
 function getTransporter() {
   if (transporter) return transporter;
 
@@ -41,28 +40,16 @@ function getTransporter() {
   return transporter;
 }
 
-export async function POST(request: Request) {
-  let payload: unknown;
-
-  try {
-    payload = await request.json();
-  } catch {
-    return NextResponse.json(
-      { success: false, error: 'Invalid JSON body.' },
-      { status: 400 },
-    );
-  }
-
-  const parsed = contactSchema.safeParse(payload);
+/** POST /api/contact — validate, then deliver the enquiry by SMTP. */
+export async function contact(request: Request, response: Response) {
+  const parsed = contactSchema.safeParse(request.body);
 
   if (!parsed.success) {
-    return NextResponse.json(
-      {
-        success: false,
-        errors: parsed.error.issues.map((issue) => issue.message),
-      },
-      { status: 400 },
-    );
+    response.status(400).json({
+      success: false,
+      errors: parsed.error.issues.map((issue) => issue.message),
+    });
+    return;
   }
 
   const data: ContactSubmission = parsed.data;
@@ -78,7 +65,7 @@ export async function POST(request: Request) {
       html: renderContactEmail(data, new Date().getFullYear()),
     });
 
-    return NextResponse.json({
+    response.json({
       success: true,
       message: 'Email sent successfully.',
       messageId: info.messageId,
@@ -86,10 +73,6 @@ export async function POST(request: Request) {
   } catch (error) {
     // Log server-side, but don't leak SMTP details to the client.
     console.error('Contact form send failed:', error);
-
-    return NextResponse.json(
-      { success: false, error: 'Failed to send message. Please try again.' },
-      { status: 500 },
-    );
+    response.status(500).json({ success: false, error: 'Failed to send message. Please try again.' });
   }
 }

@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import { Image } from '@/components/ui/image';
 import { TransitionLink } from '@/components/ui/transition-link';
 import { Container } from '@/components/site/layout';
 import { SocialLinks } from '@/components/site/social-links';

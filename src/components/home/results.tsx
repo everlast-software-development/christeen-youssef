@@ -1,7 +1,5 @@
-'use client';
-
 import { useState } from 'react';
-import Image from 'next/image';
+import { Image } from '@/components/ui/image';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { Eyebrow } from '@/components/site/layout';
 import { Button } from '@/components/site/button';

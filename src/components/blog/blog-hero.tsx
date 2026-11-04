@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect, useId, useRef, useSyncExternalStore } from 'react';
 import { Search, X } from 'lucide-react';
 import { PageHero } from '@/components/site/page-hero';

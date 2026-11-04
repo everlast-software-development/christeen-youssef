@@ -1,16 +1,15 @@
-import type { Metadata } from 'next';
+import { Seo } from '@/components/site/seo';
 import { CtaBand } from '@/components/site/cta-band';
 import { ResultsGallery } from '@/components/results/results-gallery';
-
-export const metadata: Metadata = {
-  title: 'Before & After',
-  description:
-    'Documented patient results across aesthetic dermatology, scar revision and regenerative treatments.',
-};
 
 export default function Page() {
   return (
     <main id="content">
+      <Seo
+        path="/before-and-after"
+        title="Before & After"
+        description="Documented patient results across aesthetic dermatology, scar revision and regenerative treatments."
+      />
       <ResultsGallery />
 
       <CtaBand

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#17150f" />
+    <meta name="author" content="Dr. Christeen Youssef" />
+    <meta
+      name="keywords"
+      content="aesthetic dermatology Abu Dhabi, dermatologist Abu Dhabi, Dr. Christeen Youssef, wound care UAE, diabetic foot Abu Dhabi, thread lift Abu Dhabi"
+    />
+    <link rel="icon" href="/favicon.webp" type="image/webp" />
+    <!--font-preloads-->
+    <!--app-head-->
+
+    <!-- A refresh must land at the top: the hero's entry plays on load and the
+         scroll triggers measure from where the page starts. Scoped to reloads,
+         so back/forward keeps native restoration. Runs during parse. -->
+    <script>
+      try{var n=performance.getEntriesByType('navigation')[0];if(n&&n.type==='reload'&&'scrollRestoration' in history){history.scrollRestoration='manual'}}catch(e){}
+    </script>
+    <!-- Decides, before first paint, whether this load plays the full preloader
+         (once per session) — keep in step with PRELOADER_BOOT in
+         src/components/site/preloader.tsx. -->
+    <script>
+      (function(){var d=document.documentElement;try{d.dataset.preloader=sessionStorage.getItem('cy:preloaded')?'skip':'run'}catch(e){d.dataset.preloader='skip'}if(d.dataset.preloader==='run'){setTimeout(function(){if(!window.__cyPreloaderLive&&d.dataset.preloader==='run'){d.dataset.preloader='done'}},4000)}})();
+    </script>
+    <noscript><style>.preloader{display:none!important}</style></noscript>
+  </head>
+  <!-- overflow-x: clip, not hidden — hidden would make <body> a scroll
+       container and break every position: sticky on the site. -->
+  <body class="overflow-x-clip bg-page">
+    <div id="root"><!--app-html--></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

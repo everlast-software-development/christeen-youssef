@@ -1,4 +1,4 @@
-import Image, { type StaticImageData } from 'next/image';
+import { Image, type StaticImageData } from '@/components/ui/image';
 import { cn } from '@/lib/utils';
 
 import arabicMark from '@/assets/partners/arabic-wordmark.webp';

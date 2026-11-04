@@ -1,5 +1,3 @@
-'use client';
-
 import { CompareSlider } from '@/components/ui/compare-slider';
 import { caseTitle, UNCATEGORIZED, type BeforeAfterCase } from '@/data/before-after';
 

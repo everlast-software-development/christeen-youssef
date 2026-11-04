@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import { Image } from '@/components/ui/image';
 import { ArrowRight } from 'lucide-react';
 import { TransitionLink } from '@/components/ui/transition-link';
 import { formatBlogDate } from '@/lib/blog-date';

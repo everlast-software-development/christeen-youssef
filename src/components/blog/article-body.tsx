@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { StaticImageData } from 'next/image';
+import type { StaticImageData } from '@/components/ui/image';
 import { Check } from 'lucide-react';
 import {
   Accordion,

@@ -31,7 +31,6 @@ export function RotatingBadge({ className }: { className?: string }) {
           <textPath href={`#${id}`} textLength={CIRCUMFERENCE - 1} lengthAdjust="spacing">{RING.toUpperCase()}</textPath>
         </text>
       </svg>
-      {/* eslint-disable-next-line @next/next/no-img-element -- a 40px static mark */}
       <img
         src="/favicon.webp"
         alt=""

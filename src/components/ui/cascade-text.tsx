@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useMemo, type CSSProperties, type ElementType } from 'react';
 
 export interface TextRevealProps {

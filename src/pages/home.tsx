@@ -7,11 +7,14 @@ import { HomeResults } from '@/components/home/results';
 import { HomeStories } from '@/components/home/stories';
 import { HomeJournal } from '@/components/home/journal';
 import { CtaBand } from '@/components/site/cta-band';
+import { Seo } from '@/components/site/seo';
 
 export default function Home() {
   return (
     // As in the reference: Cormorant's own old-style figures and plain wrapping
     // (the site default elsewhere is lining figures and balanced headings).
+    <>
+    <Seo path="/" />
     <main
       id="content"
       className="[font-variant-numeric:normal] [&_:is(h1,h2,h3,p)]:[text-wrap:wrap]"
@@ -27,5 +30,6 @@ export default function Home() {
       <HomeJournal />
       <CtaBand />
     </main>
+    </>
   );
 }

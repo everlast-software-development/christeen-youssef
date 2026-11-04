@@ -1,6 +1,4 @@
-'use client';
-
-import { usePathname } from 'next/navigation';
+import { useLocation } from 'react-router';
 import {
   gsap,
   ScrollTrigger,
@@ -29,7 +27,7 @@ import { PRELOADER_DONE } from '@/components/site/preloader';
  * first visit it waits for the preloader to lift ("preloader:done").
  */
 export function ScrollMotion() {
-  const pathname = usePathname();
+  const pathname = useLocation().pathname;
 
   useGSAP(
     (_context, contextSafe) => {

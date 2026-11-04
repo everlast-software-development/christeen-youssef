@@ -1,6 +1,4 @@
-'use client';
-
-import Image, { type StaticImageData } from 'next/image';
+import { Image, type StaticImageData } from '@/components/ui/image';
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';

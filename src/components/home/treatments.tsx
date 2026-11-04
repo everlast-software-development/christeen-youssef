@@ -1,7 +1,5 @@
-'use client';
-
 import { useRef } from 'react';
-import Image, { type StaticImageData } from 'next/image';
+import { Image, type StaticImageData } from '@/components/ui/image';
 import { Eyebrow } from '@/components/site/layout';
 import { TransitionLink } from '@/components/ui/transition-link';
 import { gsap, ScrollTrigger, useGSAP, prefersReducedMotion } from '@/lib/gsap';

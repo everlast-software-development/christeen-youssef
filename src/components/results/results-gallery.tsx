@@ -1,5 +1,3 @@
-'use client';
-
 import { useState } from 'react';
 import { Dialog } from '@base-ui/react/dialog';
 import { ArrowLeft, ArrowRight, Info, X } from 'lucide-react';

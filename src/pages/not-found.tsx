@@ -1,5 +1,6 @@
 import { Button } from '@/components/site/button';
 import { Eyebrow } from '@/components/site/layout';
+import { Seo } from '@/components/site/seo';
 
 export default function NotFound() {
   return (
@@ -16,6 +17,7 @@ export default function NotFound() {
             'radial-gradient(55% 60% at 50% 0%, rgba(184,137,42,0.24), transparent 70%)',
         }}
       />
+      <Seo path="/404" title="Page not found" noindex />
       <div className="relative">
         <Eyebrow onDark>404</Eyebrow>
         <h1 className="mt-5 type-h1 text-white">Page not found</h1>

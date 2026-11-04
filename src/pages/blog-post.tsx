@@ -1,5 +1,6 @@
-import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { useParams } from 'react-router';
+import NotFound from '@/pages/not-found';
+import { Seo } from '@/components/site/seo';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { TransitionLink } from '@/components/ui/transition-link';
 import { ArticleRow } from '@/components/site/article-row';
@@ -12,8 +13,6 @@ import { ArticleMotion } from '@/components/blog/article-motion';
 import { blogPosts } from '@/data/blog';
 import { byNewest } from '@/lib/blog-date';
 import { parseArticle, tableOfContents } from '@/lib/blog-content';
-
-type Params = { params: Promise<{ slug: string }> };
 
 /**
  * Below this a contents sidebar is furniture rather than navigation.
@@ -28,35 +27,6 @@ const TOC_MIN_ITEMS = 2;
 
 /** Cards at the foot of the article. */
 const RELATED_COUNT = 3;
-
-// Every post is known at build time, so all of them prerender as static HTML.
-export function generateStaticParams() {
-  return blogPosts.map((post) => ({ slug: post.slug }));
-}
-
-export async function generateMetadata({ params }: Params): Promise<Metadata> {
-  const { slug } = await params;
-  const post = blogPosts.find((p) => p.slug === slug);
-
-  if (!post) return {};
-
-  return {
-    title: post.title,
-    description: post.excerpt,
-    openGraph: {
-      type: 'article',
-      title: post.title,
-      description: post.excerpt,
-      images: [
-        {
-          url: post.image.src,
-          width: post.image.width,
-          height: post.image.height,
-        },
-      ],
-    },
-  };
-}
 
 /**
  * One frame for every article.
@@ -73,11 +43,11 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
  * shown alongside it. What varies between posts is what each has to put in the
  * frame, not the frame.
  */
-export default async function BlogPostPage({ params }: Params) {
-  const { slug } = await params;
+export default function BlogPostPage() {
+  const { slug } = useParams();
   const post = blogPosts.find((p) => p.slug === slug);
 
-  if (!post) notFound();
+  if (!post) return <NotFound />;
 
   const sections = parseArticle(post.content ?? post.excerpt);
   const toc = tableOfContents(sections);
@@ -106,6 +76,13 @@ export default async function BlogPostPage({ params }: Params) {
 
   return (
     <main id="content" className="bg-cream text-ink">
+      <Seo
+        path={`/blog/${post.slug}`}
+        title={post.title}
+        description={post.excerpt}
+        image={post.image}
+        type="article"
+      />
       <ArticleHero post={post} />
 
       {post.stats && post.stats.length > 0 && (

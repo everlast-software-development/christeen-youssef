@@ -1,8 +1,6 @@
-'use client';
-
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { Image } from '@/components/ui/image';
+import { useLocation } from 'react-router';
 import { Dialog } from '@base-ui/react/dialog';
 import { useLenis } from 'lenis/react';
 import { Clock, Phone, X } from 'lucide-react';
@@ -28,7 +26,7 @@ const HOURS = `${schedule.workingDays[0]} – ${
  */
 export function MobileMenu() {
   const [open, setOpen] = useState(false);
-  const pathname = usePathname();
+  const pathname = useLocation().pathname;
   const lenis = useLenis();
 
   // The dialog locks native scroll; Lenis runs its own loop and has to be told.

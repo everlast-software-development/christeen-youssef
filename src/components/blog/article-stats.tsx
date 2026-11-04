@@ -19,9 +19,9 @@ export function ArticleStats({
   return (
     <section
       aria-label="Key figures"
-      className="border-y border-ink/8 bg-cream-dark/40"
+      className="border-y border-line bg-page"
     >
-      <dl className="mx-auto grid max-w-[88rem] gap-y-10 px-5 py-14 sm:grid-cols-2 md:px-8 lg:grid-cols-4 lg:gap-x-8 lg:px-12 xl:px-20">
+      <dl className="container-site grid gap-y-10 py-14 sm:grid-cols-2 lg:grid-cols-4 lg:gap-x-8">
         {stats.map((stat) => (
           <div key={stat.label} data-reveal className="lg:px-2">
             <dt className="sr-only">{stat.label}</dt>
@@ -30,10 +30,10 @@ export function ArticleStats({
                 it stays small and quiet, so a row of four scans as four numbers
                 rather than as four paragraphs. */}
             <dd>
-              <span className="block font-display text-4xl/none text-gold-dark tabular-nums lg:text-5xl/none">
+              <span className="block type-stat text-ink tabular-nums">
                 {stat.value}
               </span>
-              <span className="mt-3 block max-w-[22ch] font-body text-[0.86rem]/relaxed text-slate">
+              <span className="mt-3 block max-w-[22ch] type-small text-soft">
                 {stat.label}
               </span>
             </dd>

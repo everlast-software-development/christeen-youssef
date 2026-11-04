@@ -60,11 +60,11 @@ export function ArticleToc({ items }: { items: TocItem[] }) {
       aria-label="On this page"
       className="sticky top-28 hidden self-start xl:block"
     >
-      <p className="font-body text-[0.68rem] tracking-[0.2em] text-slate/70 uppercase">
+      <p className="type-eyebrow text-caption-strong">
         On this page
       </p>
 
-      <ul className="mt-6 space-y-1 border-l border-ink/10">
+      <ul className="mt-6 space-y-1 border-l border-line">
         {items.map((item) => {
           const current = item.id === active;
 
@@ -74,10 +74,10 @@ export function ArticleToc({ items }: { items: TocItem[] }) {
                 type="button"
                 onClick={() => jump(item.id)}
                 aria-current={current ? 'true' : undefined}
-                className={`-ml-px block w-full cursor-pointer border-l-2 py-2 pr-2 pl-4 text-left font-body text-[0.82rem]/snug transition-colors duration-300 ${
+                className={`-ml-px block w-full cursor-pointer border-l-2 py-2 pr-2 pl-4 text-left type-small transition-colors duration-300 ${
                   current
                     ? 'border-gold text-ink'
-                    : 'border-transparent text-slate hover:border-ink/20 hover:text-ink'
+                    : 'border-transparent text-soft hover-fine:border-ink/20 hover-fine:text-ink'
                 }`}
               >
                 {item.label}

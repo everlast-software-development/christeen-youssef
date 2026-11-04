@@ -1,44 +1,29 @@
 import type { Metadata, Viewport } from 'next';
-import { Playfair_Display, Cairo, Geist } from 'next/font/google';
-import localFont from 'next/font/local';
+import { Cormorant_Garamond, Manrope } from 'next/font/google';
 import './globals.css';
 import { SmoothScroll } from '@/components/providers/smooth-scroll';
-import { SiteHeader } from '@/components/layout/site-header';
-import { Footer } from '@/components/ui/footer-section';
+import { Preloader, PRELOADER_BOOT } from '@/components/site/preloader';
+import { ScrollMotion } from '@/components/providers/scroll-motion';
+import { SiteHeader } from '@/components/site/header';
+import { SiteFooter } from '@/components/site/footer';
+import { ScrollProgress } from '@/components/layout/scroll-progress';
 import { SITE_URL } from '@/lib/site';
-import { PageTransition } from '@/components/providers/page-transition';
 
-// Editorial serif for display type — the "premium" half of the pairing.
-const playfair = Playfair_Display({
+// Display and headings. 500 is the only upright weight on the site; the italic
+// is loaded for one thing — the signature in the home About section.
+const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
-  variable: '--font-playfair',
+  weight: ['500'],
+  style: ['normal', 'italic'],
+  variable: '--font-cormorant',
   display: 'swap',
 });
 
-// Cairo carries over from the original brand and keeps Arabic coverage.
-const cairo = Cairo({
-  subsets: ['latin', 'arabic'],
-  variable: '--font-cairo',
-  display: 'swap',
-});
-
-// Primary UI/body face.
-const geist = Geist({
+// Body and UI. A variable font, so 400/500/600 all come from one file.
+const manrope = Manrope({
   subsets: ['latin'],
-  variable: '--font-geist',
+  variable: '--font-manrope',
   display: 'swap',
-});
-
-// Display face for the hero name and the manifesto line between Principles and
-// Expertise. Single weight (Regular) — there is no bold or light cut, so any
-// `font-bold` against it is a synthetic embolden by the browser (which the
-// manifesto line asks for deliberately); elsewhere, weight contrast has to come
-// from size or colour.
-const redound = localFont({
-  src: '../assets/fonts/redound-regular.ttf',
-  variable: '--font-redound',
-  display: 'swap',
-  weight: '400',
 });
 
 export const metadata: Metadata = {
@@ -83,7 +68,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#0f1117',
+  themeColor: '#17150f',
   width: 'device-width',
   initialScale: 1,
 };
@@ -96,7 +81,7 @@ export default function RootLayout({
     // class list legitimately differs from the server render on the first pass.
     <html
       lang="en"
-      className={`${playfair.variable} ${cairo.variable} ${geist.variable} ${redound.variable}`}
+      className={`${cormorant.variable} ${manrope.variable}`}
       suppressHydrationWarning
     >
       {/* clip, not hidden. `overflow-x: hidden` would make this a scroll
@@ -106,7 +91,7 @@ export default function RootLayout({
           scroll container, so sticky keeps resolving against the viewport, and
           it does not establish a containing block for the fixed header either.
           A guard, not a fix: anything that overflows still wants finding. */}
-      <body className="overflow-x-clip">
+      <body className="overflow-x-clip bg-page">
         {/* A refresh must land at the top. The hero plays its entry animation
             on mount with fixed delays, and the about section builds its
             ScrollTriggers from wherever the page starts — restoring a mid-page
@@ -123,16 +108,30 @@ export default function RootLayout({
           }}
         />
 
+        {/* Decides, before first paint, whether this load plays the full
+            preloader (once per session) — see components/site/preloader.tsx. */}
+        <script dangerouslySetInnerHTML={{ __html: PRELOADER_BOOT }} />
+        <noscript>
+          <style>{'.preloader{display:none!important}'}</style>
+        </noscript>
+
+        <a
+          href="#content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[300] focus:rounded-[10px] focus:bg-gold-deep focus:px-5 focus:py-3 focus:type-button focus:text-white"
+        >
+          Skip to content
+        </a>
+
         <SmoothScroll>
-          <PageTransition>
+          <Preloader>
+            <ScrollProgress />
+            {/* Absolute, not fixed: it sits inside each page's opening band
+                and scrolls away with it. */}
             <SiteHeader />
+            <ScrollMotion />
             {children}
-            {/* Outside {children}, so it is a sibling of each page's <main>
-                rather than a child of it. That matters on the home page: the
-                hero is sticky for the whole of <main>, and a footer inside that
-                box would be scrolled over by it. */}
-            <Footer />
-          </PageTransition>
+            <SiteFooter />
+          </Preloader>
         </SmoothScroll>
       </body>
     </html>

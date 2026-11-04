@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { TransitionLink } from '@/components/ui/transition-link';
-import { BlogCard } from '@/components/ui/blog-card';
-import { ClosingCta } from '@/components/sections/closing-cta';
+import { ArticleRow } from '@/components/site/article-row';
+import { CtaBand } from '@/components/site/cta-band';
 import { ArticleHero } from '@/components/blog/article-hero';
 import { ArticleBody } from '@/components/blog/article-body';
 import { ArticleToc } from '@/components/blog/article-toc';
@@ -105,41 +105,34 @@ export default async function BlogPostPage({ params }: Params) {
   const showToc = toc.length >= TOC_MIN_ITEMS;
 
   return (
-    <main className="bg-cream text-ink">
+    <main id="content" className="bg-cream text-ink">
       <ArticleHero post={post} />
 
       {post.stats && post.stats.length > 0 && (
         <ArticleMotion>
-          <ArticleStats stats={post.stats} />
+          <div className="mt-14">
+            <ArticleStats stats={post.stats} />
+          </div>
         </ArticleMotion>
       )}
 
-      {/* One GSAP context over the whole article, so the headings, the lists
-          and the photographs inside them reveal as a single sequence. */}
       <ArticleMotion>
-        <div className="mx-auto max-w-[88rem] px-5 pt-16 pb-24 md:px-8 lg:px-12 lg:pt-24 lg:pb-32 xl:px-20">
+        <div className="container-site pt-14 pb-[var(--section-y)] lg:pt-20">
           {/* The rail column is reserved on every post, whether or not that post
-              has contents to put in it. It is what lands the copy in the same
-              place on every article — a page that dropped the empty column
-              would start its first line 20rem left of the one before it. */}
-          <div className="grid gap-12 xl:grid-cols-[15rem_minmax(0,1fr)] xl:gap-20">
+              has contents to put in it, so the copy lands in the same place on
+              every article. */}
+          <div className="grid gap-12 xl:grid-cols-[minmax(0,1fr)_720px_minmax(0,1fr)] xl:gap-14">
             {showToc ? (
-              <ArticleToc items={toc} />
+              <div className="hidden xl:flex xl:justify-end">
+                <div className="w-[13rem]">
+                  <ArticleToc items={toc} />
+                </div>
+              </div>
             ) : (
               <div aria-hidden className="hidden xl:block" />
             )}
 
-            {/* A measure, not the column width: body copy stops being readable
-                somewhere around 75 characters however much room is going, so the
-                wider container above buys the copy a few characters and spends
-                the rest on the margins.
-
-                The photographs are inside this, not beside it. There is no
-                picture column and no gallery band any more — a post's images go
-                into the sections they belong to and the copy runs past them, so
-                the article is one thing rather than a piece of writing with a
-                strip of photographs alongside. */}
-            <article className="min-w-0 max-w-[72ch]">
+            <article className="mx-auto w-full min-w-0 max-w-[720px] xl:mx-0">
               <ArticleBody
                 sections={sections}
                 figures={post.figures}
@@ -152,21 +145,18 @@ export default async function BlogPostPage({ params }: Params) {
 
       {/* ---------------- Previous / next ---------------- */}
       {(newer || older) && (
-        <nav
-          aria-label="More articles"
-          className="mx-auto max-w-[88rem] border-t border-ink/10 px-5 py-14 md:px-8 lg:px-12 xl:px-20"
-        >
-          <div className="grid gap-6 sm:grid-cols-2">
+        <nav aria-label="More articles" className="border-t border-line">
+          <div className="container-site grid gap-4 py-12 sm:grid-cols-2">
             {older ? (
               <TransitionLink
                 href={`/blog/${older.slug}`}
-                className="group flex flex-col gap-3 rounded-2xl border border-ink/10 p-6 transition-colors hover:border-gold/40"
+                className="group flex flex-col gap-3 rounded-[16px] border border-line bg-page p-6 transition-colors hover-fine:border-ink/30"
               >
-                <span className="inline-flex items-center gap-2 font-body text-[0.68rem] tracking-[0.18em] text-slate/70 uppercase">
+                <span className="type-eyebrow inline-flex items-center gap-2 text-caption-strong">
                   <ArrowLeft aria-hidden className="size-3.5" />
                   Earlier
                 </span>
-                <span className="font-display text-lg/snug text-ink transition-colors group-hover:text-gold-dark">
+                <span className="type-h3 text-ink">
                   {older.title}
                 </span>
               </TransitionLink>
@@ -177,13 +167,13 @@ export default async function BlogPostPage({ params }: Params) {
             {newer && (
               <TransitionLink
                 href={`/blog/${newer.slug}`}
-                className="group flex flex-col items-end gap-3 rounded-2xl border border-ink/10 p-6 text-right transition-colors hover:border-gold/40 sm:col-start-2"
+                className="group flex flex-col items-end gap-3 rounded-[16px] border border-line bg-page p-6 text-right transition-colors hover-fine:border-ink/30 sm:col-start-2"
               >
-                <span className="inline-flex items-center gap-2 font-body text-[0.68rem] tracking-[0.18em] text-slate/70 uppercase">
+                <span className="type-eyebrow inline-flex items-center gap-2 text-caption-strong">
                   Later
                   <ArrowRight aria-hidden className="size-3.5" />
                 </span>
-                <span className="font-display text-lg/snug text-ink transition-colors group-hover:text-gold-dark">
+                <span className="type-h3 text-ink">
                   {newer.title}
                 </span>
               </TransitionLink>
@@ -194,32 +184,21 @@ export default async function BlogPostPage({ params }: Params) {
 
       {/* ---------------- Related ---------------- */}
       {related.length > 0 && (
-        <section className="mx-auto max-w-[88rem] px-5 pb-24 md:px-8 lg:px-12 lg:pb-32 xl:px-20">
-          <div className="flex items-center gap-6">
-            <h2 className="shrink-0 font-display text-display-sm text-ink">
+        <section aria-labelledby="related-title" className="section-y bg-page">
+          <div className="container-site">
+            <h2 id="related-title" data-reveal className="type-h2 text-ink">
               Keep reading
             </h2>
-            <span aria-hidden className="h-px flex-1 bg-ink/12" />
+            <ArticleRow posts={related} className="mt-10" />
           </div>
-
-          <div className="mt-10 grid gap-7 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-            {related.map((entry) => (
-              <BlogCard
-                key={entry.slug}
-                post={entry}
-                sizes="(min-width: 1024px) 30vw, (min-width: 640px) 46vw, 90vw"
-              />
-            ))}
-          </div>
-
-          <ClosingCta
-            title="Every result starts with a conversation"
-            body="No two cases are alike. A consultation is where the plan gets built around your skin, your history and what you actually want from treatment."
-            href="/reach-me"
-            label="Let's talk"
-          />
         </section>
       )}
+
+      <CtaBand
+        title="Every result starts with a conversation"
+        body="No two cases are alike. A consultation is where the plan gets built around your skin, your history and what you actually want from treatment."
+        primary={{ href: '/reach-me', label: "Let's talk" }}
+      />
     </main>
   );
 }

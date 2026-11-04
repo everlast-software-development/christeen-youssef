@@ -8,7 +8,7 @@ import diabeticFootImage from "../assets/Diabetic Foot blog .webp";
 import internationalConferenceImage from "../assets/International Conference Journals.webp";
 import successStoryImage from "../assets/Success Story blog .webp";
 import botulinumResearchImage from "../assets/blog.webp";
-import advanceThreadImage from "../assets/Advance Thread blog .webp";
+import advanceThreadImage from "../assets/about-hero.webp";
 import ebdTeachingImage from "../assets/EBD Teaching blog. (2).webp";
 import ebdTeachingImage2 from "../assets/EBD Teaching blog..webp";
 import ebdTeachingImage3 from "../assets/EBD Teaching blog.webp";

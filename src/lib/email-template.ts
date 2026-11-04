@@ -31,11 +31,11 @@ export function renderContactEmail(data: ContactSubmission, year: number) {
   const message = escapeHtml(data.message);
 
   return `
-    <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #F8F6F1; border-radius: 16px; overflow: hidden; border: 1px solid rgba(201,153,40,0.2);">
+    <div style="font-family: Manrope, 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #F8F6F1; border-radius: 16px; overflow: hidden; border: 1px solid rgba(201,153,40,0.2);">
       <div style="background: linear-gradient(90deg, transparent, #C99928, transparent); height: 2px;"></div>
 
       <div style="padding: 40px 40px 32px; text-align: center; background: linear-gradient(135deg, #EFEFEB 0%, #F8F6F1 100%);">
-        <div style="font-family: 'Playfair Display', Georgia, serif; font-size: 28px; font-weight: 700; color: #0F1117; margin-bottom: 8px;">Dr. Christeen Youssef</div>
+        <div style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 28px; font-weight: 700; color: #0F1117; margin-bottom: 8px;">Dr. Christeen Youssef</div>
         <div style="font-size: 12px; color: #7A8094; letter-spacing: 1px;">Aesthetic Dermatology &amp; Wellness</div>
         <div style="margin-top: 16px; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: #C99928;">New Contact Form Submission</div>
       </div>

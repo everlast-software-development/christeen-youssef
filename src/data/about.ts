@@ -133,8 +133,8 @@ export const awards: Award[] = [
  *  conference talks, teaching courses and published research already live —
  *  the hash seeds the index's search box so each lands on its own subset. */
 export const aboutLinks = [
-  { label: 'Conferences & Events', href: '/blog#conference' },
-  { label: 'Training & Workshops', href: '/blog#workshop' },
-  { label: 'Research & Publications', href: '/blog#research' },
+  { label: 'Conferences & Events', href: '/blog?category=conference' },
+  { label: 'Training & Workshops', href: '/blog?category=workshop' },
+  { label: 'Research & Publications', href: '/blog?category=research' },
   { label: 'Book a Consultation', href: '/reach-me' },
 ];

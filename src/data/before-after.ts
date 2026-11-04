@@ -27,10 +27,29 @@ import after12 from '@/assets/before-after/case-12-after.webp';
 
 export type BeforeAfterCase = {
   id: string;
-  label: string;
   before: StaticImageData;
   after: StaticImageData;
+  /** The treatment, as the clinic names it. 'TODO' until confirmed. */
+  treatment: string;
+  /** Filter group on the Before & After page. 'Uncategorized' until confirmed. */
+  category: string;
+  sessions?: number;
+  /** object-position for both images, so the area treated lines up. */
+  objectPosition?: string;
 };
+
+/** Placeholder values — a case carrying them has not been labelled yet. */
+export const UNKNOWN_TREATMENT = 'TODO';
+export const UNCATEGORIZED = 'Uncategorized';
+
+/**
+ * What a case is called on screen: its treatment once the clinic has supplied
+ * it, otherwise its number (`Case 01`) — never the placeholder.
+ */
+export function caseTitle(item: BeforeAfterCase) {
+  if (item.treatment !== UNKNOWN_TREATMENT) return item.treatment;
+  return `Case ${item.id.replace('case-', '')}`;
+}
 
 /**
  * Split out of the delivered composites in `src/assets/before & after/`, where
@@ -40,81 +59,93 @@ export type BeforeAfterCase = {
  * centre-cropped to match the narrower rather than squeezed, so nothing being
  * compared is distorted. The originals are untouched.
  *
- * TODO(labels): these read `Case 01`…`Case 12` because only the clinic knows
- * what each one treated. Nothing here should be guessed at: a wrong treatment
- * name on a patient result is a clinical claim, not a caption. Replace `label`
- * with the real treatment and the cards pick it up.
+ * TODO(labels): only the clinic knows what each case treated. Nothing here
+ * should be guessed at: a wrong treatment name on a patient result is a
+ * clinical claim, not a caption. Fill in `treatment` and `category` (and
+ * `sessions` where known) and the page picks them up.
  */
 export const beforeAfterCases: BeforeAfterCase[] = [
   {
     id: 'case-01',
-    label: 'Case 01',
+    treatment: UNKNOWN_TREATMENT,
+    category: UNCATEGORIZED,
     before: before01,
     after: after01,
   },
   {
     id: 'case-02',
-    label: 'Case 02',
+    treatment: UNKNOWN_TREATMENT,
+    category: UNCATEGORIZED,
     before: before02,
     after: after02,
   },
   {
     id: 'case-03',
-    label: 'Case 03',
+    treatment: UNKNOWN_TREATMENT,
+    category: UNCATEGORIZED,
     before: before03,
     after: after03,
   },
   {
     id: 'case-04',
-    label: 'Case 04',
+    treatment: UNKNOWN_TREATMENT,
+    category: UNCATEGORIZED,
     before: before04,
     after: after04,
   },
   {
     id: 'case-05',
-    label: 'Case 05',
+    treatment: UNKNOWN_TREATMENT,
+    category: UNCATEGORIZED,
     before: before05,
     after: after05,
   },
   {
     id: 'case-06',
-    label: 'Case 06',
+    treatment: UNKNOWN_TREATMENT,
+    category: UNCATEGORIZED,
     before: before06,
     after: after06,
   },
   {
     id: 'case-07',
-    label: 'Case 07',
+    treatment: UNKNOWN_TREATMENT,
+    category: UNCATEGORIZED,
     before: before07,
     after: after07,
   },
   {
     id: 'case-08',
-    label: 'Case 08',
+    treatment: UNKNOWN_TREATMENT,
+    category: UNCATEGORIZED,
     before: before08,
     after: after08,
   },
   {
     id: 'case-09',
-    label: 'Case 09',
+    treatment: UNKNOWN_TREATMENT,
+    category: UNCATEGORIZED,
     before: before09,
     after: after09,
   },
   {
     id: 'case-10',
-    label: 'Case 10',
+    treatment: UNKNOWN_TREATMENT,
+    category: UNCATEGORIZED,
     before: before10,
     after: after10,
   },
   {
     id: 'case-11',
-    label: 'Case 11',
+    treatment: UNKNOWN_TREATMENT,
+    category: UNCATEGORIZED,
     before: before11,
     after: after11,
   },
   {
     id: 'case-12',
-    label: 'Case 12',
+    treatment: UNKNOWN_TREATMENT,
+    category: UNCATEGORIZED,
     before: before12,
     after: after12,
   },

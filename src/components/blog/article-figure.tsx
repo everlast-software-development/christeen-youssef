@@ -95,7 +95,7 @@ export function ArticleFigure({
           ? ({ '--figure-width': `${width}px` } as CSSProperties)
           : undefined
       }
-      className={`my-8 overflow-hidden rounded-2xl bg-cream-dark sm:my-6 ${widthClass} ${flow}`}
+      className={`my-8 overflow-hidden rounded-[16px] bg-page sm:my-6 ${widthClass} ${flow}`}
     >
       {/* A laid-out image, not a `fill` inside an aspect-ratio box.
 

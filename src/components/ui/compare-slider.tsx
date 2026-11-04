@@ -1,146 +1,157 @@
 'use client';
 
 import Image, { type StaticImageData } from 'next/image';
-import { useRef, useState } from 'react';
-import { ChevronsLeftRight } from 'lucide-react';
-import { gsap, useGSAP } from '@/lib/gsap';
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-type CompareSliderProps = {
-  before: StaticImageData;
-  after: StaticImageData;
-  /** Used to build both alt strings and the control's accessible name. */
-  label: string;
-  /** Position in the grid — drives the stagger across each row. */
-  index: number;
-  /** Only the first card or two should fetch eagerly. */
-  priority?: boolean;
-};
+const CHIP =
+  'pointer-events-none absolute top-3 z-20 rounded-full bg-cream px-3 py-1 type-eyebrow text-ink';
 
-/** Columns in the grid at lg. Only used to stagger a row, never for layout. */
-const COLUMNS = 2;
+const clamp = (n: number) => Math.min(100, Math.max(0, n));
 
 /**
- * Before/after wipe. The after image is the base layer and the before image is
- * clipped over it, so the divider is simply the clip edge — nothing has to be
- * kept in sync and there is no seam to line up.
+ * Before/after wipe: the after photo is the base, the before photo is clipped
+ * over it up to the divider. The divider's grip is a real slider — drag it
+ * with a mouse or a finger, or focus it and use the arrow keys (5% a press,
+ * Home/End to the edges).
  *
- * The control is a real `<input type="range">` stretched over the frame and
- * hidden with opacity. That is deliberate: drag, click-to-jump, touch, arrow
- * keys, Home/End and the ARIA slider semantics all come from the platform,
- * where a div with pointer handlers would have to reimplement each one and
- * would still be invisible to assistive tech.
+ * `dragAnywhere` (the lightbox) lets a drag start anywhere on the frame. On a
+ * grid card only the grip drags, so a tap elsewhere is free to open the card.
+ * `hint` nudges the divider 45% → 55% → 50% once the first time the frame
+ * scrolls into view, to show that it moves.
  */
 export function CompareSlider({
   before,
   after,
   label,
-  index,
-  priority = false,
-}: CompareSliderProps) {
-  const rootRef = useRef<HTMLElement>(null);
-  const [reveal, setReveal] = useState(50);
+  objectPosition,
+  sizes,
+  preload = false,
+  dragAnywhere = false,
+  hint = false,
+  className,
+  children,
+}: {
+  before: StaticImageData;
+  after: StaticImageData;
+  /** The treatment — used in the slider's name and the images' alt text. */
+  label: string;
+  objectPosition?: string;
+  sizes: string;
+  preload?: boolean;
+  dragAnywhere?: boolean;
+  hint?: boolean;
+  className?: string;
+  /** Rendered over the photos, under the grip (e.g. the card's open button). */
+  children?: React.ReactNode;
+}) {
+  const frame = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState(50);
+  const [easing, setEasing] = useState(false);
+  const dragging = useRef(false);
+  // The hint's pending steps — cancelled the moment anyone touches the slider.
+  const hintTimers = useRef<number[]>([]);
+  const stopHint = () => {
+    hintTimers.current.forEach((id) => window.clearTimeout(id));
+    hintTimers.current = [];
+  };
 
-  useGSAP(
-    () => {
-      // Staggered along the row rather than down the page: the cards arrive two
-      // at a time, and a stagger keyed to the flat index would make the second
-      // column of the last row wait on every card above it.
-      const delay = (index % COLUMNS) * 0.12;
+  const fromPointer = (clientX: number) => {
+    const box = frame.current?.getBoundingClientRect();
+    if (!box) return;
+    stopHint();
+    setEasing(false);
+    setPosition(clamp(((clientX - box.left) / box.width) * 100));
+  };
 
-      const arrival = {
-        trigger: rootRef.current,
-        start: 'top 85%',
-        once: true,
-      } as const;
+  const start = (event: ReactPointerEvent<HTMLElement>) => {
+    dragging.current = true;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    fromPointer(event.clientX);
+  };
+  const move = (event: ReactPointerEvent<HTMLElement>) => {
+    if (dragging.current) fromPointer(event.clientX);
+  };
+  const end = () => {
+    dragging.current = false;
+  };
 
-      gsap.from(rootRef.current, {
-        y: 34,
-        opacity: 0,
-        scale: 0.97,
-        duration: 1.3,
-        ease: 'power3.out',
-        delay,
-        scrollTrigger: arrival,
-      });
-    },
-    { scope: rootRef, dependencies: [index] },
-  );
+  // The one-time nudge, when the frame first comes into view.
+  useEffect(() => {
+    if (!hint || !frame.current || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const timers = hintTimers.current;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        observer.disconnect();
+        setEasing(true);
+        [45, 55, 50].forEach((value, i) => timers.push(window.setTimeout(() => setPosition(value), 400 + i * 450)));
+        timers.push(window.setTimeout(() => setEasing(false), 400 + 3 * 450));
+      },
+      { threshold: 0.6 },
+    );
+    observer.observe(frame.current);
+    return () => {
+      observer.disconnect();
+      timers.forEach((id) => window.clearTimeout(id));
+    };
+  }, [hint]);
+
+  const ease = easing ? 'transition-[clip-path,left] duration-[420ms] ease-[cubic-bezier(.45,0,.2,1)]' : '';
+  const fit = { objectPosition };
 
   return (
-    <figure ref={rootRef} className="group">
-      <div className="relative aspect-9/10 w-full overflow-hidden rounded-2xl bg-cream-dark">
-        <Image
-          src={after}
-          alt={`${label}, after treatment`}
-          fill
-          sizes="(min-width: 768px) 46vw, 92vw"
-          placeholder="blur"
-          priority={priority}
-          className="object-cover"
-        />
-
-        {/* The clip is the wipe. `inset()` trims from the right, so the before
-            image survives only up to the divider. */}
-        <div
-          className="absolute inset-0"
-          style={{ clipPath: `inset(0 ${100 - reveal}% 0 0)` }}
-        >
-          <Image
-            src={before}
-            alt={`${label}, before treatment`}
-            fill
-            sizes="(min-width: 768px) 46vw, 92vw"
-            placeholder="blur"
-            priority={priority}
-            className="object-cover"
-          />
-        </div>
-
-        {/* Both stay put rather than fading with the wipe: they label the two
-            halves of the frame, not whatever happens to be under them. */}
-        <span className="pointer-events-none absolute top-4 left-4 z-10 rounded-full bg-ink/55 px-3 py-1 font-body text-[0.62rem] tracking-[0.18em] text-cream/90 uppercase backdrop-blur-sm">
-          Before
-        </span>
-        <span className="pointer-events-none absolute top-4 right-4 z-10 rounded-full bg-ink/55 px-3 py-1 font-body text-[0.62rem] tracking-[0.18em] text-cream/90 uppercase backdrop-blur-sm">
-          After
-        </span>
-
-        {/* First in the DOM so the handle below can react to its focus. */}
-        <input
-          type="range"
-          min={0}
-          max={100}
-          step={0.1}
-          value={reveal}
-          onChange={(event) => setReveal(Number(event.target.value))}
-          aria-label={`${label} — drag to compare before and after`}
-          // The thumb is collapsed to 1px so the value maps almost exactly to
-          // the pointer's x position. A default thumb reserves half its width
-          // at each end, which would stop the divider reaching either edge.
-          className="peer absolute inset-0 z-30 h-full w-full cursor-ew-resize appearance-none bg-transparent opacity-0 [&::-moz-range-thumb]:h-full [&::-moz-range-thumb]:w-px [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-transparent [&::-webkit-slider-thumb]:h-full [&::-webkit-slider-thumb]:w-px [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:bg-transparent"
-        />
-
-        {/* Pointer-events-none throughout: the input above owns every gesture,
-            and the handle only has to be looked at. */}
-        <div
-          aria-hidden
-          style={{ left: `${reveal}%` }}
-          className="pointer-events-none absolute inset-y-0 z-20 w-px -translate-x-1/2 bg-cream/90 shadow-[0_0_12px_rgba(15,17,23,0.35)] peer-focus-visible:bg-gold"
-        >
-          <span className="absolute top-1/2 left-1/2 flex size-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-cream/70 bg-ink/45 text-cream backdrop-blur-sm transition-transform duration-300 group-hover:scale-110 peer-focus-visible:border-gold">
-            <ChevronsLeftRight className="size-4" />
-          </span>
-        </div>
+    <div
+      ref={frame}
+      className={cn('relative aspect-[4/3] w-full touch-pan-y overflow-hidden rounded-[16px] bg-cream select-none', className)}
+      {...(dragAnywhere ? { onPointerDown: start, onPointerMove: move, onPointerUp: end, onPointerCancel: end } : {})}
+    >
+      <Image src={after} alt={`${label}, after treatment`} fill sizes={sizes} preload={preload} placeholder="blur" style={fit} className="object-cover" draggable={false} />
+      <div className={cn('absolute inset-0', ease)} style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}>
+        <Image src={before} alt={`${label}, before treatment`} fill sizes={sizes} preload={preload} placeholder="blur" style={fit} className="object-cover" draggable={false} />
       </div>
 
-      <figcaption className="mt-4 flex items-baseline justify-between gap-4">
-        <span className="font-body text-[0.72rem] tracking-[0.2em] text-gold-dark uppercase">
-          {label}
-        </span>
-        <span className="font-body text-[0.72rem] text-slate/80">
-          Drag to compare
-        </span>
-      </figcaption>
-    </figure>
+      {children}
+
+      <span aria-hidden className={cn(CHIP, 'left-3')}>Before</span>
+      <span aria-hidden className={cn(CHIP, 'right-3')}>After</span>
+
+      {/* The divider: a 2px white line and a 40px grip, which is the slider. */}
+      <div className={cn('pointer-events-none absolute inset-y-0 z-30 w-0.5 -translate-x-1/2 bg-white', ease)} style={{ left: `${position}%` }}>
+        <div
+          role="slider"
+          tabIndex={0}
+          aria-label={`Before and after comparison for ${label}`}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(position)}
+          aria-valuetext={`${Math.round(position)}% before`}
+          onPointerDown={(event) => {
+            event.stopPropagation();
+            start(event);
+          }}
+          onPointerMove={move}
+          onPointerUp={end}
+          onPointerCancel={end}
+          onClick={(event) => event.stopPropagation()}
+          onKeyDown={(event) => {
+            const step = { ArrowLeft: -5, ArrowDown: -5, ArrowRight: 5, ArrowUp: 5 }[event.key];
+            if (step !== undefined) setPosition((p) => clamp(p + step));
+            else if (event.key === 'Home') setPosition(0);
+            else if (event.key === 'End') setPosition(100);
+            else return;
+            event.preventDefault();
+            event.stopPropagation();
+            stopHint();
+            setEasing(false);
+          }}
+          className="pointer-events-auto absolute top-1/2 left-1/2 flex size-10 -translate-x-1/2 -translate-y-1/2 cursor-ew-resize touch-none items-center justify-center rounded-full bg-white text-ink shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
+        >
+          <ChevronLeft aria-hidden strokeWidth={2} className="-mr-1 size-4" />
+          <ChevronRight aria-hidden strokeWidth={2} className="-ml-1 size-4" />
+        </div>
+      </div>
+    </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import type { ComponentProps } from 'react';
-import { usePageTransition } from '@/components/providers/page-transition';
+import { usePageNavigation } from '@/components/site/preloader';
 
 type TransitionLinkProps = ComponentProps<typeof Link> & {
   /** Runs before the transition starts — e.g. closing the menu. */
@@ -10,7 +10,7 @@ type TransitionLinkProps = ComponentProps<typeof Link> & {
 };
 
 /**
- * A Link that routes through the ink curtain instead of navigating instantly.
+ * A Link that routes through the short ink fade (see site/preloader.tsx).
  *
  * Still renders a real anchor, so prefetch, middle-click, and
  * open-in-new-tab all keep working — modified clicks are handed back to the
@@ -22,7 +22,7 @@ export function TransitionLink({
   onClick,
   ...props
 }: TransitionLinkProps) {
-  const { navigate } = usePageTransition();
+  const { navigate } = usePageNavigation();
 
   return (
     <Link

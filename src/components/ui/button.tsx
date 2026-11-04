@@ -20,7 +20,7 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         // Brand: gold gradient pill with ink text (white on gold is only ~2.3:1).
         brand:
-          "bg-gradient-gold text-ink font-semibold shadow-[0_4px_15px_rgba(201,153,40,0.25)] hover:shadow-[0_8px_25px_rgba(201,153,40,0.35)] hover:-translate-y-0.5 active:translate-y-0",
+          "bg-gold-deep text-white font-semibold hover:bg-gold-deep-hover",
       },
       size: {
         default:

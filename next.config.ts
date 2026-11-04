@@ -11,8 +11,8 @@ const nextConfig: NextConfig = {
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
     // Required from Next 16: without it, any `?q=` is honoured and a caller
     // can make the server render the same picture at every quality there is.
-    // Nothing here passes `quality`, so this is the single value in use.
-    qualities: [75],
+    // 75 is the default everywhere; 90 is for the About hero arch only.
+    qualities: [75, 90],
     // Only bites on the remote flags below — static imports are content-hashed
     // and already cached immutably — but it stops those being re-fetched and
     // re-encoded every four hours for the life of the deploy.

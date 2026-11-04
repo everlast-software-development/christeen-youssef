@@ -103,8 +103,8 @@ export function PhoneField({
           half happens to be focused. */}
       <div
         className={cn(
-          'flex h-11 items-center rounded-xl border bg-cream/5 transition-colors focus-within:border-gold focus-within:ring-[3px] focus-within:ring-gold/25',
-          invalid ? 'border-red-400/60' : 'border-cream/15',
+          'flex h-[50px] items-center rounded-[10px] border bg-page transition-colors focus-within:border-gold focus-within:ring-[3px] focus-within:ring-gold/30',
+          invalid ? 'border-destructive' : 'border-line',
         )}
       >
         <button
@@ -113,7 +113,7 @@ export function PhoneField({
           aria-haspopup="listbox"
           aria-expanded={open}
           aria-label={`Country code: ${country.name} ${country.dialCode}`}
-          className="flex h-full shrink-0 cursor-pointer items-center gap-2 rounded-l-xl pr-2.5 pl-3.5 text-cream transition-colors hover:bg-cream/5 focus-visible:outline-none"
+          className="flex h-full shrink-0 cursor-pointer items-center gap-2 rounded-l-[10px] pr-2.5 pl-3.5 text-ink transition-colors hover-fine:bg-cream focus-visible:outline-none"
         >
           <Image
             src={getFlagImageUrl(country.code)}
@@ -122,19 +122,19 @@ export function PhoneField({
             height={14}
             className="h-[0.875rem] w-5 shrink-0 rounded-[2px] object-cover"
           />
-          <span className="font-body text-sm text-cream/90 tabular-nums">
+          <span className="type-small text-ink tabular-nums">
             {country.dialCode}
           </span>
           <ChevronDown
             aria-hidden
             className={cn(
-              'size-3.5 text-cream/45 transition-transform duration-300',
+              'size-3.5 text-caption transition-transform duration-300',
               open && 'rotate-180',
             )}
           />
         </button>
 
-        <span aria-hidden className="h-5 w-px shrink-0 bg-cream/15" />
+        <span aria-hidden className="h-5 w-px shrink-0 bg-line" />
 
         <input
           id={id}
@@ -146,14 +146,14 @@ export function PhoneField({
           aria-invalid={invalid}
           placeholder="50 123 4567"
           {...inputProps}
-          className="h-full min-w-0 flex-1 rounded-r-xl bg-transparent px-3.5 font-body text-base text-cream outline-none placeholder:text-cream/35 md:text-sm"
+          className="h-full min-w-0 flex-1 rounded-r-[10px] bg-transparent px-3.5 type-body text-ink outline-none placeholder:text-caption max-md:text-base"
         />
       </div>
 
       {open && (
-        <div className="absolute top-full left-0 z-50 mt-2 w-[min(22rem,calc(100vw-3rem))] overflow-hidden rounded-xl border border-cream/15 bg-ink shadow-[0_24px_60px_-20px_rgba(0,0,0,0.7)]">
-          <div className="flex items-center gap-2.5 border-b border-cream/10 px-3.5 py-2.5">
-            <Search aria-hidden className="size-4 shrink-0 text-cream/40" />
+        <div className="absolute top-full left-0 z-50 mt-2 w-[min(22rem,calc(100vw-3rem))] overflow-hidden rounded-[10px] border border-line bg-cream shadow-[0_24px_60px_-24px_rgba(23,21,15,0.4)]">
+          <div className="flex items-center gap-2.5 border-b border-line px-3.5 py-2.5">
+            <Search aria-hidden className="size-4 shrink-0 text-caption" />
             <input
               ref={searchRef}
               value={query}
@@ -184,7 +184,7 @@ export function PhoneField({
               }}
               placeholder="Search country or code"
               aria-label="Search country or code"
-              className="min-w-0 flex-1 bg-transparent font-body text-sm text-cream outline-none placeholder:text-cream/35"
+              className="min-w-0 flex-1 bg-transparent type-small text-ink outline-none placeholder:text-caption"
             />
           </div>
 
@@ -201,7 +201,7 @@ export function PhoneField({
             className="max-h-64 overflow-y-auto overscroll-contain py-1"
           >
             {matches.length === 0 ? (
-              <p className="px-4 py-6 text-center font-body text-sm text-cream/50">
+              <p className="px-4 py-6 text-center type-small text-caption-strong">
                 No country matches &ldquo;{query.trim()}&rdquo;.
               </p>
             ) : (
@@ -219,7 +219,7 @@ export function PhoneField({
                     onPointerEnter={() => setCursor({ query, index })}
                     className={cn(
                       'flex w-full cursor-pointer items-center gap-3 px-3.5 py-2 text-left transition-colors',
-                      index === active ? 'bg-cream/10' : 'bg-transparent',
+                      index === active ? 'bg-cream' : 'bg-transparent',
                     )}
                   >
                     <Image
@@ -231,16 +231,16 @@ export function PhoneField({
                       className="h-[0.875rem] w-5 shrink-0 rounded-[2px] object-cover"
                     />
 
-                    <span className="min-w-0 flex-1 truncate font-body text-sm text-cream/85">
+                    <span className="min-w-0 flex-1 truncate type-small text-ink">
                       {entry.name}
                     </span>
 
-                    <span className="shrink-0 font-body text-xs text-cream/45 tabular-nums">
+                    <span className="shrink-0 type-small text-caption-strong tabular-nums">
                       {entry.dialCode}
                     </span>
 
                     {selected && (
-                      <Check aria-hidden className="size-3.5 shrink-0 text-gold" />
+                      <Check aria-hidden className="size-3.5 shrink-0 text-gold-text" />
                     )}
                   </button>
                 );

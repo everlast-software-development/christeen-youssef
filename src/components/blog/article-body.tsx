@@ -38,7 +38,7 @@ function renderInline(text: string): ReactNode[] {
             rel="noopener noreferrer"
             // break-words because one of these labels is a bare YouTube URL,
             // which has no space in it to wrap on.
-            className="font-medium break-words text-gold-dark underline decoration-gold/40 underline-offset-4 transition-colors hover:text-gold hover:decoration-gold"
+            className="font-medium break-words text-gold-text underline decoration-gold/40 underline-offset-4 transition-colors hover-fine:text-ink hover-fine:decoration-gold"
           >
             {link[1]}
           </a>
@@ -55,7 +55,7 @@ function AbstractParagraph({ text }: { text: string }) {
 
   if (!match) {
     return (
-      <p className="font-body text-[0.95rem]/relaxed text-ink-soft">
+      <p className="type-lead text-soft">
         {renderInline(text)}
       </p>
     );
@@ -64,8 +64,8 @@ function AbstractParagraph({ text }: { text: string }) {
   const [, label, rest] = match;
 
   return (
-    <p className="font-body text-[0.95rem]/relaxed text-ink-soft">
-      <span className="mr-2 font-body text-[0.7rem] tracking-[0.18em] text-gold-dark uppercase">
+    <p className="type-lead text-soft">
+      <span className="mr-2 type-eyebrow text-gold-text">
         {label}
       </span>
       {renderInline(rest)}
@@ -91,7 +91,7 @@ function Blocks({
       return (
         <h3
           key={index}
-          className="mt-12 font-display text-2xl/snug text-ink first:mt-0"
+          className="mt-12 type-h3 text-ink first:mt-0"
         >
           {block.text}
         </h3>
@@ -103,24 +103,24 @@ function Blocks({
         <div
           key={index}
           data-reveal
-          className="relative my-8 overflow-hidden rounded-2xl border border-ink/10 bg-white/60 p-7 lg:p-8"
+          className="relative my-8 overflow-hidden rounded-[16px] border border-line bg-page p-7 lg:p-8"
         >
           {/* The number again, oversized and faint. It is what makes a run of
               these read as a numbered series at a glance rather than as three
               more panels. aria-hidden because the label below says it properly. */}
           <span
             aria-hidden
-            className="pointer-events-none absolute -top-4 right-4 font-display text-[5.5rem]/none text-gold/10 select-none"
+            className="pointer-events-none absolute -top-4 right-4 font-display text-[5.5rem]/none text-gold/20 select-none"
           >
             {block.label.replace(/\D/g, '')}
           </span>
 
-          <span className="font-body text-[0.68rem] tracking-[0.22em] text-gold-dark uppercase">
+          <span className="type-eyebrow text-caption-strong">
             {block.label}
           </span>
 
           {block.title && (
-            <h4 className="mt-3 font-display text-xl/snug text-ink">
+            <h4 className="mt-3 type-h3 text-ink">
               {block.title}
             </h4>
           )}
@@ -128,7 +128,7 @@ function Blocks({
           {block.body.map((text, i) => (
             <p
               key={i}
-              className="mt-3 font-body text-[0.98rem]/relaxed text-ink-soft"
+              className="mt-3 type-lead text-soft"
             >
               {renderInline(text)}
             </p>
@@ -142,7 +142,7 @@ function Blocks({
         <blockquote
           key={index}
           data-reveal
-          className="my-12 border-l-2 border-gold/60 pl-6 font-display text-2xl/relaxed text-ink italic lg:text-[1.7rem]/relaxed"
+          className="my-12 border-l-2 border-gold pl-7 type-quote text-ink"
         >
           {renderInline(block.text)}
         </blockquote>
@@ -158,7 +158,7 @@ function Blocks({
                 aria-hidden
                 className="mt-2.5 size-1.5 shrink-0 rounded-full bg-gold"
               />
-              <span className="font-body text-[0.98rem]/relaxed text-ink-soft">
+              <span className="type-lead text-soft">
                 {item.lead && (
                   <span className="font-medium text-ink">{item.lead}. </span>
                 )}
@@ -175,8 +175,8 @@ function Blocks({
         key={index}
         className={
           lead && index === 0
-            ? 'my-6 font-body text-[1.18rem]/relaxed text-ink lg:text-[1.28rem]/relaxed'
-            : 'my-6 font-body text-[1.02rem]/relaxed text-ink-soft'
+            ? 'my-6 type-lead text-ink'
+            : 'my-6 type-lead text-soft'
         }
       >
         {renderInline(block.text)}
@@ -216,7 +216,7 @@ function SectionShell({
           {number && (
             <span
               data-reveal
-              className="block font-body text-[0.72rem] tracking-[0.22em] text-gold-dark tabular-nums"
+              className="block type-eyebrow text-gold-text tabular-nums"
             >
               {number}
               <span aria-hidden className="mx-2 text-gold/40">
@@ -227,7 +227,7 @@ function SectionShell({
 
           <h2
             data-reveal-heading
-            className={`font-display text-display-sm text-ink ${
+            className={`type-h2 text-ink ${
               number ? 'mt-3' : ''
             }`}
           >
@@ -281,14 +281,14 @@ function SectionContent({
       <>
         {rest.length > 0 && <Blocks blocks={rest} />}
 
-        <ul data-reveal className="mt-8 grid gap-4 rounded-2xl border border-gold/25 bg-gradient-to-br from-gold/8 to-transparent p-7 lg:p-8">
+        <ul data-reveal className="mt-8 grid gap-4 rounded-[16px] border border-line bg-page p-7 lg:p-8">
           {items.map((item, index) => (
             <li key={index} className="flex gap-4">
               <Check
                 aria-hidden
-                className="mt-0.5 size-4 shrink-0 text-gold-dark"
+                className="mt-0.5 size-4 shrink-0 text-gold-text"
               />
-              <span className="font-body text-[0.98rem]/relaxed text-ink-soft">
+              <span className="type-lead text-soft">
                 {item.lead && (
                   <span className="font-medium text-ink">{item.lead}. </span>
                 )}
@@ -308,16 +308,16 @@ function SectionContent({
     );
 
     return (
-      <ol data-reveal className="mt-8 space-y-3 rounded-2xl bg-cream-dark/60 p-7 lg:p-8">
+      <ol data-reveal className="mt-8 space-y-3 rounded-[16px] bg-page p-7 lg:p-8">
         {items.map((item, index) => (
           <li key={index} className="flex gap-4">
             <span
               aria-hidden
-              className="shrink-0 font-body text-[0.72rem] tabular-nums text-gold-dark"
+              className="shrink-0 type-small tabular-nums text-gold-text"
             >
               {String(index + 1).padStart(2, '0')}
             </span>
-            <span className="font-body text-[0.82rem]/relaxed text-slate">
+            <span className="type-small text-soft">
               {renderInline(item.text)}
             </span>
           </li>
@@ -329,7 +329,7 @@ function SectionContent({
   // ---- Abstract: keep the paper's own Background/Methods/Results shape ----
   if (section.variant === 'abstract') {
     return (
-      <div data-reveal className="mt-8 space-y-5 rounded-2xl border border-ink/10 bg-white/50 p-7 lg:p-8">
+      <div data-reveal className="mt-8 space-y-5 rounded-[16px] border border-line bg-page p-7 lg:p-8">
         {section.blocks.map((block, index) =>
           block.kind === 'paragraph' ? (
             <AbstractParagraph key={index} text={block.text} />
@@ -345,14 +345,14 @@ function SectionContent({
       <Accordion data-reveal className="mt-8">
         {section.faqs.map((faq) => (
           <AccordionItem key={faq.id} value={faq.id}>
-            <AccordionTrigger className="text-left font-body text-[0.98rem] text-ink">
+            <AccordionTrigger className="text-left type-body text-ink">
               {faq.question}
             </AccordionTrigger>
             <AccordionContent>
               {faq.answer.map((paragraph, index) => (
                 <p
                   key={index}
-                  className="font-body text-[0.95rem]/relaxed text-ink-soft"
+                  className="type-lead text-soft"
                 >
                   {renderInline(paragraph)}
                 </p>

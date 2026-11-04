@@ -1,10 +1,14 @@
-'use client';
-
-import { useRef } from 'react';
-import { motion, useScroll, useSpring } from 'motion/react';
-import { gsap, SplitText, useGSAP } from '@/lib/gsap';
-import { CountUp } from '@/components/ui/count-up';
-import { CtaPill } from '@/components/ui/cta-pill';
+import type { ReactNode } from 'react';
+import Image from 'next/image';
+import { GraduationCap, MapPin } from 'lucide-react';
+import { BAND_Y, Container, Eyebrow, SPLIT } from '@/components/site/layout';
+import { Button } from '@/components/site/button';
+import { ExpertiseList } from '@/components/about/expertise-list';
+import { QUADRANT_ICON, QuadrantGrid } from '@/components/site/quadrant-grid';
+import { CARD, CARD_TONE, GLASS_PANEL } from '@/components/site/surfaces';
+import { LogoMarquee } from '@/components/site/logo-marquee';
+import { CtaBand } from '@/components/site/cta-band';
+import { Timeline } from '@/components/site/timeline';
 import {
   aboutLinks,
   awards,
@@ -13,631 +17,503 @@ import {
   researchAreas,
   training,
 } from '@/data/about';
+import { schedule } from '@/data/schedule';
+import { stats } from '@/data/stats';
+import { cn } from '@/lib/utils';
+import clinicPhoto from '@/assets/blogs/germany/team.webp';
 
-/** The vision line, split so it can arrive a term at a time. */
 const VISION = ['Science', 'Medicine', 'Innovation', 'Patient-Centered Care'];
 
-export function AboutBody() {
-  const rootRef = useRef<HTMLDivElement>(null);
-  const timelineRef = useRef<HTMLDivElement>(null);
+const stat = (label: string) => stats.find((item) => item.label === label)!;
+const years = stat('Years Experience');
+const patients = stat('Patients Transformed');
+const industryAwards = stat('Industry Awards');
 
-  // The conference rail reads its own list rather than the page, so it fills in
-  // step with the entries beside it and nothing else. Same arrangement as the
-  // Principles section on the home page.
-  const { scrollYProgress } = useScroll({
-    target: timelineRef,
-    offset: ['start center', 'end center'],
-  });
+// Three figures that already exist in data/stats.ts, labelled as in the home hero.
+const FIGURES = [
+  { value: `${years.value}${years.suffix}`, label: 'Years of practice' },
+  { value: `${patients.value}${patients.suffix}`, label: 'Patients treated' },
+  { value: `${industryAwards.value}${industryAwards.suffix}`, label: 'Industry awards' },
+];
 
-  const rail = useSpring(scrollYProgress, {
-    stiffness: 120,
-    damping: 30,
-    mass: 0.4,
-  });
+// The two cards under the practice lead. The clinic's name is the first
+// card's title, so its paragraph starts from "In Abu Dhabi".
+const PRACTICE = [
+  {
+    label: 'Founder & Medical Director',
+    title: 'Everlast Wellness Medical Center',
+    body: 'In Abu Dhabi, she leads a multidisciplinary approach to aesthetic medicine, dermatology, regenerative medicine, longevity, and advanced wellness.',
+    meta: 'Abu Dhabi, UAE',
+    icon: MapPin,
+  },
+  {
+    label: 'Beyond the clinic',
+    title: 'The International Medical Community',
+    body: 'Beyond clinical practice, Dr. Christeen is an active contributor to the international medical community, participating in scientific conferences, delivering lectures and professional training, mentoring healthcare professionals, and sharing evidence-based approaches to emerging areas of medicine.',
+    meta: 'Conferences · Lectures · Training',
+    icon: GraduationCap,
+  },
+];
 
-  useGSAP(
-    () => {
-      // ---- Every section heading, each on its own arrival ----
-      // One pass over the whole page rather than a block per section: they all
-      // want the same treatment, and keying each to its own element is what
-      // stops the last heading playing while the reader is still on the first.
-      gsap.utils
-        .toArray<HTMLElement>('[data-title]', rootRef.current)
-        .forEach((title) => {
-          SplitText.create(title, {
-            type: 'lines',
-            mask: 'lines',
-            autoSplit: true,
-            onSplit: (self) =>
-              gsap.from(self.lines, {
-                yPercent: 120,
-                duration: 1.2,
-                stagger: 0.12,
-                ease: 'power4.out',
-                scrollTrigger: { trigger: title, start: 'top 85%', once: true },
-              }),
-          });
-        });
+// The four threads named in the medical-education paragraph.
+const EDUCATION_THREADS = [
+  'Sharing knowledge',
+  'Mentoring practitioners',
+  'Scientific thinking',
+  'Collaboration',
+];
 
-      gsap.utils
-        .toArray<HTMLElement>('[data-rule]', rootRef.current)
-        .forEach((rule) => {
-          gsap.from(rule, {
-            scaleX: 0,
-            duration: 1.1,
-            ease: 'power3.inOut',
-            scrollTrigger: { trigger: rule, start: 'top 92%', once: true },
-          });
-        });
+// One icon per training programme, in the order of `training`.
+const TRAINING_ICONS: ReactNode[] = [
+  <svg key="academy" {...QUADRANT_ICON}>
+    <path d="M2 9l10-5 10 5-10 5z M6 11v5c3 2 9 2 12 0v-5 M22 9v6" />
+  </svg>,
+  <svg key="workshop" {...QUADRANT_ICON}>
+    <path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z" />
+  </svg>,
+  <svg key="laser" {...QUADRANT_ICON}>
+    <path d="M12 3v3 M12 18v3 M3 12h3 M18 12h3 M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+  </svg>,
+  <svg key="international" {...QUADRANT_ICON}>
+    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0 M3 12h18 M12 3c3 3.2 3 14.8 0 18 M12 3c-3 3.2-3 14.8 0 18" />
+  </svg>,
+];
 
-      // ---- Grouped items, staggered within their own group ----
-      // Keyed to the group, so a stagger never runs across a screen boundary.
-      gsap.utils
-        .toArray<HTMLElement>('[data-group]', rootRef.current)
-        .forEach((group) => {
-          const items = gsap.utils.toArray<HTMLElement>('[data-item]', group);
-          if (!items.length) return;
+const TRAINING = training.map((item, i) => ({
+  title: item.title,
+  body: item.body,
+  label: [String(i + 1).padStart(2, '0'), item.meta].filter(Boolean).join(' · '),
+  icon: TRAINING_ICONS[i],
+}));
 
-          gsap.from(items, {
-            y: 26,
-            opacity: 0,
-            duration: 1.1,
-            stagger: 0.09,
-            ease: 'power3.out',
-            scrollTrigger: { trigger: group, start: 'top 82%', once: true },
-          });
-        });
+const READING = aboutLinks.filter((link) => link.href.startsWith('/blog'));
+const BOOK = aboutLinks.find((link) => link.href === '/reach-me')!;
 
-      // ---- The research chips: scale rather than travel ----
-      gsap.utils
-        .toArray<HTMLElement>('[data-chips]', rootRef.current)
-        .forEach((group) => {
-          gsap.from(gsap.utils.toArray('[data-chip]', group), {
-            scale: 0.85,
-            opacity: 0,
-            duration: 0.8,
-            stagger: 0.045,
-            ease: 'back.out(1.6)',
-            scrollTrigger: { trigger: group, start: 'top 85%', once: true },
-          });
-        });
-    },
-    { scope: rootRef },
-  );
+/** One word set in italic for emphasis inside display type. */
+function Em({ children }: { children: ReactNode }) {
+  return <em className="italic">{children}</em>;
+}
 
+/** The home page's section header: eyebrow, display heading, standfirst. */
+function Head({
+  eyebrow,
+  title,
+  id,
+  onDark = false,
+  as: Heading = 'h2',
+  children,
+}: {
+  eyebrow?: string;
+  title: ReactNode;
+  id?: string;
+  onDark?: boolean;
+  as?: 'h2' | 'h3';
+  children?: ReactNode;
+}) {
   return (
-    <div ref={rootRef}>
-      {/* ================= Intro ================= */}
-      <section className="relative overflow-hidden bg-cream py-24 text-ink lg:py-32">
-        <div className="mx-auto max-w-7xl px-5 md:px-8 lg:px-12 xl:px-20">
-          <div
-            data-group
-            className="grid gap-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-20"
-          >
-            <div>
-              <p
-                data-item
-                className="font-body text-[0.72rem] tracking-[0.24em] text-gold-dark uppercase"
-              >
-                The practice
-              </p>
-
-              {/* The one figure in the copy, given the weight of one. */}
-              <p data-item className="mt-8 font-display text-display-lg text-ink">
-                <CountUp value={12} suffix="+" />
-              </p>
-
-              <p
-                data-item
-                className="mt-3 font-body text-[0.78rem] tracking-[0.18em] text-slate uppercase"
-              >
-                Years in dermatology
-                <br />
-                &amp; aesthetic medicine
-              </p>
-
-              <div
-                data-rule
-                aria-hidden
-                className="mt-10 h-px w-24 origin-left bg-gradient-gold"
-              />
-            </div>
-
-            <div className="space-y-7 font-body text-[1.02rem]/relaxed text-slate lg:text-[1.06rem]/relaxed">
-              <p data-item>
-                With more than 12 years of experience in Dermatology and
-                Aesthetic Medicine, Dr. Christeen Youssef has built a career at
-                the intersection of clinical medicine, aesthetic innovation,
-                regenerative medicine, tissue bioengineering, and medical
-                education.
-              </p>
-
-              <p data-item>
-                She is the{' '}
-                <strong className="font-medium text-ink">
-                  Founder &amp; Medical Director of Everlast Wellness Medical
-                  Center
-                </strong>{' '}
-                in Abu Dhabi, where she leads a multidisciplinary approach to
-                aesthetic medicine, dermatology, regenerative medicine,
-                longevity, and advanced wellness.
-              </p>
-
-              <p data-item>
-                Beyond clinical practice, Dr. Christeen is an active contributor
-                to the international medical community, participating in
-                scientific conferences, delivering lectures and professional
-                training, mentoring healthcare professionals, and sharing
-                evidence-based approaches to emerging areas of medicine.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ================= Disciplines ================= */}
-      <section className="relative overflow-hidden border-t border-ink/10 bg-cream py-24 text-ink lg:py-32">
-        <div className="mx-auto max-w-7xl px-5 md:px-8 lg:px-12 xl:px-20">
-          <h2
-            data-title
-            className="max-w-[26ch] font-display text-display-md text-ink"
-          >
-            A Career Built on Science, Innovation &amp; Education
-          </h2>
-
-          <div
-            data-rule
-            aria-hidden
-            className="mt-7 h-px w-24 origin-left bg-gradient-gold"
-          />
-
-          <p className="mt-8 max-w-xl font-body text-[0.98rem]/relaxed text-slate">
-            Dr. Christeen&apos;s professional journey extends beyond patient
-            care. Her work encompasses:
-          </p>
-
-          {/* Ruled rows rather than cards: five items with a number, a title and
-              a line of copy each is a table of contents, and a grid of boxes
-              would give every one the same visual weight as the section head. */}
-          <div data-group className="mt-14 lg:mt-20">
-            {disciplines.map((item) => (
-              <article
-                key={item.index}
-                data-item
-                className="group grid gap-4 border-t border-ink/10 py-8 last:border-b sm:grid-cols-[4rem_minmax(0,1fr)] lg:grid-cols-[5rem_minmax(0,22rem)_minmax(0,1fr)] lg:gap-10 lg:py-10"
-              >
-                <p
-                  aria-hidden
-                  className="font-body text-[0.8rem] tabular-nums tracking-[0.2em] text-gold-dark"
-                >
-                  {item.index}
-                </p>
-
-                <h3 className="font-display text-2xl/snug text-ink transition-colors duration-500 group-hover:text-gold-dark">
-                  {item.title}
-                </h3>
-
-                <p className="font-body text-[0.95rem]/relaxed text-slate sm:col-span-2 lg:col-span-1">
-                  {item.body}
-                </p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ================= Training ================= */}
-      <section
-        data-header-surface="dark"
-        className="relative overflow-hidden bg-ink py-24 text-cream lg:py-32"
-      >
+    <div className="scroll-rise flex flex-col gap-3.5">
+      {eyebrow && <Eyebrow onDark={onDark}>{eyebrow}</Eyebrow>}
+      <Heading id={id} className={cn('m-0 type-h2', onDark ? 'text-white' : 'text-text')}>
+        {title}
+      </Heading>
+      {children && (
         <div
-          aria-hidden
-          className="pointer-events-none absolute top-0 right-0 size-[38rem] translate-x-1/3 -translate-y-1/3 rounded-full opacity-70 blur-3xl"
-          style={{
-            background:
-              'radial-gradient(circle, rgba(201,153,40,0.16), transparent 70%)',
-          }}
-        />
-
-        <div className="relative mx-auto max-w-7xl px-5 md:px-8 lg:px-12 xl:px-20">
-          <p className="font-body text-[0.72rem] tracking-[0.24em] text-gold uppercase">
-            International Training &amp; Medical Education
-          </p>
-
-          <h2
-            data-title
-            className="mt-6 max-w-[24ch] font-display text-display-md text-cream"
-          >
-            Empowering Healthcare Professionals Through Knowledge
-          </h2>
-
-          <div
-            data-rule
-            aria-hidden
-            className="mt-7 h-px w-24 origin-left bg-gradient-gold"
-          />
-
-          <div className="mt-8 grid gap-7 lg:grid-cols-2 lg:gap-16">
-            <p className="font-body text-[0.98rem]/relaxed text-cream/70">
-              A significant part of Dr. Christeen&apos;s professional mission is
-              medical education.
-            </p>
-            <p className="font-body text-[0.98rem]/relaxed text-cream/70">
-              Through workshops, hands-on courses, lectures, and professional
-              training programs, she shares practical knowledge and clinical
-              experience with healthcare professionals in the fields of aesthetic
-              medicine, dermatology, regenerative medicine, laser and
-              energy-based devices, and advanced treatment techniques.
-            </p>
-          </div>
-
-          <div
-            data-group
-            className="mt-14 grid gap-6 sm:grid-cols-2 lg:mt-20 lg:gap-7"
-          >
-            {training.map((item) => (
-              <article
-                key={item.title}
-                data-item
-                className="rounded-2xl border border-cream/12 bg-cream/[0.03] p-7 transition-colors duration-500 hover:border-gold/30 lg:p-8"
-              >
-                {item.meta && (
-                  <p className="font-body text-[0.68rem] tracking-[0.18em] text-gold uppercase">
-                    {item.meta}
-                  </p>
-                )}
-
-                <h3
-                  className={`font-display text-xl/snug text-cream ${
-                    item.meta ? 'mt-4' : ''
-                  }`}
-                >
-                  {item.title}
-                </h3>
-
-                <p className="mt-4 font-body text-[0.92rem]/relaxed text-cream/65">
-                  {item.body}
-                </p>
-              </article>
-            ))}
-          </div>
+          className={cn(
+            'mt-1 flex max-w-[500px] flex-col gap-4 type-body',
+            onDark ? 'text-[#CFC8BC]' : 'text-soft',
+          )}
+        >
+          {children}
         </div>
-      </section>
+      )}
+    </div>
+  );
+}
 
-      {/* ================= Conferences ================= */}
-      <section className="relative overflow-hidden bg-cream py-24 text-ink lg:py-32">
-        <div className="mx-auto max-w-7xl px-5 md:px-8 lg:px-12 xl:px-20">
-          <p className="font-body text-[0.72rem] tracking-[0.24em] text-gold-dark uppercase">
-            Conferences &amp; Scientific Speaking
-          </p>
-
-          <h2
-            data-title
-            className="mt-6 max-w-[22ch] font-display text-display-md text-ink"
-          >
-            Sharing Knowledge Beyond the Clinic
-          </h2>
-
-          <div
-            data-rule
-            aria-hidden
-            className="mt-7 h-px w-24 origin-left bg-gradient-gold"
-          />
-
-          <p className="mt-8 max-w-2xl font-body text-[0.98rem]/relaxed text-slate">
-            Dr. Christeen regularly participates in scientific and professional
-            events, contributing her clinical experience and research
-            perspectives to discussions surrounding aesthetics, dermatology,
-            wound healing, regenerative medicine, and tissue engineering.
-          </p>
-
-          <p className="mt-14 font-body text-[0.72rem] tracking-[0.2em] text-slate/70 uppercase lg:mt-20">
-            Selected 2025&ndash;2026 highlights
-          </p>
-
-          {/* A timeline, because these are dated events and the order is the
-              point. The rail is driven by this list's own scroll so it can never
-              disagree with where the reader is in it. */}
-          <div ref={timelineRef} data-group className="relative mt-10">
-            <div
-              aria-hidden
-              className="absolute top-0 bottom-0 left-[7px] w-px bg-ink/12 sm:left-[calc(5rem+7px)]"
-            >
-              <motion.div
-                style={{ scaleY: rail }}
-                className="h-full w-full origin-top bg-gradient-gold"
-              />
+export function AboutBody() {
+  return (
+    <>
+      {/* ================= 2 · Introduction =================
+          Everything — heading, lead, the two columns and the figures — sits in
+          one 760px column, so nothing below is wider than the lead above it. */}
+      <section aria-labelledby="practice-title" className={cn('relative bg-page text-text', BAND_Y)}>
+        <Container>
+          <div className="mx-auto max-w-[760px]">
+            <div className="scroll-rise flex flex-col items-center gap-4 text-center">
+              <Eyebrow>The practice</Eyebrow>
+              <h2 id="practice-title" className="m-0 type-h2 text-text">
+                A career at the intersection of <Em>medicine</Em>, <Em>science</Em> and{' '}
+                <Em>education</Em>.
+              </h2>
             </div>
 
-            {conferences.map((item, index) => (
-              <article
-                key={`${item.title}-${index}`}
-                data-item
-                className="relative grid gap-3 pb-12 pl-9 last:pb-0 sm:grid-cols-[5rem_minmax(0,1fr)] sm:gap-x-9 sm:pl-0"
-              >
-                <p className="font-body text-[0.8rem] tabular-nums tracking-[0.16em] text-gold-dark sm:text-right">
-                  {item.year}
-                </p>
+            <p className="scroll-rise m-0 mt-7 text-center type-lead text-balance text-soft">
+              With more than 12 years of experience in Dermatology and Aesthetic
+              Medicine, Dr. Christeen Youssef has built a career at the intersection
+              of clinical medicine, aesthetic innovation, regenerative medicine,
+              tissue bioengineering, and medical education.
+            </p>
 
-                {/* Sits on the rail. */}
-                <span
-                  aria-hidden
-                  className="absolute top-1.5 left-0 size-[15px] rounded-full border-2 border-gold bg-cream sm:left-[5rem]"
-                />
-
-                <div>
-                  <h3 className="font-display text-xl/snug text-ink">
-                    {item.title}
-                    {item.place && (
-                      <span className="text-slate/70"> · {item.place}</span>
-                    )}
-                  </h3>
-
-                  <p className="mt-3 max-w-2xl font-body text-[0.95rem]/relaxed text-slate">
-                    {item.body}
+            {/* Two equal cards: the grid stretches them to one height and each
+                footer is pushed to the bottom, so the footers share a line. */}
+            <ul className="scroll-rise m-0 mt-12 grid list-none items-stretch gap-5 p-0 text-left md:grid-cols-2">
+              {PRACTICE.map(({ label, title, body, meta, icon: Icon }) => (
+                <li key={label} className={cn(CARD, CARD_TONE.cream, 'h-full gap-0 border border-line p-8')}>
+                  <p className="type-eyebrow m-0 text-gold-text">{label}</p>
+                  <h3 className="m-0 mt-3 type-h3 text-ink">{title}</h3>
+                  <p className="m-0 mt-4 mb-6 type-body text-pretty text-soft">{body}</p>
+                  <p className="m-0 mt-auto flex items-center gap-2 border-t border-line pt-6 type-small text-caption-strong">
+                    <Icon aria-hidden strokeWidth={1.7} className="size-4 shrink-0 text-gold" />
+                    {meta}
                   </p>
+                </li>
+              ))}
+            </ul>
+
+            {/* The hairlines are on the grid and the dividers between its cells,
+                so the verticals meet the horizontals exactly. */}
+            <dl className="mt-16 grid divide-y divide-line border-y border-line md:grid-cols-3 md:divide-x md:divide-y-0">
+              {FIGURES.map((figure) => (
+                <div key={figure.label} className="flex flex-col items-center gap-1 py-8 text-center">
+                  <dt className="sr-only">{figure.label}</dt>
+                  <dd className="m-0 type-stat text-text">
+                    {figure.value}
+                  </dd>
+                  <dd aria-hidden className="m-0 type-stat-label whitespace-nowrap text-caption-strong">
+                    {figure.label}
+                  </dd>
                 </div>
-              </article>
-            ))}
+              ))}
+            </dl>
+
+            <p className="scroll-rise m-0 mt-10 text-center">
+              <span className="block font-display text-[26px] text-text italic">Christeen Youssef</span>
+              <span className="type-eyebrow mt-1 block text-caption-strong">{schedule.role}</span>
+            </p>
           </div>
-        </div>
+        </Container>
       </section>
 
-      {/* ================= Research ================= */}
-      <section className="relative overflow-hidden border-t border-ink/10 bg-cream py-24 text-ink lg:py-32">
-        <div className="mx-auto max-w-7xl px-5 md:px-8 lg:px-12 xl:px-20">
-          <p className="font-body text-[0.72rem] tracking-[0.24em] text-gold-dark uppercase">
-            Research &amp; Regenerative Medicine
-          </p>
-
-          <h2
-            data-title
-            className="mt-6 max-w-[20ch] font-display text-display-md text-ink"
-          >
-            Advancing the Future of Healing
-          </h2>
-
-          <div
-            data-rule
-            aria-hidden
-            className="mt-7 h-px w-24 origin-left bg-gradient-gold"
+      {/* ================= 3 · Areas of expertise ================= */}
+      <section aria-labelledby="career-title" className={cn('relative bg-cream text-text', BAND_Y)}>
+        <Container>
+          <ExpertiseList
+            items={disciplines}
+            heading={
+              <Head
+                eyebrow="Areas of expertise"
+                id="career-title"
+                title="A Career Built on Science, Innovation & Education"
+              >
+                <p>
+                  Dr. Christeen&apos;s professional journey extends beyond patient care.
+                  Her work encompasses:
+                </p>
+              </Head>
+            }
           />
+        </Container>
+      </section>
 
-          <p className="mt-8 max-w-2xl font-body text-[0.98rem]/relaxed text-slate">
-            Dr. Christeen&apos;s scientific interests extend into emerging
-            regenerative approaches designed to improve tissue repair, wound
-            healing, scar management, and functional recovery. Her work has
-            explored areas including:
-          </p>
+      {/* ================= 4 · Education & speaking ================= */}
+      <section
+        data-tone="ink"
+        aria-labelledby="training-title"
+        className={cn('relative overflow-clip text-white', BAND_Y)}
+        style={{ background: 'radial-gradient(ellipse 50% 70% at 85% 50%, #2B261D 0%, #17150F 70%)' }}
+      >
+        <span
+          aria-hidden
+          className="animate-blob absolute top-[12%] right-[18%] size-[420px] rounded-full blur-[10px]"
+          style={{ background: 'radial-gradient(closest-side, rgba(217,181,102,0.22), rgba(217,181,102,0))' }}
+        />
+        <Container className="relative z-[2]">
+          <div className={cn(SPLIT.grid, 'items-center')}>
+            <div className={cn(SPLIT.start, 'flex flex-col gap-7')}>
+              <Head
+                onDark
+                eyebrow="International Training & Medical Education"
+                id="training-title"
+                title="Empowering Healthcare Professionals Through Knowledge"
+              >
+                <p>
+                  A significant part of Dr. Christeen&apos;s professional mission is
+                  medical education.
+                </p>
+                <p>
+                  Through workshops, hands-on courses, lectures, and professional
+                  training programs, she shares practical knowledge and clinical
+                  experience with healthcare professionals in the fields of aesthetic
+                  medicine, dermatology, regenerative medicine, laser and energy-based
+                  devices, and advanced treatment techniques.
+                </p>
+              </Head>
+              <Button href="/reach-me" variant="gold" className="self-start">
+                Book a consultation
+              </Button>
+            </div>
+            <QuadrantGrid items={TRAINING} className={SPLIT.end} />
+          </div>
 
-          {/* Chips, not a bulleted list: nine short terms read as a field of
-              interest, and a column of bullets would read as a ranking. */}
-          <ul data-chips className="mt-12 flex flex-wrap gap-3">
-            {researchAreas.map((area) => (
+          <div className="mt-[clamp(64px,7vw,104px)] border-t border-white/12 pt-[clamp(48px,5vw,72px)]">
+            <div className={SPLIT.grid}>
+              <div className={SPLIT.start}>
+                <Head onDark as="h3" eyebrow="Conferences & Scientific Speaking" title="Sharing Knowledge Beyond the Clinic" />
+              </div>
+              <p className={cn(SPLIT.end, 'scroll-rise m-0 max-w-[60ch] self-end type-body text-[#CFC8BC]')}>
+                Dr. Christeen regularly participates in scientific and professional
+                events, contributing her clinical experience and research perspectives
+                to discussions surrounding aesthetics, dermatology, wound healing,
+                regenerative medicine, and tissue engineering.
+              </p>
+            </div>
+
+            <Eyebrow onDark className="scroll-rise mt-14">
+              Selected 2025&ndash;2026 highlights
+            </Eyebrow>
+            <Timeline items={conferences} className="mt-8" />
+          </div>
+        </Container>
+      </section>
+
+      {/* ================= 5 · Research & recognition ================= */}
+      <section aria-labelledby="research-title" className={cn('relative bg-page text-text', BAND_Y)}>
+        <Container>
+          {/* Header: heading in columns 1–6, the intro in 8–12 sitting on the
+              heading's baseline — directly above the list it introduces. */}
+          <div className="grid gap-y-6 lg:grid-cols-12 lg:items-end lg:gap-x-6">
+            <div className="lg:col-span-6">
+              <Head
+                eyebrow="Research & Regenerative Medicine"
+                id="research-title"
+                title={
+                  <>
+                    Advancing the <Em>Future</Em> of Healing
+                  </>
+                }
+              />
+            </div>
+            <p className="scroll-rise m-0 max-w-[60ch] type-body text-pretty text-soft lg:col-span-5 lg:col-start-8">
+              Dr. Christeen&apos;s scientific interests extend into emerging
+              regenerative approaches designed to improve tissue repair, wound
+              healing, scar management, and functional recovery. Her work has
+              explored areas including:
+            </p>
+          </div>
+
+          {/* Nine areas as a 3×3 grid: every cell carries its own top rule and
+              the grid the bottom one, so all lines run edge to edge; the rule
+              between columns is each cell's own left border, so it spans the
+              full (stretched) row height. One column below 1024px. */}
+          <ol className="scroll-rise m-0 mt-14 grid list-none border-b border-line p-0 lg:grid-cols-3">
+            {researchAreas.map((area, index) => (
               <li
                 key={area}
-                data-chip
-                className="rounded-full border border-ink/12 bg-white/60 px-5 py-2.5 font-body text-[0.88rem] text-ink transition-colors duration-500 hover:border-gold/40 hover:text-gold-dark"
+                className="group flex items-baseline gap-5 border-t border-line py-5 lg:flex-col lg:gap-3 lg:px-6 lg:py-7 lg:[&:nth-child(3n+1)]:pl-0 lg:[&:not(:nth-child(3n+1))]:border-l"
               >
-                {area}
+                <span className="w-6 shrink-0 type-eyebrow text-gold-text tabular-nums transition-colors duration-200 group-hover-fine:text-gold">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <span className="type-h3 text-balance text-text transition-transform duration-200 group-hover-fine:translate-x-1">
+                  {area}
+                </span>
               </li>
             ))}
-          </ul>
+          </ol>
 
-          <p className="mt-12 max-w-2xl font-body text-[0.98rem]/relaxed text-slate">
+          <p className="scroll-rise m-0 mx-auto mt-12 max-w-[680px] text-center type-quote text-balance text-ink italic">
             Her research and clinical interests reflect a broader vision: using
             science and innovation to move beyond treating symptoms toward
             supporting tissue regeneration and improved long-term outcomes.
           </p>
-        </div>
-      </section>
 
-      {/* ================= Awards ================= */}
-      <section className="relative overflow-hidden border-t border-ink/10 bg-cream py-24 text-ink lg:py-32">
-        <div className="mx-auto max-w-7xl px-5 md:px-8 lg:px-12 xl:px-20">
-          <p className="font-body text-[0.72rem] tracking-[0.24em] text-gold-dark uppercase">
-            Awards &amp; Recognition
-          </p>
-
-          <h2
-            data-title
-            className="mt-6 max-w-[24ch] font-display text-display-md text-ink"
-          >
-            Excellence Recognized by the Medical Community
-          </h2>
-
-          <div data-group className="mt-14 grid gap-7 lg:mt-20 lg:grid-cols-2">
-            {awards.map((award, index) => (
-              <article
-                key={award.title}
-                data-item
-                // The first is an actual award and is treated as one; the second
-                // is a standing contribution, so it stays quiet.
-                className={
-                  index === 0
-                    ? 'rounded-2xl border border-gold/30 bg-gradient-to-br from-gold/10 to-transparent p-8 lg:p-10'
-                    : 'rounded-2xl border border-ink/10 p-8 lg:p-10'
-                }
-              >
-                {award.meta && (
-                  <p className="font-body text-[0.68rem] tracking-[0.18em] text-gold-dark uppercase">
-                    {award.meta}
-                  </p>
-                )}
-
-                <h3
-                  className={`font-display text-2xl/snug text-ink ${
-                    award.meta ? 'mt-4' : ''
-                  }`}
-                >
-                  {award.title}
-                </h3>
-
-                <p className="mt-4 font-body text-[0.95rem]/relaxed text-slate">
-                  {award.body}
-                </p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ================= Leadership ================= */}
-      <section
-        data-header-surface="dark"
-        className="relative overflow-hidden bg-ink py-24 text-cream lg:py-32"
-      >
-        <div
-          aria-hidden
-          className="pointer-events-none absolute bottom-0 left-1/2 size-[42rem] -translate-x-1/2 translate-y-1/2 rounded-full opacity-70 blur-3xl"
-          style={{
-            background:
-              'radial-gradient(circle, rgba(201,153,40,0.16), transparent 70%)',
-          }}
-        />
-
-        <div className="relative mx-auto max-w-7xl px-5 md:px-8 lg:px-12 xl:px-20">
-          <p className="font-body text-[0.72rem] tracking-[0.24em] text-gold uppercase">
-            Medical Leadership
-          </p>
-
-          <h2
-            data-title
-            className="mt-6 max-w-[26ch] font-display text-display-md text-cream"
-          >
-            Founder &amp; Medical Director — Everlast Wellness Medical Center
-          </h2>
-
-          <div
-            data-rule
-            aria-hidden
-            className="mt-7 h-px w-24 origin-left bg-gradient-gold"
-          />
-
-          <p className="mt-8 max-w-2xl font-body text-[0.98rem]/relaxed text-cream/70">
-            As Founder and Medical Director of Everlast Wellness Medical Center,
-            Dr. Christeen leads a multidisciplinary healthcare environment
-            focused on aesthetic medicine, dermatology, regenerative medicine,
-            longevity, and advanced wellness. Her vision is centered on bringing
-            together:
-          </p>
-
-          {/* The four terms set as the equation the copy makes of them, with the
-              plus signs drawn in gold so the line reads as a formula rather than
-              a list that happens to use punctuation. */}
-          <div
-            data-group
-            className="mt-14 flex flex-wrap items-center gap-x-5 gap-y-4 lg:mt-16 lg:gap-x-7"
-          >
-            {VISION.map((term, index) => (
-              <div key={term} data-item className="flex items-center gap-5 lg:gap-7">
-                {index > 0 && (
-                  <span
-                    aria-hidden
-                    className="font-display text-2xl text-gold lg:text-4xl"
+          <div className="mt-[clamp(56px,6vw,88px)] border-t border-line pt-[clamp(48px,5vw,72px)]">
+            <Head eyebrow="Awards & Recognition" as="h3" title="Excellence Recognized by the Medical Community" />
+            <ul className="scroll-stagger m-0 mt-11 grid list-none gap-4 p-0 min-[961px]:grid-cols-2">
+              {awards.map((award, index) => {
+                const featured = index === 0;
+                return (
+                  <li
+                    key={award.title}
+                    className={cn(CARD, featured ? CARD_TONE.gold : CARD_TONE.cream, 'gap-3 p-[clamp(24px,3vw,36px)]')}
                   >
-                    +
-                  </span>
-                )}
-                <span className="font-display text-2xl/tight text-cream lg:text-4xl/tight">
-                  {term}
-                </span>
-              </div>
-            ))}
+                    {award.meta && (
+                      <span className={cn('type-eyebrow', featured ? 'text-white/80' : 'text-caption-strong')}>
+                        {award.meta}
+                      </span>
+                    )}
+                    <h4 className={cn('m-0 type-h3', featured ? 'text-white' : 'text-ink')}>
+                      {award.title}
+                    </h4>
+                    <p className={cn('m-0 type-body', featured ? 'text-white/80' : 'text-soft')}>
+                      {award.body}
+                    </p>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
-
-          <p className="mt-12 max-w-xl font-body text-[0.98rem]/relaxed text-cream/60">
-            to create a healthcare experience that goes beyond conventional
-            aesthetics.
-          </p>
-        </div>
+        </Container>
       </section>
 
-      {/* ================= Education + closing ================= */}
-      <section className="relative overflow-hidden bg-cream py-24 text-ink lg:py-32">
-        <div className="mx-auto max-w-7xl px-5 md:px-8 lg:px-12 xl:px-20">
-          <div
-            data-group
-            className="grid gap-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-20"
-          >
-            <div>
-              <h2
-                data-title
-                className="max-w-[18ch] font-display text-display-md text-ink"
-              >
-                A Passion for Medical Education
-              </h2>
+      {/* ================= 6 · Founder ================= */}
+      <section
+        data-tone="ink"
+        aria-labelledby="founder-title"
+        className={cn('relative overflow-clip text-white', BAND_Y)}
+        style={{ background: 'radial-gradient(ellipse 60% 70% at 50% 0%, #2B261D 0%, #17150F 70%)' }}
+      >
+        <Container>
+          <div className={cn(GLASS_PANEL, 'scroll-rise p-[clamp(20px,3vw,40px)]')}>
+            <div className={cn(SPLIT.grid, 'items-center')}>
+              <figure className={cn(SPLIT.start, 'relative m-0')}>
+                <div className="relative aspect-[4/5] overflow-hidden rounded-[16px] bg-ink shadow-[0_34px_70px_rgba(0,0,0,0.3)]">
+                  <Image
+                    src={clinicPhoto}
+                    alt="Dr. Christeen Youssef with colleagues at Everlast Wellness Medical Center"
+                    fill
+                    placeholder="blur"
+                    sizes="(min-width: 961px) 440px, 92vw"
+                    className="object-cover"
+                  />
+                </div>
+                <figcaption className="absolute bottom-4 left-4 rounded-[12px] bg-cream px-3.5 py-2.5 type-small font-semibold text-text">
+                  Everlast Wellness Medical Center · Abu Dhabi
+                </figcaption>
+              </figure>
 
-              <div
-                data-rule
-                aria-hidden
-                className="mt-7 h-px w-24 origin-left bg-gradient-gold"
-              />
+              <div className={cn(SPLIT.end, 'flex flex-col gap-3.5')}>
+                <Eyebrow onDark>Medical Leadership</Eyebrow>
+                <h2 id="founder-title" className="m-0 type-h2 text-white">
+                  Founder &amp; Medical Director — Everlast Wellness Medical Center
+                </h2>
+                <p className="m-0 mt-1 max-w-[60ch] type-body text-[#CFC8BC]">
+                  As Founder and Medical Director of Everlast Wellness Medical Center,
+                  Dr. Christeen leads a multidisciplinary healthcare environment focused
+                  on aesthetic medicine, dermatology, regenerative medicine, longevity,
+                  and advanced wellness. Her vision is centered on bringing together:
+                </p>
+                <p className="m-0 mt-4 flex flex-wrap items-baseline gap-x-4 gap-y-1 border-y border-white/12 py-5 font-display text-[clamp(26px,2.8vw,38px)] leading-tight text-white">
+                  {VISION.map((term, index) => (
+                    <span key={term} className="flex items-baseline gap-4">
+                      {index > 0 && (
+                        <span aria-hidden className="text-gold-light">
+                          +
+                        </span>
+                      )}
+                      {term}
+                    </span>
+                  ))}
+                </p>
+                <p className="m-0 mt-1 max-w-[60ch] type-body text-[#CFC8BC]">
+                  to create a healthcare experience that goes beyond conventional
+                  aesthetics.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* ---------- A passion for medical education ----------
+              Two rows on the 12-column grid that mirror each other — heading
+              beside quote (their last lines on one baseline), then paragraph
+              beside paragraph — and the four threads below on the same grid.
+              Spaced from the panel above by the sections' own padding. */}
+          <div className="mt-[clamp(64px,7vw,104px)]">
+            <div className="grid gap-y-8 min-[961px]:grid-cols-12 min-[961px]:items-baseline-last min-[961px]:gap-x-6">
+              <div className="scroll-rise flex flex-col gap-3.5 min-[961px]:col-span-5">
+                <Eyebrow onDark>Medical Education</Eyebrow>
+                <h2 id="education-title" className="m-0 type-h2 text-white">
+                  A Passion for Medical <Em>Education</Em>
+                </h2>
+              </div>
+              <blockquote className="scroll-rise relative m-0 max-w-[34ch] type-quote text-cream italic min-[961px]:col-span-6 min-[961px]:col-start-7">
+                {/* Hanging quote on desktop: outside the text, so the words stay
+                    flush with the column edge. On phones the gutter is too narrow
+                    to hang into, so it sits inline. */}
+                <span aria-hidden className="text-gold not-italic min-[961px]:absolute min-[961px]:-left-[0.6em]">
+                  &ldquo;
+                </span>
+                Dr. Christeen believes that advancing medicine requires more than
+                individual clinical excellence.
+              </blockquote>
             </div>
 
-            <div className="space-y-7 font-body text-[1.02rem]/relaxed text-slate">
-              <p data-item>
-                Dr. Christeen believes that advancing medicine requires more
-                than individual clinical excellence.
-              </p>
-              <p data-item>
+            <div className="scroll-rise mt-12 grid items-start gap-y-5 border-t border-white/13 pt-10 type-body text-white/72 min-[961px]:grid-cols-12 min-[961px]:gap-x-6">
+              <p className="m-0 max-w-[46ch] text-pretty min-[961px]:col-span-5">
                 It requires sharing knowledge, mentoring future practitioners,
                 encouraging scientific thinking, and creating opportunities for
                 healthcare professionals to learn from one another.
               </p>
-              <p data-item>
-                Through her lectures, workshops, conferences, professional
-                training, and collaborations, she continues to contribute to the
-                development of the next generation of healthcare professionals.
+              <p className="m-0 max-w-[46ch] text-pretty min-[961px]:col-span-6 min-[961px]:col-start-7">
+                Through her lectures, workshops, conferences, professional training,
+                and collaborations, she continues to contribute to the development of
+                the next generation of healthcare professionals.
               </p>
             </div>
-          </div>
 
-          {/* ---- Beyond the Clinic ---- */}
-          <div className="mt-24 border-t border-ink/10 pt-16 lg:mt-32 lg:pt-20">
-            <p className="font-body text-[0.72rem] tracking-[0.24em] text-gold-dark uppercase">
-              Beyond the Clinic
-            </p>
-
-            <p className="mt-8 max-w-3xl font-body text-[0.98rem]/relaxed text-slate">
-              From international scientific conferences to hands-on medical
-              training, from regenerative research to patient-centered aesthetic
-              care, Dr. Christeen&apos;s journey reflects one central
-              philosophy:
-            </p>
-
-            <blockquote
-              data-title
-              className="mt-10 max-w-[30ch] font-display text-display-md text-ink"
-            >
-              Medicine should continuously evolve. And so should the way we
-              learn, innovate, and care for our patients.
-            </blockquote>
-
-            <div
-              data-group
-              className="mt-14 flex flex-wrap gap-4 lg:mt-16"
-            >
-              {aboutLinks.map((link, index) => (
-                <div key={link.href} data-item>
-                  <CtaPill
-                    href={link.href}
-                    label={link.label}
-                    // The consultation is the outcome; the three explorations
-                    // are quieter by a border.
-                    className={
-                      index === aboutLinks.length - 1
-                        ? undefined
-                        : 'border-ink/10 bg-transparent'
-                    }
-                  />
-                </div>
+            {/* Each thread carries its own top rule across its columns; the
+                gutter between them breaks the line into four equal segments. */}
+            <ol className="m-0 mt-14 grid list-none gap-x-6 gap-y-8 p-0 min-[640px]:max-[960px]:grid-cols-2 min-[961px]:grid-cols-12">
+              {EDUCATION_THREADS.map((thread, index) => (
+                <li
+                  key={thread}
+                  className={cn(
+                    'flex flex-col gap-2 border-t pt-6 min-[961px]:col-span-3',
+                    index === 0 ? 'border-gold' : 'border-white/13',
+                  )}
+                >
+                  <span className="type-eyebrow text-gold-light tabular-nums">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                  <span className="type-h3 text-cream">{thread}</span>
+                </li>
               ))}
+            </ol>
+          </div>
+        </Container>
+      </section>
+
+      {/* ================= 7 · Closing ================= */}
+      <section aria-labelledby="closing-title" className={cn('relative bg-cream text-text', BAND_Y)}>
+        <Container>
+          <div className="scroll-rise mx-auto flex max-w-[1000px] flex-col items-center gap-3.5 text-center">
+            <Eyebrow>Beyond the Clinic</Eyebrow>
+            <p className="m-0 max-w-[600px] type-body text-soft">
+              From international scientific conferences to hands-on medical training,
+              from regenerative research to patient-centered aesthetic care, Dr.
+              Christeen&apos;s journey reflects one central philosophy:
+            </p>
+            <h2 id="closing-title" className="m-0 mt-4 text-[clamp(40px,4.8vw,72px)] leading-[1.05] text-text">
+              Medicine should continuously <Em>evolve</Em>. And so should the way we{' '}
+              <Em>learn</Em>, <Em>innovate</Em>, and <Em>care</Em> for our patients.
+            </h2>
+            <div className="mt-7 flex flex-wrap justify-center gap-3">
+              {READING.map((link) => (
+                <Button key={link.href} href={link.href} variant="outline-dark">
+                  {link.label}
+                </Button>
+              ))}
+              <Button href={BOOK.href} variant="gold">
+                {BOOK.label}
+              </Button>
             </div>
           </div>
-        </div>
+
+          <div className="scroll-rise mt-[clamp(56px,6vw,88px)] border-t border-line pt-10">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
+              <Eyebrow>Partners &amp; Affiliations</Eyebrow>
+              <p className="m-0 type-h3 text-text">
+                Trusted alongside leading institutions
+              </p>
+            </div>
+            <div className="mt-8">
+              <LogoMarquee logoClassName="h-16 opacity-60" />
+            </div>
+          </div>
+        </Container>
       </section>
-    </div>
+
+      <CtaBand />
+    </>
   );
 }

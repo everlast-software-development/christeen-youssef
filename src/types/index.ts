@@ -1,6 +1,5 @@
 import type { StaticImageData } from 'next/image';
 import type { LucideIcon } from 'lucide-react';
-import type { SocialPlatform } from '@/components/icons/social-icon';
 
 export interface NavItem {
   label: string;
@@ -153,6 +152,15 @@ export interface ScheduleInfo {
   hours: string;
   phone: string;
 }
+
+export type SocialPlatform =
+  | 'Facebook'
+  | 'LinkedIn'
+  | 'Instagram'
+  | 'Snapchat'
+  | 'TikTok'
+  | 'WhatsApp'
+  | 'YouTube';
 
 export interface SocialLink {
   platform: SocialPlatform;

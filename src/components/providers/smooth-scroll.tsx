@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 import { ReactLenis, useLenis } from 'lenis/react';
 import { useReducedMotion } from 'motion/react';
 import { gsap, ScrollTrigger } from '@/lib/gsap';
@@ -40,12 +41,40 @@ function LenisGsapBridge() {
   return null;
 }
 
-export function SmoothScroll({ children }: { children: React.ReactNode }) {
-  // null until detected, so this is falsy on the server and during hydration
-  // and only drops to native scrolling once reduced motion is confirmed.
-  const reducedMotion = useReducedMotion();
+/**
+ * A new route always opens at the top, instantly — never a smooth scroll up
+ * from wherever the last page was left. Keyed on the pathname, so hash links
+ * within a page keep scrolling smoothly. Once the new page has painted, Lenis
+ * re-measures its height and ScrollTrigger its positions.
+ */
+function RouteScrollReset() {
+  const lenis = useLenis();
+  const pathname = usePathname();
+  const previous = useRef(pathname);
 
-  if (reducedMotion) return <>{children}</>;
+  useEffect(() => {
+    if (previous.current === pathname) return;
+    previous.current = pathname;
+
+    if (lenis) lenis.scrollTo(0, { immediate: true, force: true });
+    else window.scrollTo(0, 0);
+
+    const frame = requestAnimationFrame(() => {
+      lenis?.resize();
+      ScrollTrigger.refresh();
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [pathname, lenis]);
+
+  return null;
+}
+
+export function SmoothScroll({ children }: { children: React.ReactNode }) {
+  // Reduced motion turns the smoothing off rather than unmounting Lenis. The
+  // wrapper has to be in the tree either way: the server cannot know the
+  // preference, and a client tree with one provider fewer shifts every useId
+  // beneath it, which React reports as a hydration mismatch.
+  const reducedMotion = useReducedMotion() ?? false;
 
   return (
     <ReactLenis
@@ -58,12 +87,16 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
         // one wheel tick can throw the page no matter how hard it is spun.
         duration: 1.35,
         wheelMultiplier: 0.7,
-        smoothWheel: true,
+        smoothWheel: !reducedMotion,
         // Touch devices keep native scrolling — smoothing it feels laggy.
         syncTouch: false,
+        // #section links scroll smoothly and stop below the fixed header
+        // (64px compact height + the notch inset, as scroll-padding-top).
+        anchors: { offset: -64 },
       }}
     >
       <LenisGsapBridge />
+      <RouteScrollReset />
       {children}
     </ReactLenis>
   );

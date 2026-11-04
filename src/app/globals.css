@@ -4,34 +4,64 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Hover effects only where there is a real pointer to hover with, so a tap on
+   a phone never leaves a card stuck in its lifted state. */
+@custom-variant hover-fine {
+    @media (hover: hover) and (pointer: fine) {
+        &:hover {
+            @slot;
+        }
+    }
+}
+
+@custom-variant group-hover-fine {
+    @media (hover: hover) and (pointer: fine) {
+        :where(.group):hover & {
+            @slot;
+        }
+    }
+}
+
 /* ============================================================================
    BRAND TOKENS — Dr. Christeen Youssef
-   Gold #C99928 / Cream #F8F6F1 / Ink #0F1117, carried over from the original
-   brand and the transactional email template.
    ========================================================================== */
 
 @theme inline {
     /* Typography */
-    --font-sans: var(--font-geist), var(--font-cairo);
-    --font-body: var(--font-geist), var(--font-cairo);
-    --font-display: var(--font-playfair);
-    --font-redound: var(--font-redound);
-    --font-heading: var(--font-playfair);
+    --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+    --font-body: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+    --font-display: var(--font-cormorant), ui-serif, Georgia, serif;
+    --font-heading: var(--font-cormorant), ui-serif, Georgia, serif;
 
-    /* Brand scale — usable as text-gold, bg-cream, border-gold/20, etc. */
+    /* Palette — usable as bg-page, text-soft, border-line, etc. */
+    --color-page: var(--page);
+    --color-cream: var(--cream);
+    --color-white: var(--white);
+    --color-ink: var(--ink);
+    --color-text: var(--text);
+    --color-soft: var(--soft);
+    --color-caption: var(--muted);
+    --color-caption-strong: var(--muted-text);
+    --color-line: var(--line);
+    --color-line-dark: var(--line-dark);
     --color-gold: var(--gold);
     --color-gold-light: var(--gold-light);
-    --color-gold-dark: var(--gold-dark);
-    --color-cream: var(--cream);
-    --color-cream-dark: var(--cream-dark);
-    --color-ink: var(--ink);
-    --color-ink-soft: var(--ink-soft);
-    --color-slate: var(--slate);
+    --color-gold-deep: var(--gold-deep);
+    --color-gold-deep-hover: var(--gold-deep-hover);
+    --color-gold-text: var(--gold-text);
+    --color-eyebrow-dark: var(--eyebrow-dark);
+    --color-khaki: var(--khaki);
 
-    /* Editorial type scale for display headings */
-    --text-display-sm: clamp(1.75rem, 1.4rem + 1.6vw, 2.5rem);
-    --text-display-md: clamp(2.25rem, 1.6rem + 3vw, 3.75rem);
-    --text-display-lg: clamp(2.75rem, 1.7rem + 4.6vw, 5.5rem);
+    /* Type scale */
+    --text-h1: clamp(50px, 6.6vw, 104px);
+    --text-h1--line-height: 0.98;
+    --text-h2: clamp(34px, 3.4vw, 50px);
+    --text-h2--line-height: 1.08;
+    --text-h3: clamp(24px, 2vw, 30px);
+    --text-h3--line-height: 1.15;
+
+    /* Shape */
+    --radius-card: 16px;
 
     /* Motion — shared easing so Motion/GSAP/CSS agree */
     --ease-brand: cubic-bezier(0.16, 1, 0.3, 1);
@@ -58,7 +88,7 @@
     --color-accent-foreground: var(--accent-foreground);
     --color-accent: var(--accent);
     --color-muted-foreground: var(--muted-foreground);
-    --color-muted: var(--muted);
+    --color-muted: var(--muted-surface);
     --color-secondary-foreground: var(--secondary-foreground);
     --color-secondary: var(--secondary);
     --color-primary-foreground: var(--primary-foreground);
@@ -79,117 +109,70 @@
 }
 
 :root {
-    /* Raw brand values */
-    --gold: #c99928;
-    --gold-light: #e8c86a;
-    --gold-dark: #a67d1c;
-    --cream: #f8f6f1;
-    --cream-dark: #efefeb;
-    --ink: #0f1117;
-    --ink-soft: #1a1d23;
-    --slate: #7a8094;
+    /* Raw palette */
+    --page: #ece6dc;
+    --cream: #f7f3ed;
+    --white: #ffffff;
+    --ink: #17150f;
+    --text: #1e1b16;
+    --soft: #55504a;
+    --muted: #857e74;
+    --line: #e2dbd0;
+    --line-dark: rgba(255, 255, 255, 0.13);
+    --gold: #b8892a;
+    --gold-light: #d9b566;
+    /* Gold surfaces that carry text: white on #96701F is 4.5:1 (AA). */
+    --gold-deep: #96701f;
+    --gold-deep-hover: #84621b;
+    --eyebrow-dark: #c9b98f;
+    --khaki: #a79e8c;
 
-    --gradient-gold: linear-gradient(135deg, #c99928 0%, #e8c86a 50%, #c99928 100%);
-    /* Hero: cream lifting into warm gold toward the lower right, so the
-       portrait on that side sits against the richest part of the field. */
-    --gradient-hero: linear-gradient(
-        to top,
-        #eee0bd 0%,
-        #f5efe0 38%,
-        #faf8f3 72%,
-        #fdfcfa 100%
-    );
-    --shadow-gold-glow: 0 0 32px rgba(201, 153, 40, 0.22);
+    /* Text-only deepenings. #857e74 and #b8892a are 3.2:1 and 2.5:1 on the
+       page colour — fine for hairlines, icons and large display, short of the
+       4.5:1 small type needs. These are the lightest shades of the same two
+       hues that clear AA on page, cream and white alike. */
+    --muted-text: #6a655d;
+    --gold-text: #81601d;
 
-    /* Hero name: same warm family as --gradient-hero, a couple of steps down.
-       Multiplied against the background it deepens automatically wherever the
-       backdrop deepens, so the type reads as tone rather than a pasted colour. */
-    --gradient-name: linear-gradient(
-        176deg,
-        #f2e6c8 0%,
-        #dfc691 42%,
-        #ebdcb4 78%,
-        #dcc490 100%
-    );
-
-    /* Just the travelling highlight — mostly transparent, so the tonal base
-       layer underneath always fills the glyphs. Fades to zero alpha of its own
-       colour rather than `transparent`, which would interpolate through grey. */
-    --gradient-shimmer: linear-gradient(
-        100deg,
-        rgba(250, 242, 222, 0) 38%,
-        rgba(252, 246, 231, 0.9) 50%,
-        rgba(250, 242, 222, 0) 62%
-    );
+    /* Layout */
+    --container: 1280px;
+    --gutter: clamp(14px, 2vw, 24px);
+    --section-y: clamp(80px, 8vw, 116px);
 
     /* Semantic mapping (light) */
-    --background: #ffffff;
-    --foreground: #1a1d23;
-    --card: #ffffff;
-    --card-foreground: #1a1d23;
-    --popover: #ffffff;
-    --popover-foreground: #1a1d23;
-    /* Ink on gold is ~8:1; white on gold is ~2.3:1, so gold buttons take ink text. */
-    --primary: #c99928;
-    --primary-foreground: #0f1117;
-    --secondary: #f8f6f1;
-    --secondary-foreground: #0f1117;
-    --muted: #f8f6f1;
-    --muted-foreground: #7a8094;
-    --accent: #efefeb;
-    --accent-foreground: #0f1117;
-    --destructive: oklch(0.577 0.245 27.325);
-    --border: #e7e3da;
-    --input: #e7e3da;
-    --ring: #c99928;
-    --chart-1: #c99928;
-    --chart-2: #e8c86a;
-    --chart-3: #7a8094;
-    --chart-4: #a67d1c;
-    --chart-5: #0f1117;
-    --radius: 0.75rem;
-    --sidebar: #f8f6f1;
-    --sidebar-foreground: #1a1d23;
-    --sidebar-primary: #c99928;
-    --sidebar-primary-foreground: #0f1117;
-    --sidebar-accent: #efefeb;
-    --sidebar-accent-foreground: #0f1117;
-    --sidebar-border: #e7e3da;
-    --sidebar-ring: #c99928;
-}
-
-.dark {
-    /* Lighter gold carries better on ink backgrounds */
-    --gold: #e8c86a;
-    --gold-light: #f3dfa4;
-    --gold-dark: #c99928;
-
-    --background: #0f1117;
-    --foreground: #f8f6f1;
-    --card: #1a1d23;
-    --card-foreground: #f8f6f1;
-    --popover: #1a1d23;
-    --popover-foreground: #f8f6f1;
-    --primary: #e8c86a;
-    --primary-foreground: #0f1117;
-    --secondary: #1a1d23;
-    --secondary-foreground: #f8f6f1;
-    --muted: #1a1d23;
-    --muted-foreground: #a8aebf;
-    --accent: #22262e;
-    --accent-foreground: #f8f6f1;
-    --destructive: oklch(0.704 0.191 22.216);
-    --border: rgba(248, 246, 241, 0.12);
-    --input: rgba(248, 246, 241, 0.16);
-    --ring: #e8c86a;
-    --sidebar: #0f1117;
-    --sidebar-foreground: #f8f6f1;
-    --sidebar-primary: #e8c86a;
-    --sidebar-primary-foreground: #0f1117;
-    --sidebar-accent: #22262e;
-    --sidebar-accent-foreground: #f8f6f1;
-    --sidebar-border: rgba(248, 246, 241, 0.12);
-    --sidebar-ring: #e8c86a;
+    --background: var(--page);
+    --foreground: var(--text);
+    --card: var(--white);
+    --card-foreground: var(--text);
+    --popover: var(--white);
+    --popover-foreground: var(--text);
+    /* Every gold surface with text on it is gold-deep with white type. */
+    --primary: var(--gold-deep);
+    --primary-foreground: #ffffff;
+    --secondary: var(--cream);
+    --secondary-foreground: var(--ink);
+    --muted-surface: var(--cream);
+    --muted-foreground: var(--muted-text);
+    --accent: var(--page);
+    --accent-foreground: var(--ink);
+    --destructive: #a3341f;
+    --border: var(--line);
+    --input: var(--line);
+    --ring: var(--gold);
+    --chart-1: var(--gold);
+    --chart-2: var(--gold-light);
+    --chart-3: var(--khaki);
+    --chart-4: var(--soft);
+    --chart-5: var(--ink);
+    --radius: 0.625rem;
+    --sidebar: var(--cream);
+    --sidebar-foreground: var(--text);
+    --sidebar-primary: var(--gold-deep);
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: var(--page);
+    --sidebar-accent-foreground: var(--ink);
+    --sidebar-border: var(--line);
+    --sidebar-ring: var(--gold);
 }
 
 @layer base {
@@ -201,14 +184,15 @@
         @apply font-body;
         /* Lenis drives scrolling; CSS smooth-scroll would fight it. */
         scroll-behavior: auto;
+        /* Jumps to an id (no-JS, skip link) land below the fixed header. */
+        scroll-padding-top: calc(64px + env(safe-area-inset-top));
         -webkit-text-size-adjust: 100%;
 
         /* The gold bar at the top is the scroll indicator, so the native
-           scrollbar is hidden. Scrolling itself is unaffected. Hiding it also
-           removes the gutter, which makes 100vw match the real client width —
-           worth knowing, since the page transition is sized in vw. */
+           scrollbar is hidden. Scrolling itself is unaffected, and with no
+           gutter 100vw matches the real client width — which the page
+           transition and the carousels' edge bleed both rely on. */
         scrollbar-width: none;
-        -ms-overflow-style: none;
     }
 
     html::-webkit-scrollbar,
@@ -217,14 +201,18 @@
     }
 
     body {
-        @apply bg-background text-foreground antialiased;
+        @apply bg-page text-text antialiased;
+        /* Cormorant defaults to old-style figures, which turn "01" into "o1". */
+        font-variant-numeric: lining-nums;
         /* clip, not hidden: overflow-x: hidden turns body into a scroll
-           container, which fights Lenis for control of the scroll. */
+           container, which fights Lenis for control of the scroll and breaks
+           every position: sticky on the site. */
         overflow-x: clip;
     }
 
     h1, h2, h3, h4 {
         @apply font-display;
+        font-weight: 500;
         text-wrap: balance;
     }
 
@@ -232,65 +220,452 @@
         text-wrap: pretty;
     }
 
+    :focus-visible {
+        outline: 2px solid var(--gold);
+        outline-offset: 3px;
+    }
+
     ::selection {
-        background: var(--gold);
-        color: var(--ink);
+        background: var(--gold-deep);
+        color: #ffffff;
     }
 }
 
 /* ============================================================================
-   BRAND UTILITIES
+   LAYOUT UTILITIES
    ========================================================================== */
 
-@utility text-gradient-gold {
-    background: var(--gradient-gold);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
-}
-
-@utility bg-gradient-gold {
-    background: var(--gradient-gold);
-}
-
-@utility glow-gold {
-    box-shadow: var(--shadow-gold-glow);
-}
-
-/* Page gutter + max width, matching the old --container-max: 1280px */
-@utility container-brand {
+/* 1280 max, gutters inside it — every section's content starts on this edge. */
+@utility container-site {
     width: 100%;
-    max-width: 80rem;
+    max-width: var(--container);
     margin-inline: auto;
-    padding-inline: 1.25rem;
+    padding-inline: var(--gutter);
+}
 
-    @variant md {
-        padding-inline: 2rem;
-    }
+@utility section-y {
+    padding-block: var(--section-y);
+}
 
-    @variant lg {
-        padding-inline: 2.5rem;
+/* ============================================================================
+   TYPE SCALE
+   One utility per text role, with the values the home page uses. Family,
+   size, line-height and tracking (and weight / case where the role always
+   has them); colour is left to the surface — light or dark. Body roles leave
+   weight free, so `font-medium` / `font-semibold` still layer on top.
+   The README's design-tokens section lists the same table.
+   ========================================================================== */
+
+/* Home hero headline. */
+@utility type-display {
+    font-family: var(--font-display);
+    font-size: clamp(50px, 6.6vw, 104px);
+    font-weight: 500;
+    line-height: 0.98;
+    letter-spacing: -0.01em;
+}
+
+/* Inner-page hero title (PageHero). */
+@utility type-h1 {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 6.5vw, 5.5rem);
+    font-weight: 500;
+    line-height: 1.02;
+    letter-spacing: -0.01em;
+}
+
+/* Section headings. */
+@utility type-h2 {
+    font-family: var(--font-display);
+    font-size: clamp(34px, 3.4vw, 50px);
+    font-weight: 500;
+    line-height: 1.08;
+}
+
+/* Card and list titles. */
+@utility type-h3 {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.15;
+}
+
+@utility type-eyebrow {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+/* The paragraph under a hero title. */
+@utility type-lead {
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.7;
+}
+
+@utility type-body {
+    font-family: var(--font-body);
+    font-size: 15.5px;
+    line-height: 1.75;
+}
+
+/* Captions, meta, labels. */
+@utility type-small {
+    font-family: var(--font-body);
+    font-size: 13.5px;
+    line-height: 1.5;
+}
+
+@utility type-stat {
+    font-family: var(--font-display);
+    font-size: clamp(34px, 3vw, 46px);
+    font-weight: 500;
+    line-height: 1;
+}
+
+@utility type-stat-label {
+    font-family: var(--font-body);
+    font-size: 13.5px;
+    line-height: 1.5;
+}
+
+@utility type-quote {
+    font-family: var(--font-display);
+    font-size: clamp(22px, 2vw, 28px);
+    font-weight: 500;
+    line-height: 1.35;
+}
+
+/* Header and footer navigation links. */
+@utility type-nav {
+    font-family: var(--font-body);
+    font-size: 14.5px;
+    font-weight: 500;
+}
+
+/* Button and text-link labels. */
+@utility type-button {
+    font-family: var(--font-body);
+    font-size: 14.5px;
+    font-weight: 600;
+}
+
+@utility arch {
+    border-radius: 200px 200px 16px 16px;
+}
+
+/* Start a full-width track on the container's content edge, so it lines up
+   with the heading above it but can still run off the right of the screen. */
+@utility bleed-start {
+    padding-inline-start: max(var(--gutter), calc((100% - var(--container)) / 2 + var(--gutter)));
+    scroll-padding-inline-start: max(var(--gutter), calc((100% - var(--container)) / 2 + var(--gutter)));
+}
+
+@utility no-scrollbar {
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display: none;
     }
 }
 
-/* Characters produced by SplitText for the hero name. */
-.hero-char {
-    /* Two layers: the highlight travels across the word on top, the tonal
-       gold sits underneath and never moves. Without that base layer the
-       glyphs go invisible the moment the highlight sweeps past them.
-       --word-w and --char-x are set per line/character after the split. */
-    background-image: var(--gradient-shimmer), var(--gradient-name);
-    background-size: var(--word-w, 240%) 100%, 100% 100%;
-    background-position:
-        calc(var(--shimmer, 0px) - var(--char-x, 0px)) 0,
-        0 0;
-    background-repeat: no-repeat, no-repeat;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
-    mix-blend-mode: multiply;
+/* ============================================================================
+   LOAD-IN MOTION
+   CSS rather than JS on purpose: a keyframe with `both` fill still ends on its
+   final frame when scripts never run, so nothing here can strand content
+   invisible. Stagger comes from an inline animation-delay.
+   ========================================================================== */
+
+@keyframes word-in {
+    from {
+        opacity: 0;
+        filter: blur(10px);
+        transform: translateY(0.28em);
+    }
+}
+
+@keyframes fade-down {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+}
+
+@keyframes rise-in {
+    from {
+        opacity: 0;
+        transform: translateY(64px);
+    }
+}
+
+/* Ends at 1.04, not 1, so the photograph's own pale edge never shows inside
+   the frame. */
+@keyframes settle-zoom {
+    from {
+        transform: scale(1.18);
+    }
+    to {
+        transform: scale(1.04);
+    }
+}
+
+@utility animate-word {
+    animation: word-in 0.9s var(--ease-brand) both;
+}
+
+@utility animate-fade-down {
+    animation: fade-down 0.7s var(--ease-brand) both;
+}
+
+@utility animate-fade-up {
+    animation: fade-up 0.9s var(--ease-brand) both;
+}
+
+@utility animate-rise {
+    animation: rise-in 1.3s var(--ease-brand) both;
+}
+
+@utility animate-settle {
+    animation: settle-zoom 2.6s var(--ease-brand) both;
+}
+
+/* ============================================================================
+   CONTINUOUS MOTION
+   ========================================================================== */
+
+@keyframes spin-slow {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes float-y {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+@keyframes marquee {
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+@keyframes glow-pulse {
+    0%, 100% {
+        opacity: 0.55;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.9;
+        transform: scale(1.06);
+    }
+}
+
+@utility animate-spin-slow {
+    animation: spin-slow 26s linear infinite;
+}
+
+@utility animate-float {
+    animation: float-y 5s ease-in-out infinite;
+}
+
+@utility animate-marquee {
+    animation: marquee 38s linear infinite;
+}
+
+@utility animate-glow {
+    animation: glow-pulse 6s ease-in-out infinite;
+}
+
+/* ---- Home: values taken from the approved reference ---- */
+
+/* Hero arch: rises 36px and fades in, while the photograph settles from
+   1.12 to 1.04 inside it. */
+@keyframes arch-up {
+    from {
+        opacity: 0;
+        transform: translateY(36px);
+    }
+}
+
+@keyframes arch-zoom {
+    from {
+        transform: scale(1.12);
+    }
+    to {
+        transform: scale(1.04);
+    }
+}
+
+/* Signature focus: the one gold glow drifting behind the quadrants. */
+@keyframes blob-drift {
+    0%, 100% {
+        transform: translate(0, 0);
+    }
+    50% {
+        transform: translate(60px, -30px);
+    }
+}
+
+/* Real results: the case that comes to the top of the deck. */
+@keyframes deck-in {
+    from {
+        opacity: 0.6;
+        transform: translateY(18px) rotate(-1.5deg);
+    }
+}
+
+@utility animate-arch-up {
+    animation: arch-up 1.3s cubic-bezier(0.2, 0.7, 0.2, 1) 0.35s both;
+}
+
+@utility animate-arch-zoom {
+    animation: arch-zoom 2.4s cubic-bezier(0.2, 0.7, 0.2, 1) 0.35s both;
+}
+
+/* The About arch: the same settle, but it ends at 1 so the photograph is not
+   left enlarged once it lands. (Home keeps the reference's 1.04.) */
+@keyframes arch-zoom-settle {
+    from {
+        transform: scale(1.08);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+@utility animate-arch-zoom-settle {
+    animation: arch-zoom-settle 2.4s cubic-bezier(0.2, 0.7, 0.2, 1) 0.35s both;
+}
+
+@utility animate-blob {
+    animation: blob-drift 12s ease-in-out infinite;
+}
+
+/* About: the active-area indicator swaps its number and title in 8px. */
+@keyframes swap-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+}
+
+@utility animate-swap {
+    animation: swap-in 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@utility animate-deck {
+    animation: deck-in 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* Scroll-driven, transform only: things rise 22px into place as they enter
+   and are never hidden. Where scroll timelines are unsupported they simply
+   sit in place. Uses `translate` so hover transforms still compose. */
+@keyframes rise-up {
+    from {
+        translate: 0 22px;
+    }
+    to {
+        translate: 0 0;
+    }
+}
+
+/* The treatments track: from its first card on the container edge to its
+   last card on the opposite edge. */
+@keyframes pin-x {
+    to {
+        transform: translateX(calc(-100% + 100vw - 2 * max(var(--gutter), calc((100vw - 1232px) / 2))));
+    }
+}
+
+@keyframes grow-x {
+    from {
+        transform: scaleX(0);
+    }
+    to {
+        transform: scaleX(1);
+    }
+}
+
+/* The page's scroll progress, a 2px gold line along the top. */
+.scroll-progress {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 60;
+    height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    pointer-events: none;
+}
+
+@supports (animation-timeline: scroll()) {
+    .scroll-progress {
+        animation: grow-x linear both;
+        animation-timeline: scroll(root);
+    }
+}
+
+@supports (animation-timeline: view()) {
+    .scroll-rise {
+        animation: rise-up linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 30%;
+    }
+
+    .scroll-stagger > *,
+    .scroll-stagger-cols > * > * {
+        animation: rise-up linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 35%;
+    }
+
+    .scroll-stagger > :nth-child(2),
+    .scroll-stagger-cols > :nth-child(2) > * {
+        animation-range: entry 6% cover 40%;
+    }
+
+    .scroll-stagger > :nth-child(3),
+    .scroll-stagger-cols > :nth-child(3) > * {
+        animation-range: entry 12% cover 45%;
+    }
+
+    .scroll-stagger-cols > :nth-child(4) > * {
+        animation-range: entry 18% cover 50%;
+    }
+
+    /* Pinned only above 960px; below it the track is a plain swipe. */
+    @media (min-width: 961px) {
+        .pin-scroll {
+            view-timeline-name: --pin;
+        }
+
+        .pin-track {
+            animation: pin-x linear both;
+            animation-timeline: --pin;
+            animation-range: contain 0% contain 100%;
+        }
+
+        .pin-bar {
+            transform-origin: left;
+            animation: grow-x linear both;
+            animation-timeline: --pin;
+            animation-range: contain 0% contain 100%;
+        }
+    }
 }
 
 /* Lenis: required for the smooth-scroll wrapper to behave */
@@ -308,11 +683,118 @@ html.lenis body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+    .scroll-rise,
+    .scroll-stagger > *,
+    .scroll-stagger-cols > * > *,
+    .pin-track,
+    .pin-bar,
+    .scroll-progress {
+        animation: none !important;
+    }
+
     *,
     *::before,
     *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+
+/* ============================================================================
+   PRELOADER (components/site/preloader.tsx)
+   ========================================================================== */
+
+.preloader {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--ink);
+    /* Failsafe: if the app never takes over, the overlay hides itself after 3s.
+       The component sets data-live as soon as it mounts, which cancels this. */
+    animation: preloader-failsafe 0.3s ease 3s forwards;
+}
+
+.preloader[data-live] {
+    animation: none;
+}
+
+@keyframes preloader-failsafe {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+/* Already played this session (or storage is unavailable), or released by the
+   boot script's own timeout: never shown. */
+html[data-preloader='skip'] .preloader,
+html[data-preloader='done'] .preloader:not([data-live]) {
+    display: none;
+}
+
+/* Scroll is locked from the first paint while the first-visit screen is up —
+   before the app (and Lenis) have even hydrated. */
+html[data-preloader='run'] {
+    overflow: hidden;
+}
+
+/* While the first-visit screen is up, the page's load-in motion waits behind
+   it, so the hero and header still play their entrances once it lifts. */
+html[data-preloader='run'] :is(
+        .animate-word,
+        .animate-fade-up,
+        .animate-fade-down,
+        .animate-rise,
+        .animate-settle,
+        .animate-arch-up,
+        .animate-arch-zoom,
+        .animate-arch-zoom-settle
+    ) {
+    animation-play-state: paused;
+}
+
+/* Home Treatments: the tall pinned layout exists only when the sideways scroll
+   can run — desktop, motion allowed, and either CSS scroll timelines or the
+   GSAP fallback (which sets data-pinned). Otherwise the section is a normal
+   height with a swipeable row, so no empty screen is left under the cards. */
+@media (min-width: 961px) and (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+        .pin-scroll {
+            height: calc(min(100vh, 900px) * 2.4);
+        }
+        .pin-scroll > .pin-stage {
+            position: sticky;
+            top: 0;
+            height: min(100vh, 900px);
+            padding-block: 0;
+        }
+        .pin-scroll .pin-track {
+            width: max-content;
+            max-width: none;
+            overflow: visible;
+            padding-right: 48px;
+        }
+    }
+
+    .pin-scroll[data-pinned] {
+        height: calc(min(100vh, 900px) * 2.4);
+    }
+    .pin-scroll[data-pinned] > .pin-stage {
+        position: sticky;
+        top: 0;
+        height: min(100vh, 900px);
+        padding-block: 0;
+    }
+    .pin-scroll[data-pinned] .pin-track {
+        width: max-content;
+        max-width: none;
+        overflow: visible;
+        padding-right: 48px;
     }
 }

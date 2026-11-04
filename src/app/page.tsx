@@ -1,39 +1,31 @@
-import { HeroSection } from '@/components/sections/hero-section';
-import { AboutSection } from '@/components/sections/about-section';
-import { PrinciplesSection } from '@/components/sections/principles-section';
-import { ManifestoBand } from '@/components/sections/manifesto-band';
-import { ExpertiseSection } from '@/components/sections/expertise-section';
-import { BlogSection } from '@/components/sections/blog-section';
-import { PartnersSection } from '@/components/sections/partners-section';
-import { FinalCta } from '@/components/sections/final-cta';
+import { HomeHero } from '@/components/home/hero';
+import { HomeAbout } from '@/components/home/about';
+import { HomeTrust } from '@/components/home/trust';
+import { HomeRegenerative } from '@/components/home/regenerative';
+import { HomeTreatments } from '@/components/home/treatments';
+import { HomeResults } from '@/components/home/results';
+import { HomeStories } from '@/components/home/stories';
+import { HomeJournal } from '@/components/home/journal';
+import { CtaBand } from '@/components/site/cta-band';
 
 export default function Home() {
   return (
-    <main>
-      <HeroSection />
-
-      {/* A held beat between the two sections. The hero is sticky and About
-          slides over it, so a transparent spacer does not open a gap — it buys
-          extra scroll with the hero still pinned and fully visible, letting it
-          land before the ink panel arrives.
-
-          Collapsed below lg, where the hero is not sticky: with nothing pinned
-          behind it a transparent spacer stops being a held beat and becomes a
-          band of the document's white between the hero and About. */}
-      <div aria-hidden className="h-0 lg:h-[22svh]" />
-
-      <AboutSection />
-      <PrinciplesSection />
-
-      <ManifestoBand />
-
-      <ExpertiseSection />
-
-      <BlogSection />
-
-      <PartnersSection />
-
-      <FinalCta />
+    // As in the reference: Cormorant's own old-style figures and plain wrapping
+    // (the site default elsewhere is lining figures and balanced headings).
+    <main
+      id="content"
+      className="[font-variant-numeric:normal] [&_:is(h1,h2,h3,p)]:[text-wrap:wrap]"
+    >
+      <div aria-hidden className="scroll-progress" />
+      <HomeHero />
+      <HomeAbout />
+      <HomeTrust />
+      <HomeRegenerative />
+      <HomeTreatments />
+      <HomeResults />
+      <HomeStories />
+      <HomeJournal />
+      <CtaBand />
     </main>
   );
 }

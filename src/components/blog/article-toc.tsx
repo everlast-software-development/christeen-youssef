@@ -1,89 +1,127 @@
 import { useEffect, useState } from 'react';
-import { useLenis } from 'lenis/react';
+import { ChevronDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-type TocItem = { id: string; label: string };
+export type TocItem = { id: string; label: string };
 
-/**
- * Sticky contents for the long pieces. The ISDS talk runs to ten sections and
- * the consensus paper carries thirty-six references — at that length a reader
- * needs to see the shape of the thing before committing to it.
- *
- * Rendered only from xl up, and only when there is enough to justify it (see
- * TOC_MIN_ITEMS at the call site): three links in a sidebar is furniture.
- */
-export function ArticleToc({ items }: { items: TocItem[] }) {
+/** The scrolled header (64px) plus 24px: where a sticky rail and a jump land. */
+export const STICKY_TOP = 88;
+
+/** Whichever heading is highest in the band below the header is the one being read. */
+function useActiveSection(items: TocItem[]) {
   const [active, setActive] = useState(items[0]?.id ?? '');
-  const lenis = useLenis();
 
   useEffect(() => {
     const nodes = items
       .map((item) => document.getElementById(item.id))
       .filter((node): node is HTMLElement => Boolean(node));
-
     if (!nodes.length) return;
 
-    // The band is the top of the viewport below the header down to a third of
-    // the way in. Whatever heading is highest inside it is the one being read —
-    // taking the first intersecting entry avoids the flicker you get from
-    // tracking whichever heading crossed the line most recently.
+    // The band runs from just under the header to a third of the way down.
+    // Taking the highest intersecting heading (not the latest to cross) is
+    // what keeps the highlight from flickering between two.
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries
           .filter((entry) => entry.isIntersecting)
-          .sort(
-            (a, b) => a.boundingClientRect.top - b.boundingClientRect.top,
-          );
-
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
         if (visible[0]) setActive(visible[0].target.id);
       },
-      { rootMargin: '-96px 0px -66% 0px' },
+      { rootMargin: `-${STICKY_TOP}px 0px -66% 0px` },
     );
 
     nodes.forEach((node) => observer.observe(node));
     return () => observer.disconnect();
   }, [items]);
 
-  const jump = (id: string) => {
-    const target = document.getElementById(id);
-    if (!target) return;
+  return active;
+}
 
-    // Through Lenis where it is driving, so the jump is smoothed like every
-    // other move on the site instead of fighting it.
-    if (lenis) lenis.scrollTo(target, { offset: -96 });
-    else target.scrollIntoView({ behavior: 'smooth' });
-  };
+/**
+ * A native, instant jump. It lands STICKY_TOP below the top of the window
+ * because <html> carries that as scroll-padding-top (globals.css).
+ */
+function useJump() {
+  return (id: string) => document.getElementById(id)?.scrollIntoView({ block: 'start' });
+}
+
+function TocList({
+  items,
+  active,
+  onPick,
+}: {
+  items: TocItem[];
+  active: string;
+  onPick: (id: string) => void;
+}) {
+  return (
+    <ul className="m-0 list-none space-y-1 border-l border-line p-0">
+      {items.map((item) => {
+        const current = item.id === active;
+        return (
+          <li key={item.id}>
+            <button
+              type="button"
+              onClick={() => onPick(item.id)}
+              aria-current={current ? 'true' : undefined}
+              className={cn(
+                '-ml-px block w-full cursor-pointer border-l-2 py-2 pr-2 pl-4 text-left type-small transition-colors duration-300',
+                'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold',
+                current
+                  ? 'border-gold font-medium text-gold-text'
+                  : 'border-transparent text-soft hover-fine:border-ink/20 hover-fine:text-ink',
+              )}
+            >
+              {item.label}
+            </button>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+/** Desktop: sticky in the left three columns, the section being read in gold. */
+export function ArticleToc({ items }: { items: TocItem[] }) {
+  const active = useActiveSection(items);
+  const jump = useJump();
 
   return (
-    <nav
-      aria-label="On this page"
-      className="sticky top-28 hidden self-start xl:block"
-    >
-      <p className="type-eyebrow text-caption-strong">
+    <nav aria-label="On this page" className="sticky" style={{ top: STICKY_TOP }}>
+      <p className="m-0 mb-5 type-eyebrow text-caption-strong">On this page</p>
+      <TocList items={items} active={active} onPick={jump} />
+    </nav>
+  );
+}
+
+/** Below lg: the same list folded behind an "On this page" button. */
+export function ArticleTocToggle({ items }: { items: TocItem[] }) {
+  const [open, setOpen] = useState(false);
+  const active = useActiveSection(items);
+  const jump = useJump();
+
+  return (
+    <nav aria-label="On this page" className="border-y border-line">
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-controls="article-toc-list"
+        onClick={() => setOpen((value) => !value)}
+        className="flex h-12 w-full cursor-pointer items-center justify-between type-eyebrow text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+      >
         On this page
-      </p>
-
-      <ul className="mt-6 space-y-1 border-l border-line">
-        {items.map((item) => {
-          const current = item.id === active;
-
-          return (
-            <li key={item.id}>
-              <button
-                type="button"
-                onClick={() => jump(item.id)}
-                aria-current={current ? 'true' : undefined}
-                className={`-ml-px block w-full cursor-pointer border-l-2 py-2 pr-2 pl-4 text-left type-small transition-colors duration-300 ${
-                  current
-                    ? 'border-gold text-ink'
-                    : 'border-transparent text-soft hover-fine:border-ink/20 hover-fine:text-ink'
-                }`}
-              >
-                {item.label}
-              </button>
-            </li>
-          );
-        })}
-      </ul>
+        <ChevronDown aria-hidden className={cn('size-4 transition-transform duration-300', open && 'rotate-180')} />
+      </button>
+      <div id="article-toc-list" hidden={!open} className="pb-4">
+        <TocList
+          items={items}
+          active={active}
+          onPick={(id) => {
+            setOpen(false);
+            jump(id);
+          }}
+        />
+      </div>
     </nav>
   );
 }

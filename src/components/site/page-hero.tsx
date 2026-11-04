@@ -58,6 +58,7 @@ export function PageHero({
   align = 'center',
   overhang,
   overhangClassName = 'bg-page',
+  titleClassName = 'type-h1',
 }: {
   /** The section's href in the navigation data — drives the breadcrumb. */
   section: string;
@@ -71,6 +72,8 @@ export function PageHero({
   /** CSS length the slot hangs below the band. */
   overhang?: string;
   overhangClassName?: string;
+  /** The title's size: the page scale by default; an article sets its own. */
+  titleClassName?: string;
 }) {
   const slotStyle: CSSProperties | undefined = overhang
     ? { marginBottom: `calc(-1 * (${overhang} + ${BOTTOM}))` }
@@ -96,7 +99,7 @@ export function PageHero({
 
             <h1
               id="page-title"
-              className="m-0 mt-5 type-h1 text-balance text-white"
+              className={cn('m-0 mt-5 text-balance text-white', titleClassName)}
             >
               <Title text={title} />
             </h1>

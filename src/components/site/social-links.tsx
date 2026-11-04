@@ -40,10 +40,17 @@ export const SOCIALS = ORDER.flatMap((name) => {
   return link ? [{ name, href: link.url, icon: ICONS[name] }] : [];
 });
 
-const TONE = {
+export const SOCIAL_TONE = {
   light: 'border-line text-ink',
   dark: 'border-white/13 text-cream',
 } as const;
+
+/** One round icon button: the footer's social links and an article's share row. */
+export const SOCIAL_BUTTON = cn(
+  'flex size-10 cursor-pointer items-center justify-center rounded-full border bg-transparent transition-colors duration-200',
+  'hover-fine:border-gold-deep hover-fine:bg-gold-deep hover-fine:text-white',
+  'focus-visible:border-gold-deep focus-visible:bg-gold-deep focus-visible:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold',
+);
 
 /**
  * The row of social links used everywhere: 40px outlined circles with the
@@ -54,7 +61,7 @@ export function SocialLinks({
   tone = 'light',
   className,
 }: {
-  tone?: keyof typeof TONE;
+  tone?: keyof typeof SOCIAL_TONE;
   className?: string;
 }) {
   return (
@@ -66,12 +73,7 @@ export function SocialLinks({
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Dr. Christeen Youssef on ${name}`}
-            className={cn(
-              'flex size-10 items-center justify-center rounded-full border bg-transparent transition-colors duration-200',
-              'hover-fine:border-gold-deep hover-fine:bg-gold-deep hover-fine:text-white',
-              'focus-visible:border-gold-deep focus-visible:bg-gold-deep focus-visible:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold',
-              TONE[tone],
-            )}
+            className={cn(SOCIAL_BUTTON, SOCIAL_TONE[tone])}
           >
             <Icon aria-hidden focusable="false" className="size-4" />
           </a>

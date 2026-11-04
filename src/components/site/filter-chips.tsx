@@ -4,6 +4,17 @@ import { cn } from '@/lib/utils';
 export type FilterOption = { value: string; label: string };
 
 /**
+ * A chip on ink. Also used outside the filters as a plain label (an article's
+ * category), so the two always look alike.
+ */
+export const filterChip = (selected: boolean) =>
+  cn(
+    'inline-flex h-9 shrink-0 items-center border px-4 type-small font-medium whitespace-nowrap transition-colors duration-200',
+    BUTTON_RADIUS,
+    selected ? 'border-transparent bg-gold-deep text-white' : 'border-white/13 text-white/72',
+  );
+
+/**
  * A row of filter chips on ink: "All" first, then one per option, the active
  * one gold-deep. One row always — it scrolls sideways on phones with soft
  * edges and centres once it fits. Used by the Blog and Before & After heroes.
@@ -25,12 +36,9 @@ export function FilterChips({
 }) {
   const chip = (selected: boolean) =>
     cn(
-      'inline-flex h-9 shrink-0 cursor-pointer items-center border px-4 type-small font-medium whitespace-nowrap transition-colors duration-200',
-      'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold',
-      BUTTON_RADIUS,
-      selected
-        ? 'border-transparent bg-gold-deep text-white'
-        : 'border-white/13 text-white/72 hover-fine:border-white/30 hover-fine:text-white',
+      filterChip(selected),
+      'cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold',
+      !selected && 'hover-fine:border-white/30 hover-fine:text-white',
     );
 
   return (

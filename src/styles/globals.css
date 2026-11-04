@@ -40,6 +40,7 @@
     --color-ink: var(--ink);
     --color-text: var(--text);
     --color-soft: var(--soft);
+    --color-prose: var(--prose);
     --color-caption: var(--muted);
     --color-caption-strong: var(--muted-text);
     --color-line: var(--line);
@@ -121,6 +122,8 @@
     --ink: #17150f;
     --text: #1e1b16;
     --soft: #55504a;
+    /* Article body copy: a step darker than soft for long reading (10:1 on cream). */
+    --prose: #3f3a34;
     --muted: #857e74;
     --line: #e2dbd0;
     --line-dark: rgba(255, 255, 255, 0.13);

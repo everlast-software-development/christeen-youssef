@@ -63,6 +63,8 @@ export interface SectionFigure {
   crop?: 'square';
   /** `object-position` for a cropped frame. */
   focus?: string;
+  /** A line set under the picture. */
+  caption?: string;
   /**
    * A flat width in pixels, from sm up, instead of the responsive default.
    *
@@ -115,6 +117,8 @@ export interface BlogPost {
    * shows the ceiling and crops out the signing.
    */
   imageFocus?: ImageFocus;
+  /** A line set under the cover photograph, where there is one to say. */
+  imageCaption?: string;
   content?: string;
   /**
    * A post's photographs, in the order they should be met.

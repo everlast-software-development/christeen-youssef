@@ -122,7 +122,7 @@ export function HomeHero() {
             fill
             priority
             placeholder="blur"
-            sizes="(min-width: 961px) 420px, 92vw"
+            sizes="(min-width: 961px) 420px, calc(100vw - 26px)"
             className="animate-arch-zoom object-cover object-[50%_15%]"
           />
         </div>

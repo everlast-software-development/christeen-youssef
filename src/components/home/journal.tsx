@@ -47,7 +47,7 @@ export function HomeJournal() {
               alt=""
               fill
               placeholder="blur"
-              sizes="(min-width: 961px) 640px, 92vw"
+              sizes="(min-width: 961px) 640px, calc(100vw - 26px)"
               style={{ objectPosition: carouselFocus(FEATURED) }}
               className="object-cover transition-transform duration-1000 ease-[cubic-bezier(.2,.7,.2,1)] group-hover-fine:scale-[1.04]"
             />

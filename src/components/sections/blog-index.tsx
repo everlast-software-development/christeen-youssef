@@ -158,7 +158,7 @@ export function BlogIndex() {
                   <li key={post.slug}>
                     <ArticleCard
                       post={post}
-                      sizes="(min-width: 1024px) 26rem, (min-width: 768px) 45vw, 92vw"
+                      sizes="(min-width: 1024px) 24rem, (min-width: 768px) 45vw, 92vw"
                     />
                   </li>
                 ))}

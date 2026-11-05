@@ -115,6 +115,8 @@ export function PhoneField({
         >
           <Image
             src={getFlagImageUrl(country.code)}
+            // Next to the form's first field, on screen as Reach Me opens.
+            eager
             alt=""
             width={20}
             height={14}

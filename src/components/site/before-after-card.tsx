@@ -20,12 +20,16 @@ export function BeforeAfterCard({
   item,
   sizes,
   preload = false,
+  eager = false,
+  preloadMedia,
   hint = false,
   onOpen,
 }: {
   item: BeforeAfterCase;
   sizes: string;
   preload?: boolean;
+  eager?: boolean;
+  preloadMedia?: string;
   hint?: boolean;
   onOpen: () => void;
 }) {
@@ -41,6 +45,8 @@ export function BeforeAfterCard({
         objectPosition={item.objectPosition}
         sizes={sizes}
         preload={preload}
+        eager={eager}
+        preloadMedia={preloadMedia}
         hint={hint}
       >
         <button

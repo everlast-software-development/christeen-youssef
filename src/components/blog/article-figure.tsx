@@ -43,7 +43,7 @@ export function ArticleFigure({
               fill
               placeholder="blur"
               // The article column is at most ~68ch (≈ 720px); a grid cell half that.
-              sizes={grid ? '(min-width: 640px) 360px, 92vw' : '(min-width: 800px) 720px, 92vw'}
+              sizes={grid ? '(min-width: 640px) 360px, 92vw' : '(min-width: 800px) 720px, calc(100vw - 26px)'}
               style={item.focus ? { objectPosition: item.focus } : undefined}
               className="object-cover"
             />

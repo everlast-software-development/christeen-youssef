@@ -42,7 +42,7 @@ export function ArticleRow({
               post={post}
               headingLevel={headingLevel}
               variant={variant}
-              sizes="(min-width: 1024px) 26rem, (min-width: 768px) 45vw, 78vw"
+              sizes="(min-width: 1024px) 24rem, (min-width: 768px) 45vw, 78vw"
             />
           </li>
         ))}

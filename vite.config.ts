@@ -6,10 +6,11 @@ import { imagetools } from 'vite-imagetools';
 import type { ProcessedImage } from 'imagetools-core';
 
 /**
- * Responsive widths every photograph is cut to. Matches the deviceSizes the
- * Next.js build used, so srcsets resolve to the same candidates as before.
+ * Responsive widths every photograph is cut to: the deviceSizes the Next.js
+ * build used, plus 256 so the small things — journal thumbnails (120px), the
+ * logos (~140px) — have a candidate near their size instead of 384.
  */
-const WIDTHS = [384, 640, 750, 828, 1080, 1200, 1920, 2048];
+const WIDTHS = [256, 384, 640, 750, 828, 1080, 1200, 1920, 2048];
 
 /** Plain photo imports from src/assets — `import x from '@/assets/a.webp'`. */
 const ASSET = /[\\/]src[\\/]assets[\\/].+\.(jpe?g|png|webp)$/i;

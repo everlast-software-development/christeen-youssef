@@ -31,10 +31,13 @@ export function ResultsGallery() {
               <li key={item.id} data-reveal-item>
                 <BeforeAfterCard
                   item={item}
-                  // Only the first card loads up front: on a phone it is the
-                  // only one on screen, and every eager image beside it slows
-                  // the page's largest paint. The rest load lazily as they near.
+                  // The first card is the page's main image. The rest of the
+                  // first row is on screen too, so it loads up front as well —
+                  // the third card only from lg, where the row is three wide.
+                  // Everything below loads as it nears.
                   preload={index === 0}
+                  eager={index === 1 || index === 2}
+                  preloadMedia={index === 2 ? '(min-width: 1024px)' : undefined}
                   hint={index === 0}
                   sizes="(min-width: 1024px) 400px, (min-width: 768px) 46vw, 92vw"
                   onOpen={() => setOpen(index)}

@@ -1,5 +1,5 @@
-import { useRef } from 'react';
-import { Image, type StaticImageData } from '@/components/ui/image';
+import { useEffect, useRef } from 'react';
+import { Image, loadImagesNear, type StaticImageData } from '@/components/ui/image';
 import { Eyebrow } from '@/components/site/layout';
 import { CHIP } from '@/components/site/surfaces';
 import { TransitionLink } from '@/components/ui/transition-link';
@@ -88,7 +88,8 @@ function TreatmentCard({ item }: { item: Treatment }) {
         alt={item.title}
         fill
         placeholder="blur"
-        sizes="320px"
+        // The card is clamp(260px, 24vw, 320px) wide.
+        sizes="(min-width: 1334px) 320px, (min-width: 1084px) 24vw, 260px"
         className="object-cover transition-transform duration-1000 ease-[cubic-bezier(.2,.7,.2,1)] group-hover-fine:scale-[1.05]"
       />
       <div
@@ -118,6 +119,11 @@ export function HomeTreatments() {
   const section = useRef<HTMLElement>(null);
   const track = useRef<HTMLUListElement>(null);
   const bar = useRef<HTMLDivElement>(null);
+
+  // The cards wait a screen to the right while the section is pinned, clipped
+  // out of their own lazy-load check — so all eight start together as the
+  // section nears, and are in before the scroll slides them into view.
+  useEffect(() => (section.current ? loadImagesNear(section.current) : undefined), []);
 
   useGSAP(
     () => {

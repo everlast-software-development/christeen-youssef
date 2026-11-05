@@ -26,6 +26,8 @@ export function CompareSlider({
   objectPosition,
   sizes,
   preload = false,
+  eager = false,
+  preloadMedia,
   dragAnywhere = false,
   hint = false,
   className,
@@ -37,7 +39,12 @@ export function CompareSlider({
   label: string;
   objectPosition?: string;
   sizes: string;
+  /** The page's main image: the after photo high priority, both preloaded. */
   preload?: boolean;
+  /** In the first viewport, not the main image: both eager and preloaded. */
+  eager?: boolean;
+  /** Only preload where this media query matches. */
+  preloadMedia?: string;
   dragAnywhere?: boolean;
   hint?: boolean;
   className?: string;
@@ -105,11 +112,11 @@ export function CompareSlider({
       className={cn('relative aspect-[4/3] w-full touch-pan-y overflow-hidden rounded-[16px] bg-cream select-none', className)}
       {...(dragAnywhere ? { onPointerDown: start, onPointerMove: move, onPointerUp: end, onPointerCancel: end } : {})}
     >
-      <Image src={after} alt={`${label}, after treatment`} fill sizes={sizes} preload={preload} placeholder="blur" style={fit} className="object-cover" draggable={false} />
+      <Image src={after} alt={`${label}, after treatment`} fill sizes={sizes} preload={preload} eager={eager} preloadMedia={preloadMedia} placeholder="blur" style={fit} className="object-cover" draggable={false} />
       <div className={cn('absolute inset-0', ease)} style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}>
         {/* Eager but not high priority: the after photo is the larger paint
             (the page's LCP), so it gets the bandwidth first. */}
-        <Image src={before} alt={`${label}, before treatment`} fill sizes={sizes} loading={preload ? 'eager' : undefined} placeholder="blur" style={fit} className="object-cover" draggable={false} />
+        <Image src={before} alt={`${label}, before treatment`} fill sizes={sizes} eager={preload || eager} preloadMedia={preloadMedia} placeholder="blur" style={fit} className="object-cover" draggable={false} />
       </div>
 
       {children}

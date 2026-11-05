@@ -116,11 +116,34 @@ Sitemap: ${SITE_URL}/sitemap.xml
 const HOISTABLE =
   /<title>[\s\S]*?<\/title>|<meta (?:name|property)="[^"]*"[^>]*\/?>|<link rel="(?:canonical|preload)"[^>]*\/?>/g;
 
+type HeroImage = { href: string; srcset?: string; sizes?: string; type?: string };
+
+const attr = (tag: string, name: string) =>
+  tag.match(new RegExp(`\\s${name}="([^"]*)"`, 'i'))?.[1]?.replace(/&amp;/g, '&');
+
+/**
+ * A page's main image: its high-priority image preload, not the header logo
+ * (which every page has). Written to hero-images.json so a link can start
+ * loading the next page's hero while it is only being hovered.
+ */
+function heroOf(tags: string[]): HeroImage | undefined {
+  const tag = tags.find(
+    (t) =>
+      /^<link rel="preload"/.test(t) &&
+      attr(t, 'as') === 'image' &&
+      attr(t, 'fetchPriority') === 'high' &&
+      !/\/logo-/.test(attr(t, 'imageSrcSet') ?? attr(t, 'href') ?? ''),
+  );
+  if (!tag) return undefined;
+  return { href: attr(tag, 'href') ?? '', srcset: attr(tag, 'imageSrcSet'), sizes: attr(tag, 'imageSizes'), type: attr(tag, 'type') };
+}
+
 async function main() {
   const entry = (await import(pathToFileURL(serverEntry).href)) as ServerEntry;
   const template = await readFile(join(clientDir, 'index.html'), 'utf8');
   const preloads = await fontPreloads();
   const manifest = JSON.parse(await readFile(join(clientDir, '.vite/manifest.json'), 'utf8')) as Manifest;
+  const heroes: Record<string, HeroImage> = {};
 
   const page = async (url: string) => {
     const { html, head } = await entry.render(url);
@@ -134,6 +157,8 @@ async function main() {
       hoisted.push(tag);
       return '';
     });
+    const hero = heroOf(hoisted);
+    if (hero) heroes[url] = hero;
     return template
       .replace('<!--font-preloads-->', preloads)
       .replace('<!--app-head-->', [chunkPreloads(manifest, entry.pageSource(url)), head, ...hoisted].filter(Boolean).join('\n    '))
@@ -146,6 +171,8 @@ async function main() {
     await writeFile(file, await page(route));
   }
   await writeFile(join(clientDir, '404.html'), await page('/404'));
+  delete heroes['/404'];
+  await writeFile(join(clientDir, 'hero-images.json'), JSON.stringify(heroes));
   await writeFile(join(clientDir, 'sitemap.xml'), sitemap(entry));
   await writeFile(join(clientDir, 'robots.txt'), robots);
 
@@ -154,7 +181,9 @@ async function main() {
   await rm(join(root, 'dist/server'), { recursive: true, force: true });
   await rm(join(clientDir, '.vite'), { recursive: true, force: true });
 
-  console.log(`prerendered ${entry.ROUTES.length} routes + 404.html, sitemap.xml, robots.txt`);
+  console.log(
+    `prerendered ${entry.ROUTES.length} routes + 404.html, sitemap.xml, robots.txt, hero-images.json (${Object.keys(heroes).length} heroes)`,
+  );
 }
 
 main().catch((error) => {

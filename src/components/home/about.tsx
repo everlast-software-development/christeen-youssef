@@ -71,7 +71,7 @@ export function HomeAbout() {
                 alt="Dr. Christeen Youssef speaking at the 44th ISDS Annual Meeting"
                 fill
                 placeholder="blur"
-                sizes="(min-width: 961px) 34vw, 92vw"
+                sizes="(min-width: 961px) 34vw, calc(100vw - 26px)"
                 className="object-cover object-[50%_32%] transition-transform duration-1000 ease-[cubic-bezier(.2,.7,.2,1)] group-hover-fine:scale-[1.05]"
               />
             </div>

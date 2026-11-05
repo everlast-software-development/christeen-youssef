@@ -4,7 +4,8 @@ import { Button } from '@/components/site/button';
 import { Counter } from '@/components/site/counter';
 import { WordReveal } from '@/components/site/word-reveal';
 import { stats } from '@/data/stats';
-import portrait from '@/assets/dr-christeen-cutout.webp';
+// about-me.jpeg with the wall and armchair removed (the original is kept).
+import portrait from '@/assets/about-me-cutout.webp';
 
 const byLabel = (label: string) => stats.find((stat) => stat.label === label);
 
@@ -122,13 +123,15 @@ export function HomeHero() {
         <div className="animate-arch-up arch relative isolate aspect-[3/4] transform-[translateZ(0)] overflow-hidden bg-linear-to-b from-cream to-page shadow-[0_30px_60px_rgba(23,21,15,0.22)] after:pointer-events-none after:absolute after:inset-0 after:z-10 after:rounded-[inherit] after:ring-1 after:ring-gold/30 after:ring-inset after:content-['']">
           <Image
             src={portrait}
-            alt="Dr. Christeen Youssef smiling, in a blue lace top"
+            alt="Dr. Christeen Youssef in her clinic at Everlast Wellness Medical Center"
             fill
             priority
             // No blur placeholder: on a transparent cut-out it paints a
             // blurred blob; the gradient is the placeholder.
-            sizes="(min-width: 961px) 420px, calc(100vw - 26px)"
-            className="animate-arch-zoom object-cover object-[50%_20%]"
+            // The photo is square in a 3:4 arch, so cover draws it as wide as
+            // the arch is tall: 4/3 of the arch's width.
+            sizes="(min-width: 961px) 560px, calc((100vw - 26px) * 1.34)"
+            className="animate-arch-zoom object-cover object-[50%_15%]"
           />
         </div>
 

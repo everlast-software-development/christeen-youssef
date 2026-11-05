@@ -2,13 +2,13 @@ import { Image } from '@/components/ui/image';
 import { TransitionLink } from '@/components/ui/transition-link';
 import { Container } from '@/components/site/layout';
 import { SocialLinks } from '@/components/site/social-links';
+import { DIRECTIONS_URL } from '@/components/site/map-card';
 import { navigationItems } from '@/data/navigation';
 import { schedule } from '@/data/schedule';
 import logoInk from '@/assets/Dr.-CY-Logo-FINAL-023-scaled (1).webp';
 
 const TEL = `tel:${schedule.phone.replace(/\s+/g, '')}`;
 const HOURS = `${schedule.workingDays[0]} – ${schedule.workingDays[schedule.workingDays.length - 1]}, ${schedule.hours.replace(' - ', ' – ')}`;
-const DIRECTIONS = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(schedule.address)}`;
 
 const Dot = () => (
   <span aria-hidden className="mx-2.5 text-caption">
@@ -59,7 +59,7 @@ export function SiteFooter() {
               {schedule.address}
               <Dot />
               <a
-                href={DIRECTIONS}
+                href={DIRECTIONS_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="whitespace-nowrap text-gold-text underline decoration-gold/50 underline-offset-4 transition-colors hover-fine:text-ink"

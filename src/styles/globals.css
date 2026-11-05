@@ -263,6 +263,21 @@
     }
 }
 
+/* The Reach Me map pin's halo (site/map-card.tsx): grows and fades, 2.4s.
+   The `scale` property, not transform — the halo is centred with translate. */
+@keyframes map-pulse {
+    from { scale: 1; opacity: 1; }
+    to { scale: 1.4; opacity: 0; }
+}
+.map-halo {
+    animation: map-pulse 2.4s ease-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+    .map-halo {
+        animation: none;
+    }
+}
+
 @utility section-y {
     padding-block: var(--section-y);
 }

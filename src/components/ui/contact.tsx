@@ -12,6 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { SocialLinks } from '@/components/site/social-links';
+import { DIRECTIONS_URL, MapCard } from '@/components/site/map-card';
 import { services } from '@/data/services';
 import { schedule } from '@/data/schedule';
 import { countries, type Country } from '@/data/countries';
@@ -71,13 +72,7 @@ const FALLBACK_COUNTRY =
   countries.find((entry) => entry.code === 'AE') ?? countries[0];
 
 const TEL = `tel:${schedule.phone.replace(/\s+/g, '')}`;
-const DIRECTIONS = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-  schedule.address,
-)}`;
 
-const MAP_EMBED = `https://www.google.com/maps?q=${encodeURIComponent(
-  schedule.address,
-)}&output=embed`;
 
 // The shared inputs, restated for the cream form card: 50px, a hairline, a
 // gold focus ring.
@@ -224,7 +219,7 @@ export function ContactSection({
                 <dd className="mt-1 pl-14 text-white/75">
                     <span className="block font-semibold text-white">{schedule.clinicName}</span>
                     <a
-                      href={DIRECTIONS}
+                      href={DIRECTIONS_URL}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="underline decoration-white/25 underline-offset-4 transition-colors hover-fine:text-white hover-fine:decoration-gold-light"
@@ -271,15 +266,8 @@ export function ContactSection({
 
             <SocialLinks tone="dark" className="mt-9" />
 
-            <div className="mt-9 min-h-[220px] flex-1 overflow-hidden rounded-[12px] border border-line-dark bg-white/5">
-              <iframe
-                title={`Map — ${schedule.clinicName}`}
-                src={MAP_EMBED}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="h-full min-h-[220px] w-full grayscale-[0.4]"
-              />
-            </div>
+            {/* A drawn plan, not an embed: no Google Maps scripts, frames or tiles. */}
+            <MapCard className="mt-9" />
           </aside>
 
           {/* ---------------- Right: the form ---------------- */}

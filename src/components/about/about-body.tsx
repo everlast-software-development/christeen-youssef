@@ -37,19 +37,43 @@ const FIGURES = [
 ];
 
 // The two cards under the practice lead. The clinic's name is the first
-// card's title, so its paragraph starts from "In Abu Dhabi".
-const PRACTICE = [
+// card's title, so its paragraph starts from "In Abu Dhabi". The home page's
+// About section is kept short; the longer copy it used to carry is here —
+// merged into these paragraphs where it said the same thing, and the three
+// principles as supporting lines: care and science under the practice,
+// regeneration under the research and teaching.
+const PRACTICE: {
+  label: string;
+  title: string;
+  body: string[];
+  points?: string[];
+  meta: string;
+  icon: typeof MapPin;
+}[] = [
   {
     label: 'Founder & Medical Director',
     title: 'Everlast Wellness Medical Center',
-    body: 'In Abu Dhabi, she leads a multidisciplinary approach to aesthetic medicine, dermatology, regenerative medicine, longevity, and advanced wellness.',
+    body: [
+      'In Abu Dhabi, she leads a patient-centered practice built on trust, education, and uncompromising safety standards — a multidisciplinary approach to aesthetic medicine, dermatology, regenerative medicine, longevity, and advanced wellness.',
+      'Her approach combines artistic precision with evidence-based clinical expertise to deliver natural, harmonious results.',
+    ],
+    points: [
+      'Thoughtfully designed treatment plans built around your unique anatomy, skin condition, lifestyle, and desired outcomes.',
+      'Advanced aesthetic and dermatological approaches guided by scientific research, clinical expertise, and a commitment to patient safety.',
+    ],
     meta: 'Abu Dhabi, UAE',
     icon: MapPin,
   },
   {
     label: 'Beyond the clinic',
     title: 'The International Medical Community',
-    body: 'Beyond clinical practice, Dr. Christeen is an active contributor to the international medical community, participating in scientific conferences, delivering lectures and professional training, mentoring healthcare professionals, and sharing evidence-based approaches to emerging areas of medicine.',
+    body: [
+      'Beyond clinical practice, Dr. Christeen is an active contributor to the international medical community, participating in scientific conferences, delivering lectures and professional training, mentoring healthcare professionals, and sharing evidence-based approaches to emerging areas of medicine.',
+      'Her commitment to advancing the field is reflected in her peer-reviewed publications and regular presentations at global dermatology conferences.',
+    ],
+    points: [
+      'Integrating emerging concepts in regenerative medicine and tissue bioengineering with modern dermatological care to explore the future of healing and rejuvenation.',
+    ],
     meta: 'Conferences · Lectures · Training',
     icon: GraduationCap,
   },
@@ -151,17 +175,36 @@ export function AboutBody() {
               With more than 12 years of experience in Dermatology and Aesthetic
               Medicine, Dr. Christeen Youssef has built a career at the intersection
               of clinical medicine, aesthetic innovation, regenerative medicine,
-              tissue bioengineering, and medical education.
+              tissue bioengineering, and medical education. A graduate of prestigious
+              international institutions including Harvard Medical School and the
+              American Academy of Aesthetic Medicine, she brings world-class training
+              to every consultation.
             </p>
 
             {/* Two equal cards: the grid stretches them to one height and each
                 footer is pushed to the bottom, so the footers share a line. */}
             <ul className="scroll-rise m-0 mt-12 grid list-none items-stretch gap-5 p-0 text-left md:grid-cols-2">
-              {PRACTICE.map(({ label, title, body, meta, icon: Icon }) => (
+              {PRACTICE.map(({ label, title, body, points, meta, icon: Icon }) => (
                 <li key={label} className={cn(CARD, CARD_TONE.cream, 'h-full gap-0 border border-line p-8')}>
                   <p className="type-eyebrow m-0 text-gold-text">{label}</p>
                   <h3 className="m-0 mt-3 type-h3 text-ink">{title}</h3>
-                  <p className="m-0 mt-4 mb-6 type-body text-pretty text-soft">{body}</p>
+                  {body.map((paragraph) => (
+                    <p key={paragraph} className="m-0 mt-4 type-body text-pretty text-soft">
+                      {paragraph}
+                    </p>
+                  ))}
+                  {points && (
+                    <ul className="m-0 mt-4 flex list-none flex-col gap-2 p-0">
+                      {points.map((point) => (
+                        <li key={point} className="flex gap-3 type-small text-soft">
+                          <span aria-hidden className="mt-[0.55em] size-1.5 shrink-0 rounded-full bg-gold" />
+                          {point}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {/* The 24px the footer keeps from the copy, however long it runs. */}
+                  <span aria-hidden className="block pb-6" />
                   <p className="m-0 mt-auto flex items-center gap-2 border-t border-line pt-6 type-small text-caption-strong">
                     <Icon aria-hidden strokeWidth={1.7} className="size-4 shrink-0 text-gold" />
                     {meta}

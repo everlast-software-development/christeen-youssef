@@ -5,25 +5,11 @@ import { NumberedRows } from '@/components/site/numbered-rows';
 import { RotatingBadge } from '@/components/site/rotating-badge';
 import podium from '@/assets/blogs/ISDS/podium.webp';
 
+// The longer description of each principle lives on the About page (about-body).
 const PRINCIPLES = [
-  {
-    index: '01',
-    name: 'Personalized Excellence',
-    statement: 'Your skin. Your goals. Your journey.',
-    detail: 'Thoughtfully designed treatment plans built around your unique anatomy, skin condition, lifestyle, and desired outcomes.',
-  },
-  {
-    index: '02',
-    name: 'Science-Driven Medicine',
-    statement: 'Innovation backed by evidence.',
-    detail: 'Advanced aesthetic and dermatological approaches guided by scientific research, clinical expertise, and a commitment to patient safety.',
-  },
-  {
-    index: '03',
-    name: 'Regeneration & Innovation',
-    statement: 'Beyond aesthetics.',
-    detail: 'Integrating emerging concepts in regenerative medicine and tissue bioengineering with modern dermatological care to explore the future of healing and rejuvenation.',
-  },
+  { index: '01', name: 'Personalized Excellence', statement: 'Your skin. Your goals. Your journey.' },
+  { index: '02', name: 'Science-Driven Medicine', statement: 'Innovation backed by evidence.' },
+  { index: '03', name: 'Regeneration & Innovation', statement: 'Beyond aesthetics.' },
 ];
 
 const STATS = [
@@ -62,30 +48,15 @@ export function HomeAbout() {
             <p className="m-0 type-small font-semibold text-gold-light">Aesthetic Dermatologist &amp; Medical Consultant</p>
           </div>
 
-          <div className="flex flex-col gap-2.5 font-body text-[14.5px] leading-[1.65] text-[#CFC8BC]">
-            <p className="m-0">
-              With over 12 years of dedicated practice in aesthetic medicine, Dr.
-              Christeen Youssef has established herself as a leading authority in
-              non-surgical facial rejuvenation. Her approach combines artistic
-              precision with evidence-based clinical expertise to deliver natural,
-              harmonious results.
-            </p>
-            <p className="m-0">
-              A graduate of prestigious international institutions including Harvard
-              Medical School and the American Academy of Aesthetic Medicine, she
-              brings world-class training to every consultation. Her commitment to
-              advancing the field is reflected in her peer-reviewed publications and
-              regular presentations at global dermatology conferences.
-            </p>
-            <p className="m-0">
-              At Everlast Wellness Medical Center in Abu Dhabi, Dr. Youssef leads a
-              patient-centered practice built on trust, education, and uncompromising
-              safety standards.
-            </p>
-          </div>
+          {/* One short paragraph — the full story is on the About page. */}
+          <p className="m-0 type-body text-[#CFC8BC]">
+            With over 12 years of dedicated practice in aesthetic medicine, Dr.
+            Christeen Youssef has established herself as a leading authority in
+            non-surgical facial rejuvenation.
+          </p>
 
           <NumberedRows
-            items={PRINCIPLES.map(({ index, name, statement, detail }) => ({ index, title: name, body: statement, detail }))}
+            items={PRINCIPLES.map(({ index, name, statement }) => ({ index, title: name, body: statement }))}
           />
 
           <div className="flex flex-col gap-3">

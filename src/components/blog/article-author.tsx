@@ -2,28 +2,35 @@ import { Image } from '@/components/ui/image';
 import { TransitionLink } from '@/components/ui/transition-link';
 import portrait from '@/assets/dr-christeen.webp';
 
-/** The byline at the end of an article, linking to the full profile. */
+/**
+ * The article's sign-off, centred and without a card: a short gold hairline,
+ * the About portrait in a 64px circle, the signature (the Home About one),
+ * her title and a link to the full profile.
+ */
 export function ArticleAuthor() {
   return (
-    <div className="flex items-center gap-4">
-      <Image
-        src={portrait}
-        alt=""
-        width={48}
-        height={48}
-        sizes="48px"
-        className="size-12 shrink-0 rounded-full object-cover object-top"
-      />
-      <div className="min-w-0">
-        <p className="m-0 font-display text-[1.25rem] leading-tight font-medium text-ink">Dr. Christeen Youssef</p>
-        <p className="m-0 mt-0.5 type-small text-soft">Founder &amp; Medical Director, Everlast Wellness Medical Center</p>
-        <TransitionLink
-          href="/about-me"
-          className="mt-1.5 inline-block type-small font-medium text-gold-text underline decoration-gold/50 underline-offset-4 transition-colors hover-fine:text-ink"
-        >
-          Read full profile →
-        </TransitionLink>
-      </div>
+    <div className="flex flex-col items-center text-center">
+      <span aria-hidden className="h-px w-12 bg-gold" />
+      {/* The About portrait is half-length; zoomed in on the face so it reads
+          at 64px. `sizes` counts the zoom, so the file stays sharp. */}
+      <span className="mt-8 block size-16 overflow-hidden rounded-full bg-page">
+        <Image
+          src={portrait}
+          alt=""
+          width={64}
+          height={64}
+          sizes="112px"
+          className="size-full origin-[50%_18%] scale-[1.75] object-cover object-[50%_12%]"
+        />
+      </span>
+      <p className="m-0 mt-4 font-display text-[26px] leading-tight text-ink italic">Christeen Youssef</p>
+      <p className="m-0 mt-2 type-eyebrow text-caption-strong">Founder &amp; Medical Director</p>
+      <TransitionLink
+        href="/about-me"
+        className="mt-3 type-small font-semibold text-gold-text transition-colors hover-fine:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+      >
+        Read full profile →
+      </TransitionLink>
     </div>
   );
 }

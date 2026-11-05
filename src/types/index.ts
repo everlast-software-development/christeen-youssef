@@ -66,6 +66,11 @@ export interface SectionFigure {
   /** A line set under the picture. */
   caption?: string;
   /**
+   * The cover photograph again, in another file (another frame of the same
+   * moment). Kept in the data, not shown in the body: the cover already is.
+   */
+  repeatsCover?: boolean;
+  /**
    * A flat width in pixels, from sm up, instead of the responsive default.
    *
    * The default scales the frame with the viewport, which is right where the

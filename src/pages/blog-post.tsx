@@ -16,7 +16,6 @@ import { ArticleShare } from '@/components/blog/article-share';
 import { ArticleAuthor } from '@/components/blog/article-author';
 import { blogPosts } from '@/data/blog';
 import { byNewest } from '@/lib/blog-date';
-import { heroFocus } from '@/lib/blog-image';
 import { parseArticle, tableOfContents } from '@/lib/blog-content';
 
 /** Below this a contents list is furniture rather than navigation. */
@@ -25,18 +24,21 @@ const TOC_MIN_ITEMS = 2;
 /** Cards at the foot of the article. */
 const RELATED_COUNT = 3;
 
-const PAGER_CARD =
-  'group flex h-full flex-col gap-3 rounded-card border border-line bg-page p-6 transition-colors hover-fine:border-ink/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold';
+/** Earlier / Later: text on the cream, no box — the row's hairlines are the frame. */
+const PAGER_LINK =
+  'group flex flex-col gap-2 py-6 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold';
+const PAGER_TITLE =
+  'line-clamp-2 font-display text-[1.125rem] leading-[1.35] font-medium text-ink transition-colors duration-200 group-hover-fine:text-gold-text';
 
 /**
- * One frame for every article, on one 12-column grid (from lg):
+ * One frame for every article. The cover hangs from the hero across the full
+ * container (ArticleHero); below it, one 12-column grid (from lg):
  *
- *   row 1  1–3   "On this page", sticky, the section being read in gold
- *          4–10  the article — cover, figures, body — held to one measure
- *                (68ch), so photographs and copy share both edges
- *          11–12 the share rail, sticky
- *   row 2  4–10  byline, share row (small screens), prev/next — not sticky,
- *                and below the rails, which stop with row 1
+ *   row 1  1–2   "On this page", sticky, the section being read marked gold
+ *          3–10  the article — figures and body — at most 720px wide
+ *          11–12 the share rail, sticky, level with the contents
+ *   row 2  3–10  the sign-off, the share row (small screens) and Earlier /
+ *                Later — not sticky, and below the rails, which stop with row 1
  *
  * The side columns are reserved on every post, whether or not it has contents
  * to list, so the copy lands in the same place on every article. Below lg the
@@ -55,8 +57,9 @@ export default function BlogPostPage() {
   const toc = tableOfContents(sections);
   const showToc = toc.length >= TOC_MIN_ITEMS;
 
-  // The cover is photograph 0 in the lightbox; the body's follow in reading order.
-  const placed = placeImages(sections, post.figures, post.gallery, 1);
+  // The cover is photograph 0 in the lightbox; the body's follow in reading
+  // order — less any that only repeat the cover.
+  const placed = placeImages(sections, post.figures, post.gallery, 1, post.image);
   const photos = [{ image: post.image, alt: post.title, caption: post.imageCaption }, ...placed.all];
 
   // Previous and next in reading order, which is chronological.
@@ -73,50 +76,33 @@ export default function BlogPostPage() {
   ].slice(0, RELATED_COUNT);
 
   return (
-    <main id="content" className="bg-cream text-ink">
+    <main id="content" className="cover-overhang bg-cream text-ink">
       <Seo path={path} title={post.title} description={post.excerpt} image={post.image} type="article" />
-      <ArticleHero post={post} />
+      <ArticleHero post={post} onOpenCover={() => setLightbox(0)} />
 
-      <div className="container-site pt-8 pb-[var(--section-y)] lg:grid lg:grid-cols-12 lg:gap-x-6 lg:pt-16">
-        {/* 1–3 */}
-        <aside className="hidden lg:col-span-3 lg:row-start-1 lg:block">
+      <div className="container-site pt-10 pb-[var(--section-y)] lg:grid lg:grid-cols-12 lg:gap-x-6 lg:pt-16">
+        {/* 1–2 */}
+        <aside className="hidden lg:col-span-2 lg:row-start-1 lg:block">
           {showToc && <ArticleToc items={toc} />}
         </aside>
 
-        {/* 4–10 — font-size here so the 68ch measure is counted in body type. */}
-        <article className="min-w-0 max-w-[68ch] text-[17px] lg:col-span-7 lg:row-start-1">
-          {showToc && (
-            <div className="mb-8 lg:hidden">
-              <ArticleTocToggle items={toc} />
-            </div>
-          )}
-
-          <figure className="m-0 mb-12 animate-fade-up">
-            <button
-              type="button"
-              onClick={() => setLightbox(0)}
-              aria-label="Enlarge the cover photograph"
-              className="relative block aspect-video w-full cursor-zoom-in overflow-hidden rounded-card bg-page focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
-            >
-              <Image
-                src={post.image}
-                alt=""
-                fill
-                preload
-                sizes="(min-width: 1024px) 720px, 94vw"
-                placeholder="blur"
-                style={{ objectPosition: heroFocus(post) }}
-                className="object-cover"
-              />
-            </button>
+        {/* 3–10 */}
+        <article className="min-w-0 lg:col-span-8 lg:row-start-1">
+          <div className="max-w-[720px]">
             {post.imageCaption && (
-              <figcaption className="mt-3 type-small text-caption-strong">{post.imageCaption}</figcaption>
+              <p className="m-0 mb-8 type-small text-caption-strong">{post.imageCaption}</p>
             )}
-          </figure>
 
-          {post.stats && post.stats.length > 0 && <ArticleStats stats={post.stats} />}
+            {showToc && (
+              <div className="mb-10 lg:hidden">
+                <ArticleTocToggle items={toc} />
+              </div>
+            )}
 
-          <ArticleBody sections={sections} images={placed.bySection} onOpenImage={setLightbox} />
+            {post.stats && post.stats.length > 0 && <ArticleStats stats={post.stats} />}
+
+            <ArticleBody sections={sections} images={placed.bySection} onOpenImage={setLightbox} />
+          </div>
         </article>
 
         {/* 11–12 */}
@@ -126,39 +112,41 @@ export default function BlogPostPage() {
           </div>
         </aside>
 
-        {/* ---------------- End of article — row 2, 4–10 ----------------
+        {/* ---------------- End of article — row 2, 3–10 ----------------
             Its own grid row, so the two sticky rails (whose cells end with
             row 1) let go at the end of the body and never sit beside this. */}
-        <div className="min-w-0 max-w-[68ch] text-[17px] lg:col-span-7 lg:col-start-4 lg:row-start-2">
-          <footer className="mt-16 border-t border-line pt-8">
-            <ArticleAuthor />
-            <ArticleShare path={path} title={post.title} className="mt-8 lg:hidden" />
-          </footer>
+        <div className="min-w-0 lg:col-span-8 lg:col-start-3 lg:row-start-2">
+          <div className="max-w-[720px]">
+            <footer className="mt-20">
+              <ArticleAuthor />
+              <ArticleShare path={path} title={post.title} className="mt-10 justify-center lg:hidden" />
+            </footer>
 
-          {(newer || older) && (
-            <nav aria-label="More articles" className="mt-12 grid gap-4 sm:grid-cols-2">
-              {older ? (
-                <TransitionLink href={`/blog/${older.slug}`} className={PAGER_CARD}>
-                  <span className="inline-flex items-center gap-2 type-eyebrow text-caption-strong">
-                    <ArrowLeft aria-hidden className="size-3.5" />
-                    Earlier
-                  </span>
-                  <span className="font-display text-[1.375rem] leading-[1.25] font-medium text-ink">{older.title}</span>
-                </TransitionLink>
-              ) : (
-                <span className="hidden sm:block" />
-              )}
-              {newer && (
-                <TransitionLink href={`/blog/${newer.slug}`} className={`${PAGER_CARD} items-end text-right`}>
-                  <span className="inline-flex items-center gap-2 type-eyebrow text-caption-strong">
-                    Later
-                    <ArrowRight aria-hidden className="size-3.5" />
-                  </span>
-                  <span className="font-display text-[1.375rem] leading-[1.25] font-medium text-ink">{newer.title}</span>
-                </TransitionLink>
-              )}
-            </nav>
-          )}
+            {(newer || older) && (
+              <nav aria-label="More articles" className="mt-16 grid divide-y divide-line border-y border-line sm:grid-cols-2 sm:gap-8 sm:divide-y-0">
+                {older ? (
+                  <TransitionLink href={`/blog/${older.slug}`} className={PAGER_LINK}>
+                    <span className="inline-flex items-center gap-2 type-eyebrow text-caption-strong">
+                      <ArrowLeft aria-hidden className="size-3.5 transition-transform duration-200 group-hover-fine:-translate-x-1" />
+                      Earlier
+                    </span>
+                    <span className={PAGER_TITLE}>{older.title}</span>
+                  </TransitionLink>
+                ) : (
+                  <span className="hidden sm:block" />
+                )}
+                {newer && (
+                  <TransitionLink href={`/blog/${newer.slug}`} className={`${PAGER_LINK} items-end text-right`}>
+                    <span className="inline-flex items-center gap-2 type-eyebrow text-caption-strong">
+                      Later
+                      <ArrowRight aria-hidden className="size-3.5 transition-transform duration-200 group-hover-fine:translate-x-1" />
+                    </span>
+                    <span className={PAGER_TITLE}>{newer.title}</span>
+                  </TransitionLink>
+                )}
+              </nav>
+            )}
+          </div>
         </div>
       </div>
 

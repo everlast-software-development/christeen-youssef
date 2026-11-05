@@ -49,6 +49,8 @@ export const blogPosts: BlogPost[] = [
       {
         section: "research-training-and-therapeutic-protocols",
         image: germanUniversityImage2,
+        // The cover (signing.webp) from further back: the same two men, same table.
+        repeatsCover: true,
         crop: "square",
         focus: "50% 100%",
         alt: "Dr. Christeen Youssef’s counterparts signing the collaboration agreement at Everlast Wellness Medical Center.",
@@ -138,6 +140,8 @@ The collaboration underscores Everlast’s position as the only accredited centr
       {
         section: "stem-cells-and-tissue-engineering-in-clinical-practice",
         image: isdsPodiumWideImage,
+        // The cover (podium.webp), a touch wider: same pose, same moment.
+        repeatsCover: true,
         alt: "Dr. Christeen Youssef presenting at the ISDS podium in Abu Dhabi.",
       },
       {

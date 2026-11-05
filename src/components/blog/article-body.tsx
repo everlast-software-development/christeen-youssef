@@ -13,14 +13,14 @@ import type { SectionFigure } from '@/types';
 import { cn } from '@/lib/utils';
 
 /**
- * Body copy: Manrope 17px on 1.75, in the article's own ink (--prose, 10:1 on
- * cream), paragraphs 1.25em apart. Everything in the body that reads as text
+ * Body copy: Manrope 18px on 1.8, in the article's own ink (--prose, 10:1 on
+ * cream), paragraphs 1.4em apart. Everything in the body that reads as text
  * — lists, cards, answers — uses it, so the article is one voice.
  */
-const PROSE = 'font-body text-[17px] leading-[1.75] text-prose';
-const PARAGRAPH = cn(PROSE, 'm-0 mt-[1.25em] first:mt-0');
-/** The opening paragraph: a size up, in ink. */
-const LEAD = 'm-0 font-body text-lg leading-[1.65] text-ink lg:text-xl';
+const PROSE = 'font-body text-[18px] leading-[1.8] text-prose';
+const PARAGRAPH = cn(PROSE, 'm-0 mt-[1.4em] first:mt-0');
+/** The opening paragraph: 20–22px, in ink. */
+const LEAD = 'm-0 font-body text-[length:clamp(20px,1.6vw,22px)] leading-[1.65] text-ink';
 const LINK =
   'font-medium break-words text-gold-text underline decoration-gold/50 underline-offset-4 transition-colors hover-fine:text-ink hover-fine:decoration-gold';
 
@@ -77,7 +77,7 @@ function Blocks({ blocks, lead = false }: { blocks: Block[]; lead?: boolean }) {
   return blocks.map((block, index) => {
     if (block.kind === 'heading') {
       return (
-        <h3 key={index} className="m-0 mt-10 mb-4 font-display text-[1.5rem] leading-[1.25] font-medium text-ink first:mt-0">
+        <h3 key={index} className="m-0 mt-10 mb-4 font-display text-[1.375rem] leading-[1.3] font-medium text-ink first:mt-0">
           {block.text}
         </h3>
       );
@@ -125,7 +125,7 @@ function Blocks({ blocks, lead = false }: { blocks: Block[]; lead?: boolean }) {
 
     if (block.kind === 'list') {
       return (
-        <ul key={index} className="m-0 mt-[1.25em] list-none space-y-3 p-0">
+        <ul key={index} className="m-0 mt-[1.4em] list-none space-y-3 p-0">
           {block.items.map((item, i) => (
             <li key={i} className={cn(PROSE, 'flex gap-4')}>
               <Bullet />
@@ -253,10 +253,15 @@ function measureOf(section: Section) {
  */
 export function placeImages(
   sections: Section[],
-  figures: SectionFigure[] = [],
-  gallery: StaticImageData[] = [],
+  allFigures: SectionFigure[] = [],
+  allGallery: StaticImageData[] = [],
   first = 0,
+  cover?: StaticImageData,
 ) {
+  // The cover is already at the top of the page: a figure that is the same
+  // file, or marked as another frame of the same moment, is not shown again.
+  const figures = allFigures.filter((figure) => !figure.repeatsCover && figure.image.src !== cover?.src);
+  const gallery = allGallery.filter((image) => image.src !== cover?.src);
   const placed: { section: string; image: Omit<ArticleImage, 'index'> }[] = figures.map((figure) => ({
     section: figure.section,
     image: { image: figure.image, alt: figure.alt, caption: figure.caption, focus: figure.focus },
@@ -318,16 +323,24 @@ export function ArticleBody({
             key={section.id || index}
             id={section.id}
             data-section
-            className="[&:not(:first-child)]:mt-16"
+            className="[&:not(:first-child)]:mt-20"
           >
             {section.heading && (
               <>
+                {/* The number small, the heading large: after the page title,
+                    the heading is the biggest thing in its section. */}
                 {numbers[index] && (
-                  <span aria-hidden className="mb-3 block font-display text-[2.25rem] leading-none text-gold-text lining-nums tabular-nums">
+                  <span aria-hidden className="block type-eyebrow text-gold-text tabular-nums">
                     {numbers[index]}
                   </span>
                 )}
-                <h2 data-reveal-heading className="m-0 mb-5 type-h3 text-ink">
+                <h2
+                  data-reveal-heading
+                  className={cn(
+                    'm-0 mb-6 font-display text-[length:clamp(1.75rem,2.6vw,2.25rem)] leading-tight font-medium text-ink',
+                    numbers[index] && 'mt-3',
+                  )}
+                >
                   {section.heading}
                 </h2>
               </>

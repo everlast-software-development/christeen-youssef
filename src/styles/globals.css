@@ -251,6 +251,18 @@
     padding-inline: var(--gutter);
 }
 
+/* An article's cover hangs half below the hero: its height is the container's
+   inner width × 3/4 on phones (4/3) and × 9/21 from lg (21/9); half of that. */
+.cover-overhang {
+    --cover-w: calc(min(100vw, var(--container)) - 2 * var(--gutter));
+    --cover-overhang: calc(var(--cover-w) * 3 / 8);
+}
+@media (min-width: 1024px) {
+    .cover-overhang {
+        --cover-overhang: calc(var(--cover-w) * 9 / 42);
+    }
+}
+
 @utility section-y {
     padding-block: var(--section-y);
 }

@@ -65,10 +65,10 @@ function TocList({
               onClick={() => onPick(item.id)}
               aria-current={current ? 'true' : undefined}
               className={cn(
-                '-ml-px block w-full cursor-pointer border-l-2 py-2 pr-2 pl-4 text-left type-small transition-colors duration-300',
+                '-ml-px block w-full cursor-pointer border-l-2 py-2 pr-2 pl-4 text-left font-body text-[14px] leading-snug transition-colors duration-300',
                 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold',
                 current
-                  ? 'border-gold font-medium text-gold-text'
+                  ? 'border-gold font-medium text-ink'
                   : 'border-transparent text-soft hover-fine:border-ink/20 hover-fine:text-ink',
               )}
             >

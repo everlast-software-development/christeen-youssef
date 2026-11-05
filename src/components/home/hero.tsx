@@ -4,7 +4,7 @@ import { Button } from '@/components/site/button';
 import { Counter } from '@/components/site/counter';
 import { WordReveal } from '@/components/site/word-reveal';
 import { stats } from '@/data/stats';
-import portrait from '@/assets/about-me.jpeg';
+import portrait from '@/assets/dr-christeen-cutout.webp';
 
 const byLabel = (label: string) => stats.find((stat) => stat.label === label);
 
@@ -115,15 +115,20 @@ export function HomeHero() {
           ))}
         </div>
 
-        <div className="animate-arch-up arch relative isolate aspect-[3/4] overflow-hidden bg-cream shadow-[0_30px_60px_rgba(23,21,15,0.22)]">
+        {/* One clipping box: arch radius, overflow, its own layer (isolate +
+            translateZ) so the curve stays smooth through the zoom. Behind the
+            cut-out there is only the cream → page gradient; the hairline is
+            drawn on top of the photo so the edge reads against the ink. */}
+        <div className="animate-arch-up arch relative isolate aspect-[3/4] transform-[translateZ(0)] overflow-hidden bg-linear-to-b from-cream to-page shadow-[0_30px_60px_rgba(23,21,15,0.22)] after:pointer-events-none after:absolute after:inset-0 after:z-10 after:rounded-[inherit] after:ring-1 after:ring-gold/30 after:ring-inset after:content-['']">
           <Image
             src={portrait}
-            alt="Dr. Christeen Youssef in her clinic at Everlast Wellness Medical Center"
+            alt="Dr. Christeen Youssef smiling, in a blue lace top"
             fill
             priority
-            placeholder="blur"
+            // No blur placeholder: on a transparent cut-out it paints a
+            // blurred blob; the gradient is the placeholder.
             sizes="(min-width: 961px) 420px, calc(100vw - 26px)"
-            className="animate-arch-zoom object-cover object-[50%_15%]"
+            className="animate-arch-zoom object-cover object-[50%_20%]"
           />
         </div>
 

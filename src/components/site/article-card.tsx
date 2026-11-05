@@ -80,7 +80,7 @@ export function ArticleCard({
             'text-ink',
             home
               ? 'm-0 flex-1 type-h3'
-              : 'mb-6 line-clamp-3 type-h3',
+              : 'mb-3 line-clamp-3 type-h3',
           )}
         >
           <TransitionLink
@@ -90,6 +90,8 @@ export function ArticleCard({
             {post.title}
           </TransitionLink>
         </Heading>
+
+        <p className={cn('m-0 line-clamp-2 type-small text-soft', home ? '' : 'mb-5')}>{post.excerpt}</p>
 
         <div
           className={cn(

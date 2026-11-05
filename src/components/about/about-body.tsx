@@ -338,14 +338,14 @@ export function AboutBody() {
                     className={cn(CARD, featured ? CARD_TONE.gold : CARD_TONE.cream, 'gap-3 p-[clamp(24px,3vw,36px)]')}
                   >
                     {award.meta && (
-                      <span className={cn('type-eyebrow', featured ? 'text-white/80' : 'text-caption-strong')}>
+                      <span className={cn('type-eyebrow', featured ? 'text-white' : 'text-caption-strong')}>
                         {award.meta}
                       </span>
                     )}
                     <h4 className={cn('m-0 type-h3', featured ? 'text-white' : 'text-ink')}>
                       {award.title}
                     </h4>
-                    <p className={cn('m-0 type-body', featured ? 'text-white/80' : 'text-soft')}>
+                    <p className={cn('m-0 type-body', featured ? 'text-white' : 'text-soft')}>
                       {award.body}
                     </p>
                   </li>

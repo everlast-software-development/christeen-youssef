@@ -6,9 +6,24 @@ import { RotatingBadge } from '@/components/site/rotating-badge';
 import podium from '@/assets/blogs/ISDS/podium.webp';
 
 const PRINCIPLES = [
-  { index: '01', name: 'Personalized Excellence', statement: 'Your skin. Your goals. Your journey.' },
-  { index: '02', name: 'Science-Driven Medicine', statement: 'Innovation backed by evidence.' },
-  { index: '03', name: 'Regeneration & Innovation', statement: 'Beyond aesthetics.' },
+  {
+    index: '01',
+    name: 'Personalized Excellence',
+    statement: 'Your skin. Your goals. Your journey.',
+    detail: 'Thoughtfully designed treatment plans built around your unique anatomy, skin condition, lifestyle, and desired outcomes.',
+  },
+  {
+    index: '02',
+    name: 'Science-Driven Medicine',
+    statement: 'Innovation backed by evidence.',
+    detail: 'Advanced aesthetic and dermatological approaches guided by scientific research, clinical expertise, and a commitment to patient safety.',
+  },
+  {
+    index: '03',
+    name: 'Regeneration & Innovation',
+    statement: 'Beyond aesthetics.',
+    detail: 'Integrating emerging concepts in regenerative medicine and tissue bioengineering with modern dermatological care to explore the future of healing and rejuvenation.',
+  },
 ];
 
 const STATS = [
@@ -38,27 +53,51 @@ export function HomeAbout() {
         >
           <Eyebrow onDark>About me</Eyebrow>
 
-          <h2 id="about-title" className="m-0 type-h2 text-white">
-            Designed for results.
-            <br />
-            Grounded in science.
-          </h2>
+          <div className="flex flex-col gap-2">
+            <h2 id="about-title" className="m-0 type-h2 text-white">
+              Designed for results.
+              <br />
+              Grounded in science.
+            </h2>
+            <p className="m-0 type-small font-semibold text-gold-light">Aesthetic Dermatologist &amp; Medical Consultant</p>
+          </div>
 
-          <p className="m-0 type-body text-[#CFC8BC]">
-            With over 12 years of dedicated practice in aesthetic medicine, Dr.
-            Christeen Youssef has established herself as a leading authority in
-            non-surgical facial rejuvenation.
-          </p>
+          <div className="flex flex-col gap-2.5 font-body text-[14.5px] leading-[1.65] text-[#CFC8BC]">
+            <p className="m-0">
+              With over 12 years of dedicated practice in aesthetic medicine, Dr.
+              Christeen Youssef has established herself as a leading authority in
+              non-surgical facial rejuvenation. Her approach combines artistic
+              precision with evidence-based clinical expertise to deliver natural,
+              harmonious results.
+            </p>
+            <p className="m-0">
+              A graduate of prestigious international institutions including Harvard
+              Medical School and the American Academy of Aesthetic Medicine, she
+              brings world-class training to every consultation. Her commitment to
+              advancing the field is reflected in her peer-reviewed publications and
+              regular presentations at global dermatology conferences.
+            </p>
+            <p className="m-0">
+              At Everlast Wellness Medical Center in Abu Dhabi, Dr. Youssef leads a
+              patient-centered practice built on trust, education, and uncompromising
+              safety standards.
+            </p>
+          </div>
 
           <NumberedRows
-            items={PRINCIPLES.map(({ index, name, statement }) => ({ index, title: name, body: statement }))}
+            items={PRINCIPLES.map(({ index, name, statement, detail }) => ({ index, title: name, body: statement, detail }))}
           />
 
-          <div className="flex flex-wrap items-center gap-5">
-            <span className="font-display text-[26px] italic">Christeen Youssef</span>
-            <Button href="/about-me" variant="outline-light">
-              Read full profile
-            </Button>
+          <div className="flex flex-col gap-3">
+            <p className="m-0 font-display text-[19px] leading-[1.4] text-white italic">
+              Precision in every detail. Science in every decision. Care in every result.
+            </p>
+            <div className="flex flex-wrap items-center gap-5">
+              <span className="font-display text-[26px] italic">Christeen Youssef</span>
+              <Button href="/about-me" variant="outline-light">
+                Read full profile
+              </Button>
+            </div>
           </div>
         </div>
 

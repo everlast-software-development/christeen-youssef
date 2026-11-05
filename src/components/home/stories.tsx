@@ -63,6 +63,22 @@ const AREAS: { label: string; icon: ReactNode }[] = [
       </svg>
     ),
   },
+  {
+    label: 'Medical Dermatology',
+    icon: (
+      <svg {...ICON}>
+        <path d="M12 7v10 M7 12h10 M5 4h14v16H5z" />
+      </svg>
+    ),
+  },
+  {
+    label: 'Skin Rejuvenation',
+    icon: (
+      <svg {...ICON}>
+        <path d="M12 4a8 8 0 1 0 8 8 M12 8a4 4 0 1 0 4 4 M17 3l.7 1.8L19.5 5.5l-1.8.7L17 8l-.7-1.8L14.5 5.5l1.8-.7z" />
+      </svg>
+    ),
+  },
 ];
 
 // The reference's logo order.

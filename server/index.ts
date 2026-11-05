@@ -48,6 +48,12 @@ const REDIRECTS: Record<string, string> = {
 };
 app.get(Object.keys(REDIRECTS), (request, response) => response.redirect(301, REDIRECTS[request.path]));
 app.get('/blogs/:slug', (request, response) => response.redirect(301, `/blog/${request.params.slug}`));
+// One URL per page: /index.html (and /about-me/index.html…) are the files the
+// clean URLs serve, not addresses of their own.
+app.get(/\/index\.html$/, (request, response) => {
+  const clean = request.path.slice(0, -'index.html'.length).replace(/(.)\/$/, '$1') || '/';
+  response.redirect(301, clean + (request.url.slice(request.path.length) || ''));
+});
 
 // ---- API ----
 // Behind Cloudflare the real visitor is in cf-connecting-ip; otherwise the

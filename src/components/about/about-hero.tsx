@@ -25,23 +25,28 @@ export function AboutHero() {
       title="Dr. Christeen {Youssef}"
       overhang={OVERHANG}
       intro={
-        <p className="m-0">
-          {/* Real spaces either side of each dot are the only places the line
-              may break, since each title is kept whole. */}
-          {CREDENTIALS.map((credential, index) => (
-            <span key={credential}>
-              {index > 0 && (
-                <>
-                  {' '}
-                  <span aria-hidden className="mx-1 text-gold-light">
-                    ·
-                  </span>{' '}
-                </>
-              )}
-              <span className="whitespace-nowrap">{credential}</span>
-            </span>
-          ))}
-        </p>
+        <>
+          <p className="m-0">
+            {/* Real spaces either side of each dot are the only places the line
+                may break, since each title is kept whole. */}
+            {CREDENTIALS.map((credential, index) => (
+              <span key={credential}>
+                {index > 0 && (
+                  <>
+                    {' '}
+                    <span aria-hidden className="mx-1 text-gold-light">
+                      ·
+                    </span>{' '}
+                  </>
+                )}
+                <span className="whitespace-nowrap">{credential}</span>
+              </span>
+            ))}
+          </p>
+          <p className="m-0 mt-3 font-display text-[clamp(20px,1.8vw,24px)] leading-[1.35] text-white italic">
+            Where Clinical Excellence Meets Scientific Innovation
+          </p>
+        </>
       }
     >
       <div className="relative mx-auto w-[min(70vw,420px)]">

@@ -64,6 +64,7 @@ export function HomeJournal() {
               <h3 className="m-0 font-display text-[clamp(24px,2.2vw,32px)] leading-[1.2] font-medium text-white">
                 {FEATURED.title}
               </h3>
+              <span className="line-clamp-2 max-w-[56ch] text-[14px] leading-[1.55] text-white/85">{FEATURED.excerpt}</span>
               <span className="text-[14px] font-semibold text-[#E9DFC9]">Read article →</span>
             </span>
           </TransitionLink>
@@ -96,6 +97,7 @@ export function HomeJournal() {
                     <h3 className="m-0 font-display text-[21px] leading-[1.25] font-medium text-text underline-offset-4 group-hover-fine:underline">
                       {post.title}
                     </h3>
+                    <p className="m-0 line-clamp-2 type-small text-soft">{post.excerpt}</p>
                   </span>
                   <span
                     aria-hidden

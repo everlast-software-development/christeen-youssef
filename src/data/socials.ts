@@ -15,7 +15,7 @@ export const socialLinks: SocialLink[] = [
   },
   {
     platform: 'Snapchat',
-    url: 'https://www.snapchat.com/add/christeenyoussef'
+    url: 'https://www.snapchat.com/add/youssefchristen'
   },
   {
     platform: 'TikTok',

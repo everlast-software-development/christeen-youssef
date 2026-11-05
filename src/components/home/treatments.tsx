@@ -21,11 +21,15 @@ type Treatment = {
   image: StaticImageData;
 };
 
+/** The section intro — also the overview card's text, so that card shows none. */
+const INTRO =
+  'A comprehensive approach to skin, hair, and aesthetic health — combining clinical expertise, advanced technologies, and evidence-based treatment protocols tailored to every patient.';
+
 const TREATMENTS: Treatment[] = [
   {
     index: '01',
     title: 'Dermatology, Aesthetics & Regenerative Medicine',
-    body: 'A comprehensive approach to skin, hair, and aesthetic health — combining clinical expertise, advanced technologies, and evidence-based treatment protocols tailored to every patient.',
+    body: INTRO,
     image: introImage,
   },
   {
@@ -102,7 +106,11 @@ function TreatmentCard({ item }: { item: Treatment }) {
       </span>
       <div className="relative flex flex-col gap-1.5 p-5">
         <h3 className="m-0 type-h3 text-white">{item.title}</h3>
-        <span className="text-[13px] font-semibold text-[#E9DFC9]">Learn more →</span>
+        {/* The overview card's text is the section intro, already above. */}
+        {item.body !== INTRO && (
+          <p className="m-0 line-clamp-3 text-[13.5px] leading-[1.5] text-white/85">{item.body}</p>
+        )}
+        <span className="mt-0.5 text-[13px] font-semibold text-[#E9DFC9]">Learn more →</span>
       </div>
     </TransitionLink>
   );
@@ -178,6 +186,7 @@ export function HomeTreatments() {
               <h2 id="treatments-title" className="m-0 type-h2 text-text">
                 Treatments &amp; Care
               </h2>
+              <p className="m-0 max-w-[520px] type-body text-soft">{INTRO}</p>
             </div>
             <div className="flex flex-col items-start gap-[18px]">
               <p className="m-0 max-w-[500px] type-body text-soft">

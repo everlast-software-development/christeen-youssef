@@ -100,7 +100,7 @@ uses the two "text" shades instead.
 Any gold surface that carries text — the primary button, the featured award
 card, avatars, chips, checked boxes, the rotating badge, the skip link — is
 `bg-gold-deep` with white text and white icons (4.5:1, AA for small text);
-secondary text inside it is `text-white/80`. The brighter `#B8892A` /
+secondary text inside it is full white too — white/80 on gold-deep is 3.5:1. The brighter `#B8892A` /
 `#D9B566` stay for accents that carry no text.
 
 Type is Cormorant Garamond 500 / 500 italic (display) and Manrope (body), self-hosted

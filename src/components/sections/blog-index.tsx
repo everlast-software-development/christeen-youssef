@@ -177,8 +177,10 @@ export function BlogIndex() {
             </>
           )}
 
+          {/* Counted with the featured article (its own panel above when
+              unfiltered), so it agrees with the hero's count. */}
           <p aria-live="polite" className="sr-only">
-            Showing {shown.length} of {results.length} articles
+            Showing {shown.length + (filtered ? 0 : 1)} of {matches.length} articles
           </p>
         </Container>
       </Section>

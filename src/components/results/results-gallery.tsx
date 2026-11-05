@@ -21,7 +21,7 @@ export function ResultsGallery() {
       <PageHero
         section="/before-and-after"
         title="Real {results}"
-        intro="Documented results across aesthetic dermatology, scar revision and regenerative treatments."
+        intro="Documented results across aesthetic dermatology, scar revision and regenerative treatments. Drag the handle to compare."
       />
 
       <Section tone="page">

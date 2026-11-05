@@ -1,10 +1,17 @@
 import { cn } from '@/lib/utils';
 
-export type NumberedRow = { index: string; title: string; body: string };
+export type NumberedRow = {
+  index: string;
+  title: string;
+  body: string;
+  /** A longer line under the statement. */
+  detail?: string;
+};
 
 /**
  * The numbered hairline list from the home page's About section: rows on ink,
- * a gold-light number, the title and a one-line statement beneath it.
+ * a gold-light number, the title, a one-line statement beneath it and, where
+ * given, a sentence of detail.
  */
 export function NumberedRows({
   items,
@@ -24,6 +31,7 @@ export function NumberedRows({
           <span className="flex flex-col gap-0.5">
             <span className="text-[15.5px] font-semibold">{item.title}</span>
             <span className="text-[13.5px] text-[#9E978B]">{item.body}</span>
+            {item.detail && <span className="mt-1 text-[13.5px] leading-[1.6] text-[#CFC8BC]">{item.detail}</span>}
           </span>
         </li>
       ))}

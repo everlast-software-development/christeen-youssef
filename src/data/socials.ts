@@ -19,7 +19,7 @@ export const socialLinks: SocialLink[] = [
   },
   {
     platform: 'TikTok',
-    url: 'https://www.tiktok.com/@drchristeenyoussef?_t=8j4ph0e0l2A&_r=1'
+    url: 'https://www.tiktok.com/@drchristeenyoussef'
   },
   {
     platform: 'WhatsApp',

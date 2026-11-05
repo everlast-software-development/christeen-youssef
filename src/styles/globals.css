@@ -548,7 +548,7 @@
 /* ---- Home: values taken from the approved reference ---- */
 
 /* Hero arch: rises 36px and fades in, while the photograph settles from
-   1.12 to exactly 1 inside it. */
+   1.12 to 1.04 inside it. */
 @keyframes arch-up {
     from {
         opacity: 0;
@@ -561,7 +561,7 @@
         transform: scale(1.12);
     }
     to {
-        transform: scale(1);
+        transform: scale(1.04);
     }
 }
 
@@ -592,7 +592,7 @@
 }
 
 /* The About arch: the same settle, but it ends at 1 so the photograph is not
-   left enlarged once it lands. */
+   left enlarged once it lands. (Home keeps the reference's 1.04.) */
 @keyframes arch-zoom-settle {
     from {
         transform: scale(1.08);

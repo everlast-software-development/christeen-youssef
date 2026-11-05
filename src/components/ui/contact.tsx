@@ -77,7 +77,7 @@ const TEL = `tel:${schedule.phone.replace(/\s+/g, '')}`;
 // The shared inputs, restated for the cream form card: 50px, a hairline, a
 // gold focus ring.
 const FIELD =
-  'h-[50px] rounded-[10px] border-line bg-page px-4 type-body max-md:text-base text-ink transition-colors placeholder:text-caption focus-visible:border-gold focus-visible:ring-[3px] focus-visible:ring-gold/30 aria-invalid:border-destructive';
+  'h-[50px] rounded-[10px] border-line bg-page px-4 type-body pointer-coarse:text-base text-ink transition-colors placeholder:text-caption focus-visible:border-gold focus-visible:ring-[3px] focus-visible:ring-gold/30 aria-invalid:border-destructive';
 
 const FIELD_LABEL = 'type-eyebrow text-caption-strong';
 
@@ -201,7 +201,7 @@ export function ContactSection({
       <PageHero section="/reach-me" title={title} />
 
       <Section tone="page">
-        <Container className="grid gap-5 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
+        <Container className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
           {/* ---------------- Left: the clinic, and the ways round the form ---------------- */}
           <aside
             data-tone="ink"
@@ -222,7 +222,7 @@ export function ContactSection({
                       href={DIRECTIONS_URL}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="underline decoration-white/25 underline-offset-4 transition-colors hover-fine:text-white hover-fine:decoration-gold-light"
+                      className="tap-target relative underline decoration-white/25 underline-offset-4 transition-colors hover-fine:text-white hover-fine:decoration-gold-light"
                     >
                       {schedule.address}
                     </a>
@@ -251,14 +251,17 @@ export function ContactSection({
                   <span className={DARK_LABEL}>Direct</span>
                 </dt>
                 <dd className="mt-1 pl-14 flex flex-col gap-1 text-white/75">
-                    <a href={TEL} className="transition-colors hover-fine:text-white">
+                    <a href={TEL} className="tap-target relative transition-colors hover-fine:text-white">
                       {schedule.phone}
                     </a>
                     <a
                       href={`mailto:${contactEmail}`}
-                      className="break-all transition-colors hover-fine:text-white"
+                      className="tap-target relative [overflow-wrap:anywhere] transition-colors hover-fine:text-white"
                     >
-                      {contactEmail}
+                      {/* On a narrow card the address wraps after the @,
+                          not in the middle of the domain. */}
+                      {contactEmail.split('@')[0]}@<wbr />
+                      {contactEmail.split('@')[1]}
                     </a>
                   </dd>
               </div>
@@ -279,7 +282,7 @@ export function ContactSection({
               noValidate
               className="mt-8 space-y-6"
             >
-              <div className="grid gap-6 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="name" className={FIELD_LABEL}>
                     Your name

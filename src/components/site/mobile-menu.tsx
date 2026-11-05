@@ -48,7 +48,7 @@ export function MobileMenu() {
       <Dialog.Portal>
         <Dialog.Popup
           className={cn(
-            'group/menu fixed inset-0 z-[120] flex flex-col overflow-y-auto bg-ink text-white',
+            'group/menu fixed inset-0 z-[120] flex flex-col overflow-y-auto bg-ink pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] text-white',
             '[clip-path:inset(0_0_0_0)] transition-[clip-path] duration-700 ease-[var(--ease-brand)]',
             'data-[starting-style]:[clip-path:inset(0_0_100%_0)] data-[ending-style]:[clip-path:inset(0_0_100%_0)] data-[ending-style]:duration-500',
           )}

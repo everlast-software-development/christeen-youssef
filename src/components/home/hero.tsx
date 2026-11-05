@@ -76,7 +76,7 @@ export function HomeHero() {
 
           <h1
             id="hero-title"
-            className="m-0 max-w-[1000px] type-display text-white [text-wrap:wrap]"
+            className="m-0 max-w-[1000px] type-display text-white"
           >
             <WordReveal text="Discover Your Most Radiant Self" delay={250} step={90} />
           </h1>

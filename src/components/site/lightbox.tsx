@@ -53,7 +53,7 @@ export function Lightbox({
             if (event.key === 'ArrowLeft') step(-1);
             if (event.key === 'ArrowRight') step(1);
           }}
-          className="fixed inset-0 z-[120] flex items-center justify-center overflow-y-auto p-4 transition-[opacity,transform] duration-300 data-[ending-style]:scale-[0.98] data-[ending-style]:opacity-0 data-[starting-style]:scale-[0.98] data-[starting-style]:opacity-0 sm:p-8"
+          className="fixed inset-0 z-[120] flex items-center justify-center overflow-y-auto px-[max(1rem,env(safe-area-inset-left))] pt-[max(1rem,env(safe-area-inset-top))] pb-[max(1rem,env(safe-area-inset-bottom))] transition-[opacity,transform] duration-300 data-[ending-style]:scale-[0.98] data-[ending-style]:opacity-0 data-[starting-style]:scale-[0.98] data-[starting-style]:opacity-0 sm:px-[max(2rem,env(safe-area-inset-left))] sm:pt-[max(2rem,env(safe-area-inset-top))] sm:pb-[max(2rem,env(safe-area-inset-bottom))]"
         >
           {index !== null && (
             <div className="w-full max-w-[56rem]">

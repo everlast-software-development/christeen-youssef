@@ -107,7 +107,7 @@ export function PageBreadcrumb({
                     <BreadcrumbLink
                       render={<TransitionLink href={crumb.href} />}
                       className={cn(
-                        'rounded-sm underline-offset-4 transition-colors duration-200 hover-fine:underline hover-fine:decoration-gold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold',
+                        'tap-target relative rounded-sm underline-offset-4 transition-colors duration-200 hover-fine:underline hover-fine:decoration-gold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold',
                         colours.link,
                       )}
                     >

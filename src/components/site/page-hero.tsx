@@ -21,17 +21,37 @@ function Title({ text }: { text: string }) {
   });
 
   const step = Math.min(90, 700 / Math.max(words.length - 1, 1));
-
-  return words.map(({ before, word, after, italic }, index) => (
-    <Fragment key={`${word}-${index}`}>
-      {index > 0 && ' '}
+  const render = (index: number) => {
+    const { before, word, after, italic } = words[index];
+    return (
       <span className="animate-word inline-block" style={{ animationDelay: `${Math.round(250 + index * step)}ms` }}>
         {before}
         {italic ? <em className="italic">{word}</em> : word}
         {after}
       </span>
-    </Fragment>
-  ));
+    );
+  };
+  // The last two words travel together: one inline-block per word defeats
+  // text-wrap: balance, and a title should never end on a line of one word.
+  const tail = Math.max(words.length - 2, 0);
+
+  return (
+    <>
+      {words.slice(0, tail).map((_, index) => (
+        <Fragment key={index}>
+          {render(index)}{' '}
+        </Fragment>
+      ))}
+      <span className="whitespace-nowrap">
+        {words.slice(tail).map((_, i) => (
+          <Fragment key={tail + i}>
+            {i > 0 && ' '}
+            {render(tail + i)}
+          </Fragment>
+        ))}
+      </span>
+    </>
+  );
 }
 
 /**

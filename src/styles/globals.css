@@ -248,7 +248,27 @@
     width: 100%;
     max-width: var(--container);
     margin-inline: auto;
-    padding-inline: var(--gutter);
+    /* The gutter, or the notch's inset in landscape, whichever is wider
+       (the page runs under the notch: viewport-fit=cover). */
+    padding-left: max(var(--gutter), env(safe-area-inset-left));
+    padding-right: max(var(--gutter), env(safe-area-inset-right));
+}
+
+/* A 44 × 44 touch area on touch screens, without changing what is drawn: an
+   invisible ::before centred on the element, at least 44px each way. The
+   element must be positioned (relative / absolute). */
+@utility tap-target {
+    @media (pointer: coarse) {
+        &::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: max(100%, 44px);
+            height: max(100%, 44px);
+            transform: translate(-50%, -50%);
+        }
+    }
 }
 
 /* An article's cover hangs half below the hero: its height is the container's
@@ -791,12 +811,12 @@ html[data-preloader='run'] :is(
 @media (min-width: 961px) and (prefers-reduced-motion: no-preference) {
     @supports (animation-timeline: view()) {
         .pin-scroll {
-            height: calc(min(100vh, 900px) * 2.4);
+            height: calc(min(100svh, 900px) * 2.4);
         }
         .pin-scroll > .pin-stage {
             position: sticky;
             top: 0;
-            height: min(100vh, 900px);
+            height: min(100svh, 900px);
             padding-block: 0;
         }
         .pin-scroll .pin-track {
@@ -808,12 +828,12 @@ html[data-preloader='run'] :is(
     }
 
     .pin-scroll[data-pinned] {
-        height: calc(min(100vh, 900px) * 2.4);
+        height: calc(min(100svh, 900px) * 2.4);
     }
     .pin-scroll[data-pinned] > .pin-stage {
         position: sticky;
         top: 0;
-        height: min(100vh, 900px);
+        height: min(100svh, 900px);
         padding-block: 0;
     }
     .pin-scroll[data-pinned] .pin-track {

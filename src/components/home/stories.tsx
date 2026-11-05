@@ -111,7 +111,7 @@ export function HomeStories() {
   const go = (step: number) => setIndex((value) => (value + step + total) % total);
 
   const arrow =
-    'inline-flex size-[42px] items-center justify-center rounded-full border border-white/28 text-white transition-colors duration-200 hover-fine:bg-white hover-fine:text-ink';
+    'tap-target relative inline-flex size-[42px] items-center justify-center rounded-full border border-white/28 text-white transition-colors duration-200 hover-fine:bg-white hover-fine:text-ink';
 
   return (
     <section

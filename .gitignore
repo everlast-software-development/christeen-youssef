@@ -58,3 +58,6 @@ src/assets/blogs/**/*.jpeg
 src/assets/blogs/**/*.JPEG
 src/assets/blogs/**/*.mp4
 src/assets/blogs/**/*.MP4
+
+# Responsive QA screenshots (local review only)
+/responsive-qa/

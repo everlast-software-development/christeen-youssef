@@ -10,6 +10,7 @@ import { TransitionLink } from '@/components/ui/transition-link';
 import { blogPosts } from '@/data/blog';
 import { byNewest, formatBlogDate } from '@/lib/blog-date';
 import { heroFocus } from '@/lib/blog-image';
+import { noOrphan } from '@/lib/utils';
 
 const PAGE_SIZE = 8;
 
@@ -106,7 +107,7 @@ export function BlogIndex() {
                     href={`/blog/${FEATURED.slug}`}
                     className="after:absolute after:inset-0 after:rounded-[16px] focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-gold"
                   >
-                    {FEATURED.title}
+                    {noOrphan(FEATURED.title)}
                   </TransitionLink>
                 </h2>
                 <p className="mt-4 line-clamp-3 type-body text-soft">

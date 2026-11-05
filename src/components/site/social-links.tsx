@@ -47,7 +47,7 @@ export const SOCIAL_TONE = {
 
 /** One round icon button: the footer's social links and an article's share row. */
 export const SOCIAL_BUTTON = cn(
-  'flex size-10 cursor-pointer items-center justify-center rounded-full border bg-transparent transition-colors duration-200',
+  'tap-target relative flex size-10 cursor-pointer items-center justify-center rounded-full border bg-transparent transition-colors duration-200',
   'hover-fine:border-gold-deep hover-fine:bg-gold-deep hover-fine:text-white',
   'focus-visible:border-gold-deep focus-visible:bg-gold-deep focus-visible:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold',
 );

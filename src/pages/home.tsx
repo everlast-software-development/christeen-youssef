@@ -17,7 +17,7 @@ export default function Home() {
     <Seo path="/" />
     <main
       id="content"
-      className="[font-variant-numeric:normal] [&_:is(h1,h2,h3,p)]:[text-wrap:wrap]"
+      className="[font-variant-numeric:normal] [&_p]:[text-wrap:wrap]"
     >
       <div aria-hidden className="scroll-progress" />
       <HomeHero />

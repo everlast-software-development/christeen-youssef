@@ -16,7 +16,7 @@ export function SiteFooter() {
           <TransitionLink
             href="/"
             aria-label="Dr. Christeen Youssef — home"
-            className="shrink-0 rounded-sm"
+            className="tap-target relative shrink-0 rounded-sm"
           >
             <Image src={logoInk} alt="" sizes="160px" className="h-[38px] w-auto" />
           </TransitionLink>
@@ -27,7 +27,7 @@ export function SiteFooter() {
                 <li key={item.href}>
                   <TransitionLink
                     href={item.href}
-                    className="type-nav text-soft transition-colors hover-fine:text-ink"
+                    className="tap-target relative type-nav text-soft transition-colors hover-fine:text-ink"
                   >
                     {item.label}
                   </TransitionLink>

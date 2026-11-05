@@ -153,7 +153,7 @@ export function CompareSlider({
             stopHint();
             setEasing(false);
           }}
-          className="pointer-events-auto absolute top-1/2 left-1/2 flex size-10 -translate-x-1/2 -translate-y-1/2 cursor-ew-resize touch-none items-center justify-center rounded-full bg-white text-ink shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
+          className="tap-target pointer-events-auto absolute top-1/2 left-1/2 flex size-10 -translate-x-1/2 -translate-y-1/2 cursor-ew-resize touch-none items-center justify-center rounded-full bg-white text-ink shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2"
         >
           <ChevronLeft aria-hidden strokeWidth={2} className="-mr-1 size-4" />
           <ChevronRight aria-hidden strokeWidth={2} className="-ml-1 size-4" />

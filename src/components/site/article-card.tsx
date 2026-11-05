@@ -4,7 +4,7 @@ import { TransitionLink } from '@/components/ui/transition-link';
 import { formatBlogDate } from '@/lib/blog-date';
 import { carouselFocus } from '@/lib/blog-image';
 import type { BlogPost } from '@/types';
-import { cn } from '@/lib/utils';
+import { cn, noOrphan } from '@/lib/utils';
 
 /** Category names arrive upper-case in the data; shown in title case. */
 export function categoryLabel(category: string) {
@@ -87,7 +87,7 @@ export function ArticleCard({
             href={`/blog/${post.slug}`}
             className="after:absolute after:inset-0 after:rounded-[16px] focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-gold"
           >
-            {post.title}
+            {noOrphan(post.title)}
           </TransitionLink>
         </Heading>
 

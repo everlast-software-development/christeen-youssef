@@ -15,3 +15,12 @@ const twMerge = extendTailwindMerge({
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
+
+/**
+ * Joins a title's last two words with a no-break space, so it never ends on a
+ * line of one word. For titles that `text-wrap: balance` cannot reach — ones
+ * clamped to a few lines (display: -webkit-box) or set in narrow cards.
+ */
+export function noOrphan(text: string) {
+  return text.replace(/\s+(\S+)\s*$/, " $1")
+}

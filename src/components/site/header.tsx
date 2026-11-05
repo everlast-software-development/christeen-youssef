@@ -61,7 +61,7 @@ export function SiteHeader() {
         <TransitionLink
           href="/"
           aria-label="Dr. Christeen Youssef — home"
-          className="animate-fade-down shrink-0 rounded-sm"
+          className="animate-fade-down tap-target relative shrink-0 rounded-sm"
         >
           <Image
             src={logoLight}
@@ -87,7 +87,7 @@ export function SiteHeader() {
                     href={item.href}
                     aria-current={active ? 'page' : undefined}
                     className={cn(
-                      'group relative inline-block py-2 type-nav transition-colors duration-300',
+                      'tap-target group relative inline-block py-2 type-nav transition-colors duration-300',
                       'text-white/72 hover-fine:text-white aria-[current=page]:text-white',
                     )}
                   >

@@ -46,7 +46,7 @@ export function ScrollProgress() {
       ref={bar}
       aria-hidden
       style={{ transform: 'scaleX(0)' }}
-      className="pointer-events-none fixed inset-x-0 top-0 z-[105] h-0.5 origin-left bg-gold"
+      className="pointer-events-none fixed inset-x-0 top-[env(safe-area-inset-top)] z-[105] h-0.5 origin-left bg-gold"
     />
   );
 }

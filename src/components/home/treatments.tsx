@@ -13,6 +13,7 @@ import hairImage from '@/assets/Clinical Expertise & Treatments/hair-and-scalp-h
 import rejuvenationImage from '@/assets/Clinical Expertise & Treatments/skin-rejuvenation-collagen-stimulation.jpeg';
 import regenerativeImage from '@/assets/Clinical Expertise & Treatments/regenerative-medicine-tissue-repair.jpeg';
 import allergyImage from '@/assets/Clinical Expertise & Treatments/allergy-and-clinical-dermatology.jpeg';
+import { noOrphan } from '@/lib/utils';
 
 type Treatment = {
   index: string;
@@ -105,7 +106,7 @@ function TreatmentCard({ item }: { item: Treatment }) {
         {item.index}
       </span>
       <div className="relative flex flex-col gap-1.5 p-5">
-        <h3 className="m-0 type-h3 text-white">{item.title}</h3>
+        <h3 className="m-0 type-h3 text-white">{noOrphan(item.title)}</h3>
         {/* The overview card's text is the section intro, already above. */}
         {item.body !== INTRO && (
           <p className="m-0 line-clamp-3 text-[13.5px] leading-[1.5] text-white/85">{item.body}</p>

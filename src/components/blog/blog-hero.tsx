@@ -87,7 +87,7 @@ export function BlogHero({
             }}
             placeholder="Search articles, treatments, conferences…"
             autoComplete="off"
-            className="h-full min-w-0 flex-1 bg-transparent px-3.5 type-body text-white outline-none placeholder:text-white/50 max-md:text-base [&::-webkit-search-cancel-button]:hidden"
+            className="h-full min-w-0 flex-1 bg-transparent px-3.5 type-body text-white outline-none placeholder:text-white/50 pointer-coarse:text-base [&::-webkit-search-cancel-button]:hidden"
           />
           {filters.q ? (
             <button

@@ -57,7 +57,7 @@ export function HomeResults() {
   const go = (step: number) => setIndex((value) => (value + step + total) % total);
 
   const arrow =
-    'inline-flex size-[42px] items-center justify-center rounded-full border border-line bg-cream text-ink transition-colors duration-200 hover-fine:bg-ink hover-fine:text-white';
+    'tap-target relative inline-flex size-[42px] items-center justify-center rounded-full border border-line bg-cream text-ink transition-colors duration-200 hover-fine:bg-ink hover-fine:text-white';
 
   return (
     <section aria-labelledby="results-title" className="relative overflow-x-clip bg-page py-[clamp(64px,7vw,104px)] text-text">

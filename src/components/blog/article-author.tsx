@@ -27,7 +27,7 @@ export function ArticleAuthor() {
       <p className="m-0 mt-2 type-eyebrow text-caption-strong">Founder &amp; Medical Director</p>
       <TransitionLink
         href="/about-me"
-        className="mt-3 type-small font-semibold text-gold-text transition-colors hover-fine:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+        className="tap-target relative mt-3 type-small font-semibold text-gold-text transition-colors hover-fine:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
       >
         Read full profile →
       </TransitionLink>

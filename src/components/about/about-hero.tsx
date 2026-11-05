@@ -39,7 +39,7 @@ export function AboutHero() {
                     </span>{' '}
                   </>
                 )}
-                <span className="whitespace-nowrap">{credential}</span>
+                <span className="min-[400px]:whitespace-nowrap">{credential}</span>
               </span>
             ))}
           </p>

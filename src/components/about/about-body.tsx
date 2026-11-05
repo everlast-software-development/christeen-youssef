@@ -528,7 +528,7 @@ export function AboutBody() {
             </p>
             <h2 id="closing-title" className="m-0 mt-4 text-[clamp(40px,4.8vw,72px)] leading-[1.05] text-text">
               Medicine should continuously <Em>evolve</Em>. And so should the way we{' '}
-              <Em>learn</Em>, <Em>innovate</Em>, and <Em>care</Em> for our patients.
+              <Em>learn</Em>, <Em>innovate</Em>, and <Em>care</Em> for our{'\u00A0'}patients.
             </h2>
             <div className="mt-7 flex flex-wrap justify-center gap-3">
               {READING.map((link) => (

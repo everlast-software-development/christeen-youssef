@@ -9,7 +9,7 @@ export type FilterOption = { value: string; label: string };
  */
 export const filterChip = (selected: boolean) =>
   cn(
-    'inline-flex h-9 shrink-0 items-center border px-4 type-small font-medium whitespace-nowrap transition-colors duration-200',
+    'tap-target relative inline-flex h-9 shrink-0 items-center border px-4 type-small font-medium whitespace-nowrap transition-colors duration-200',
     BUTTON_RADIUS,
     selected ? 'border-transparent bg-gold-deep text-white' : 'border-white/13 text-white/72',
   );

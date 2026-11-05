@@ -5,6 +5,7 @@ import { TransitionLink } from '@/components/ui/transition-link';
 import { blogPosts } from '@/data/blog';
 import { byNewest, formatBlogDate } from '@/lib/blog-date';
 import { carouselFocus } from '@/lib/blog-image';
+import { noOrphan } from '@/lib/utils';
 
 const [FEATURED, ...REST] = [...blogPosts].sort(byNewest).slice(0, 4);
 
@@ -62,7 +63,7 @@ export function HomeJournal() {
             <span className="relative flex flex-col gap-2.5 p-[clamp(22px,2.6vw,32px)]">
               <span className="text-[13px] text-[#E6DFD2]">{formatBlogDate(FEATURED.date)}</span>
               <h3 className="m-0 font-display text-[clamp(24px,2.2vw,32px)] leading-[1.2] font-medium text-white">
-                {FEATURED.title}
+                {noOrphan(FEATURED.title)}
               </h3>
               <span className="line-clamp-2 max-w-[56ch] text-[14px] leading-[1.55] text-white/85">{FEATURED.excerpt}</span>
               <span className="text-[14px] font-semibold text-[#E9DFC9]">Read article →</span>
@@ -74,7 +75,7 @@ export function HomeJournal() {
               <li key={post.slug} className="border-b border-line">
                 <TransitionLink
                   href={`/blog/${post.slug}`}
-                  className="group grid grid-cols-[120px_minmax(0,1fr)_24px] items-center gap-[18px] py-[18px] transition-[padding] duration-300 hover-fine:pl-2"
+                  className="group grid grid-cols-[88px_minmax(0,1fr)_20px] items-center gap-3.5 py-[18px] min-[400px]:grid-cols-[120px_minmax(0,1fr)_24px] min-[400px]:gap-[18px] transition-[padding] duration-300 hover-fine:pl-2"
                 >
                   <span className="relative block aspect-square overflow-hidden rounded-[12px] bg-page">
                     <Image
@@ -95,7 +96,7 @@ export function HomeJournal() {
                       </span>
                     </span>
                     <h3 className="m-0 font-display text-[21px] leading-[1.25] font-medium text-text underline-offset-4 group-hover-fine:underline">
-                      {post.title}
+                      {noOrphan(post.title)}
                     </h3>
                     <p className="m-0 line-clamp-2 type-small text-soft">{post.excerpt}</p>
                   </span>

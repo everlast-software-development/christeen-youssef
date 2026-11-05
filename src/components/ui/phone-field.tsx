@@ -146,7 +146,7 @@ export function PhoneField({
           aria-invalid={invalid}
           placeholder="50 123 4567"
           {...inputProps}
-          className="h-full min-w-0 flex-1 rounded-r-[10px] bg-transparent px-3.5 type-body text-ink outline-none placeholder:text-caption max-md:text-base"
+          className="h-full min-w-0 flex-1 rounded-r-[10px] bg-transparent px-3.5 type-body text-ink outline-none placeholder:text-caption pointer-coarse:text-base"
         />
       </div>
 
@@ -184,7 +184,7 @@ export function PhoneField({
               }}
               placeholder="Search country or code"
               aria-label="Search country or code"
-              className="min-w-0 flex-1 bg-transparent type-small text-ink outline-none placeholder:text-caption"
+              className="min-w-0 flex-1 bg-transparent type-small text-ink outline-none placeholder:text-caption pointer-coarse:text-base"
             />
           </div>
 
@@ -209,6 +209,10 @@ export function PhoneField({
                     role="option"
                     aria-selected={selected}
                     data-index={index}
+                    // Safari does not focus a button it clicks, so without this
+                    // the search field's blur (relatedTarget null) closes the
+                    // list before the click lands — and nothing is chosen.
+                    onMouseDown={(event) => event.preventDefault()}
                     onClick={() => choose(entry)}
                     onPointerEnter={() => setCursor({ query, index })}
                     className={cn(

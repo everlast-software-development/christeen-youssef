@@ -47,6 +47,10 @@ const asset = () => async (images: ProcessedImage[]) => {
 };
 
 export default defineConfig({
+  // Outside node_modules: Railway (Nixpacks) mounts node_modules/.vite as a
+  // build cache, and anything that clears node_modules then fails with EBUSY
+  // on that mount.
+  cacheDir: '.vite-cache',
   plugins: [
     react(),
     tailwindcss(),

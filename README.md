@@ -152,9 +152,27 @@ ever moves content, never hides it.
 
 ## Deployment (Railway)
 
-Railway runs `npm ci --include=dev && npm run build`, then `npm start`
-(`railway.json`, `nixpacks.toml`) — plain Node on the compiled
-`dist/node/server.js`, no TypeScript at runtime. Express listens on `$PORT` and
+Railway builds with Nixpacks in three phases, and each command runs once:
+
+| Phase   | Command                 | Set in           |
+| ------- | ----------------------- | ---------------- |
+| install | `npm ci --include=dev`  | `nixpacks.toml`  |
+| build   | `npm run build`         | `railway.json`   |
+| start   | `npm start`             | `railway.json`   |
+
+- `--include=dev` is required: Railway sets npm's `production` config, and the
+  build needs devDependencies (vite, esbuild, the Vite plugins).
+- The build command must not run `npm ci` / `npm install` again. Nixpacks
+  mounts `node_modules/.vite` as a build cache, so a second install that clears
+  `node_modules` fails with `EBUSY: resource busy or locked, rmdir
+  '/app/node_modules/.vite'`.
+- Vite's own cache lives in `.vite-cache/` (`cacheDir` in `vite.config.ts`,
+  gitignored), outside `node_modules`, so it never collides with that mount.
+
+To reproduce the deploy locally: `npm ci --include=dev && npm run build && npm start`.
+
+The server is plain Node on the compiled `dist/node/server.js`, no TypeScript
+at runtime. Express listens on `$PORT` and
 serves the prerendered `dist/client` with the API on the same origin. Node
 `^20.19 || >=22.12` (`engines`, the floor Vite 8 needs); Railway uses the
 version in `.node-version` (24).

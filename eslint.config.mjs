@@ -7,7 +7,7 @@ import { defineConfig, globalIgnores } from 'eslint/config';
 export default defineConfig([
   // _legacy holds the pre-migration components, kept only as a content and
   // markup reference; it is never compiled.
-  globalIgnores(['dist/**', 'node_modules/**', '_legacy/**']),
+  globalIgnores(['dist/**', 'node_modules/**', '_legacy/**', '.vite-cache/**']),
   js.configs.recommended,
   ...tseslint.configs.recommended,
   reactHooks.configs.flat.recommended,

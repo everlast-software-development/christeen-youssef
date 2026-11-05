@@ -115,7 +115,7 @@ export function HomeHero() {
           ))}
         </div>
 
-        <div className="animate-arch-up arch relative isolate aspect-[3/4] overflow-hidden bg-cream shadow-[0_30px_60px_rgba(23,21,15,0.22)]">
+        <div className="animate-arch-up arch arch-frame aspect-[3/4] shadow-[0_30px_60px_rgba(23,21,15,0.22)]">
           <Image
             src={portrait}
             alt="Dr. Christeen Youssef in her clinic at Everlast Wellness Medical Center"

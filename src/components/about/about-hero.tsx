@@ -57,13 +57,11 @@ export function AboutHero() {
       }
     >
       <div className="relative mx-auto w-[min(70vw,420px)]">
-        {/* The portrait is a cut-out, so the arch carries the backdrop that
-            keeps its shape against the ink. Radius, clip and colour are on
-            this one element, so nothing shows outside the curve. */}
-        <div
-          className="animate-arch-up arch relative isolate aspect-[3/4] overflow-hidden"
-          style={{ background: ARCH_BACKDROP }}
-        >
+        {/* The portrait is a cut-out, so a backdrop layer inside the clip
+            keeps the arch's shape against the ink. The frame itself has no
+            background; radius, clip and ring are on it (arch-frame). */}
+        <div className="animate-arch-up arch arch-frame aspect-[3/4]">
+          <div aria-hidden className="absolute inset-0" style={{ background: ARCH_BACKDROP }} />
           <Image
             src={heroPortrait}
             alt="Dr. Christeen Youssef in a white coat and blue scarf"

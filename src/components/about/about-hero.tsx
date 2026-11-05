@@ -1,7 +1,14 @@
 import { Image } from '@/components/ui/image';
 import { PageHero } from '@/components/site/page-hero';
 import { RotatingBadge } from '@/components/site/rotating-badge';
-import heroPortrait from '@/assets/dr-christeen.webp';
+// dr-christeen.webp with its white studio wall segmented out (the original is
+// kept): a tint would have coloured the white coat too.
+import heroPortrait from '@/assets/dr-christeen-cutout.webp';
+
+/** Behind the cut-out: page tone into a deeper warm beige, so the white coat
+ *  stands clear, and a faint gold warmth behind the shoulders. */
+const ARCH_BACKDROP =
+  'radial-gradient(ellipse 75% 40% at 50% 58%, rgba(184,137,42,0.08), transparent 70%), linear-gradient(180deg, #ECE6DC 0%, #DCD2C2 100%)';
 
 const CREDENTIALS = [
   'Dermatologist',
@@ -50,14 +57,18 @@ export function AboutHero() {
       }
     >
       <div className="relative mx-auto w-[min(70vw,420px)]">
-        {/* The portrait is a cut-out with faded edges, so the arch carries a
-            cream backing to keep its shape against the ink. Radius, clip and
-            colour are on this one element, so nothing shows outside the curve. */}
-        <div className="animate-arch-up arch relative isolate aspect-[3/4] overflow-hidden bg-cream">
+        {/* The portrait is a cut-out, so the arch carries the backdrop that
+            keeps its shape against the ink. Radius, clip and colour are on
+            this one element, so nothing shows outside the curve. */}
+        <div
+          className="animate-arch-up arch relative isolate aspect-[3/4] overflow-hidden"
+          style={{ background: ARCH_BACKDROP }}
+        >
           <Image
             src={heroPortrait}
-            alt="Dr. Christeen Youssef smiling, in a blue lace top with an EVSS conference lanyard"
-            placeholder="blur"
+            alt="Dr. Christeen Youssef in a white coat and blue scarf"
+            // No blur placeholder: on a transparent cut-out it paints a
+            // blurred blob; the backdrop stands in while it loads.
             preload
             fill
             sizes="(min-width: 600px) 420px, 70vw"
